@@ -24,7 +24,14 @@ class ErrorGetCompanyTypeState extends CompanyInformationState{
 ///m here for get all counties
 class LoadingGetCountiesState extends CompanyInformationState{}
 
-class LoadedGetCountiesState extends CompanyInformationState{}
+class LoadedGetCountiesState extends CompanyInformationState{
+  final int? countryId;
+  const LoadedGetCountiesState({
+    required this.countryId
+});
+  @override
+  List<Object> get props => [countryId!];
+}
 
 class ErrorGetCountiesState extends CompanyInformationState{
   final String error;
@@ -126,7 +133,14 @@ class OnAcceptButtonState extends CompanyInformationState{
 }
 /// here for upload image state
 class LoadingUploadImageState extends CompanyInformationState{}
-class LoadedUploadImageState extends CompanyInformationState{}
+class LoadedUploadImageState extends CompanyInformationState{
+  final String imgUrl;
+  const LoadedUploadImageState({
+    required this.imgUrl
+});
+  @override
+  List<Object> get props => [imgUrl];
+}
 class ErrorUploadImageState extends CompanyInformationState{
   final String error;
   const ErrorUploadImageState({required this.error});

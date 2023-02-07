@@ -8,7 +8,8 @@ class IsLoggedModel extends IsLoggedEntity{
     required String firstName,
     required String lastName,
     required String email,
-}):super(roleId: roleId,firstName: firstName,lastName: lastName,email: email);
+    required int idUser,
+}):super(roleId: roleId,firstName: firstName,lastName: lastName,email: email,idUser: idUser);
 
   factory IsLoggedModel.fromJson(Map<String,dynamic>json){
 
@@ -16,6 +17,7 @@ class IsLoggedModel extends IsLoggedEntity{
     final firstName=json['firstName'];
     final lastName=json['lastName'];
     final email=json['email'];
-    return IsLoggedModel(roleId: roleId,firstName: firstName,lastName: lastName,email: email);
+    final idUser=json['idUser'];
+    return IsLoggedModel(roleId: roleId,firstName: firstName,lastName: lastName,email: email,idUser: idUser);
   }
 }

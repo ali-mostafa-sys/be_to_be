@@ -2,6 +2,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:be_to_be/core/app_theme.dart';
+import 'package:be_to_be/core/routs/routes.gr.dart';
 import 'package:be_to_be/core/strings/const.dart';
 import 'package:be_to_be/core/utils/snackbar_message.dart';
 import 'package:be_to_be/core/widgets/button_text_widget.dart';
@@ -36,7 +37,7 @@ class LoginPage extends StatelessWidget {
 
   Widget _buildBody( {required double h,required double w}) {
     return BlocProvider(
-        create: (context)=>di.sl<LoginBloc>(),
+        create: (context)=>di.sl<LoginBloc>()..add(GetTokenEvent()),
       child: BlocConsumer<LoginBloc,LoginState>(
         listener: (context, state) {
           if(state is LoadedLoginState){
@@ -44,7 +45,8 @@ class LoginPage extends StatelessWidget {
                 message: 'Login Successfully',
                 backgroundColor: Colors.green,
                 context: context);
-            AutoRouter.of(context).pushNamed('/main');
+            //AutoRouter.of(context).pushNamed('/main');
+            AutoRouter.of(context).pushAndPopUntil(MainPage(), predicate: (route) => false);
 
           }
           if(state is ErrorLoginState){
@@ -151,7 +153,11 @@ class LoginPage extends StatelessWidget {
                               textSize: 27,
                               onPressed: () {
                                if(formKey.currentState!.validate()){
-                                 final loginEntity=LoginEntity(email: email.text, password: password.text);
+                                 final loginEntity=LoginEntity(
+                                     email: email.text,
+                                     password: password.text,
+                                   notificationToken: bloc.token.toString(),
+                                 );
                                  bloc.add(LoginButtonEvent(loginEntity: loginEntity));
                                }
 

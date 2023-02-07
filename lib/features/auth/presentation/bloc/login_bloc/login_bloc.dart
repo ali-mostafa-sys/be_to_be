@@ -6,6 +6,7 @@ import 'package:be_to_be/features/auth/domain/entity/login_entity/login_entity.d
 import 'package:be_to_be/features/auth/domain/usecase/login_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -17,10 +18,18 @@ part 'login_state.dart';
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   static LoginBloc get(context)=>BlocProvider.of(context);
   final LoginUseCase loginUseCase;
+  final SharedPreferences sharedPreferences;
 
    bool obSecure=true;
+   String token='';
 
-  LoginBloc({required this.loginUseCase,}) : super(LoginInitial()) {
+
+
+  LoginBloc({
+    required this.loginUseCase,
+    required this.sharedPreferences,
+
+  }) : super(LoginInitial()) {
     on<LoginEvent>((event, emit)async {
       ///
       /// here for login event
@@ -53,6 +62,17 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         obSecure= !obSecure;
         emit(ChangeObSecurePasswordState(obSecure: obSecure));
       }
+      ///
+      /// here for get token
+      ///
+
+      if(event is GetTokenEvent){
+         token=sharedPreferences.getString('token').toString();
+          emit(GetTokenState());
+
+      }
+
+
 
     });
   }
@@ -66,6 +86,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         return invalidEmailAndPasswordFailureMessage;
       case AccountNotVerificationFailure:
         return accountNotVerificationFailureMessage;
+      case UnAcceptedAccountFailure:
+        return unAcceptedAccountFailureMessage;
 
       default:
         return " Unexpected error,Please try again later.";

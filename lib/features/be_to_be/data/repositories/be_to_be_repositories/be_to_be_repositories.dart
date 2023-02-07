@@ -30,6 +30,8 @@ class BeToBeRepositoriesImpl implements BeToBeRepositories{
 
       }on ServerException{
         return Left(ServerFailure());
+      }on TenderIsEmptyException{
+        return Left(TenderIsEmptyFailure());
       }
     }else{
       return Left(OfflineFailure());

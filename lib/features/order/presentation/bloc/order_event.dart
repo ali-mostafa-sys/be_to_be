@@ -19,7 +19,12 @@ class IntEvent extends OrderEvent{}
 /// here for get all order event
 ///
 
-class GetAllOrderEvent extends OrderEvent{}
+class GetAllOrderEvent extends OrderEvent{
+  final String sortValue;
+  const GetAllOrderEvent({required this.sortValue});
+  @override
+  List<Object> get props => [sortValue];
+}
 ///
 /// here for show dialog event
 ///
@@ -73,13 +78,47 @@ class AddOfferEvent extends OrderEvent{
 
 }
 
+///
+/// HERE FOR SORT STATE
+///
+
+class SortOrderEvent extends OrderEvent{
+  final String sortValue;
+  const SortOrderEvent({required this.sortValue});
+  @override
+  List<Object> get props => [sortValue];
+}
+
+///
+/// here for get my offer event
+///
+class GetMyOfferEvent extends OrderEvent{
+  final int tenderId;
+  final int userId;
+  final int index;
+
+  const GetMyOfferEvent({
+    required this.tenderId,
+    required this.userId,
+    required this.index,
+});
+  @override
+  List<Object> get props => [tenderId,userId,index];
 
 
+}
+///
+/// delete offer event
+///
 
-
-
-
-
+class DeleteOfferOrderEvent extends  OrderEvent{
+  final int offerId;
+  const DeleteOfferOrderEvent({
+    required this.offerId
+});
+  @override
+  List<Object> get props => [offerId];
+}
 
 
 

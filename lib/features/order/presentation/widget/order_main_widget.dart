@@ -1,3 +1,7 @@
+import 'package:be_to_be/core/app_theme.dart';
+import 'package:be_to_be/core/widgets/button_text_widget.dart';
+import 'package:be_to_be/core/widgets/loading_widget.dart';
+import 'package:be_to_be/features/order/domain/entity/my_offer_entity/mu_offer_entity.dart';
 import 'package:be_to_be/features/order/domain/entity/order_entity/get_orders_entity.dart';
 import 'package:be_to_be/features/order/presentation/bloc/order_bloc.dart';
 import 'package:be_to_be/features/order/presentation/widget/row_expanded_widget.dart';
@@ -12,6 +16,10 @@ class OrderMainWidget extends StatelessWidget {
      required this.closeExpand,
      required this.onExpanded,
      required this.orderEntity,
+     required this.deliveryTimePeriod,
+     required this.maxTenderPeriod,
+     required this.myOfferEntity,
+     required this.loadingWidget,
 
      required this.onAccepted}) : super(key: key);
 
@@ -19,8 +27,13 @@ class OrderMainWidget extends StatelessWidget {
    void Function()? closeExpand;
    void Function()? onAccepted;
 
+   MyOfferEntity?myOfferEntity;
+   bool loadingWidget = false;
+
    bool onExpanded=false;
    GetOrderEntity orderEntity;
+   String deliveryTimePeriod;
+   String maxTenderPeriod;
 
 
 
@@ -44,10 +57,11 @@ class OrderMainWidget extends StatelessWidget {
                  child: Row(
                    crossAxisAlignment: CrossAxisAlignment.center,
                    children: [
-                     Padding(
-                       padding: EdgeInsetsDirectional.only(start: w * 0.03),
-                       child: Image.asset('assets/images/lap.png'),
-                     ),
+                     //TODO: HERE MAKE IT RIGHT AFTER BACKEND CORRECT THE ERROR
+                     // Padding(
+                     //   padding: EdgeInsetsDirectional.only(start: w * 0.03),
+                     //   child: Image.network('${orderEntity.productImgUrl}'),
+                     // ),
                      SizedBox(
                        width: w * 0.06,
                      ),
@@ -85,7 +99,9 @@ class OrderMainWidget extends StatelessWidget {
                      /// here for expanded the widget just implemented
                      Padding(
                        padding: EdgeInsetsDirectional.only(end: w * 0.02),
-                       child: InkWell(
+                       child: loadingWidget==true?const LoadingWidget():
+
+                       InkWell(
                          onTap: toExpand,
                          child: Image.asset(
                            'assets/images/dotes.png',
@@ -99,77 +115,183 @@ class OrderMainWidget extends StatelessWidget {
                onExpanded == true
                    ? Container(
                  width: w,
-                 height: h * 0.3,
+                 height:myOfferEntity==null?h*0.36: h * 0.38,
                  color: HexColor('#D1D1D1'),
                  child: Column(
-                   mainAxisAlignment: MainAxisAlignment.center,
+                   mainAxisAlignment: MainAxisAlignment.start,
                    children: [
-                     RowExpandedWidget(
-                         title: 'Delivery Address',
-                         //${orderEntity.area}-${orderEntity.street}
-                         data: ' UAE - Dubai',
-                         hasText: false,
-                         hasBuilding: false),
-                     SizedBox(
-                       height: h * 0.01,
-                     ),
-                     RowExpandedWidget(
-                       title: ' Delivery Time Period',
-                       data: '10 ',
-                       hasText: true,
-                       hasBuilding: false,
-                     ),
-                     SizedBox(
-                       height: h * 0.01,
-                     ),
-                     RowExpandedWidget(
-                         title: ' Maximum Tender Period',
-                         data: ' 7 ',
-                         hasText: true,
-                         hasBuilding: false),
-                     SizedBox(
-                       height: h * 0.01,
-                     ),
-                     RowExpandedWidget(
-                         title: ' Quantity',
-                         data: orderEntity.quantity.toString(),
-                         hasText: false,
-                         hasBuilding: true),
-                     SizedBox(
-                       height: h * 0.01,
-                     ),
-                     Row(
-                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                     myOfferEntity==null?
+                     /// here for make offer
+                     Column(
                        children: [
-                         Container(
-                           decoration: BoxDecoration(
-                             borderRadius: BorderRadius.circular(25),
-                             color: HexColor('#0BC524'),
-                           ),
-
-                           /// here for accept button
-                           child: IconButton(
-                             onPressed: onAccepted,
-                             icon: Icon(Icons.check),
-                             iconSize: w * 0.08,
-                             color: Colors.white,
-                           ),
+                         SizedBox(
+                           height: h * 0.019,
                          ),
-
-                         /// here for cancel button
-                         Container(
-                           decoration: BoxDecoration(
-                             borderRadius: BorderRadius.circular(25),
-                             color: HexColor('##D50000'),
-                           ),
-                           child: IconButton(
-                             onPressed: closeExpand,
-                             icon: Icon(Icons.clear),
-                             color: Colors.white,
-                           ),
+                         /// here for delivery address
+                         orderEntity.area!=null?
+                         RowExpandedWidget(
+                             title: 'Delivery Address',
+                             //${orderEntity.area}-${orderEntity.street}
+                             data: ' ${orderEntity.area.toString()} - ${orderEntity.street.toString()}',
+                             hasText: false,
+                             hasBuilding: false):Container(),
+                         orderEntity.area!=null?
+                         SizedBox(
+                           height: h * 0.01,
+                         ):Container(),
+                         /// here for Delivery Time Period
+                         RowExpandedWidget(
+                           title: ' Delivery Time Period',
+                           data: deliveryTimePeriod,
+                           hasText: true,
+                           hasBuilding: false,
                          ),
+                         SizedBox(
+                           height: h * 0.01,
+                         ),
+                         /// here for Maximum Tender Period
+                         RowExpandedWidget(
+                             title: ' Maximum Tender Period',
+                             data: maxTenderPeriod,
+                             hasText: true,
+                             hasBuilding: false),
+                         SizedBox(
+                           height: h * 0.01,
+                         ),
+                         /// here for Quantity
+                         RowExpandedWidget(
+                             title: ' Quantity',
+                             data: orderEntity.quantity.toString(),
+                             hasText: false,
+                             hasBuilding: true),
+                         SizedBox(
+                           height: h * 0.01,
+                         ),
+                         Row(
+                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                           children: [
+                             Container(
+                               decoration: BoxDecoration(
+                                 borderRadius: BorderRadius.circular(25),
+                                 color: HexColor('#0BC524'),
+                               ),
+
+                               /// here for accept button
+                               child: IconButton(
+                                 onPressed: onAccepted,
+                                 icon: Icon(Icons.check),
+                                 iconSize: w * 0.08,
+                                 color: Colors.white,
+                               ),
+                             ),
+
+                             /// here for cancel button
+                             Container(
+                               decoration: BoxDecoration(
+                                 borderRadius: BorderRadius.circular(25),
+                                 color: HexColor('##D50000'),
+                               ),
+                               child: IconButton(
+                                 onPressed: closeExpand,
+                                 icon: Icon(Icons.clear),
+                                 color: Colors.white,
+                               ),
+                             ),
+                           ],
+                         )
                        ],
-                     )
+                     ):
+                     /// here for show my offer
+                     Column(
+                       children: [
+                         SizedBox(
+                           height: h * 0.01,
+                         ),
+                         Text('Your offer Imformayions',style: TextStyle(
+                           color: primaryColor,
+                           fontSize: w*0.05,
+                           fontWeight: FontWeight.bold
+                         ),),
+                         SizedBox(
+                           height: h * 0.01,
+                         ),
+                         RowExpandedWidget(
+                             title: 'Quantity',
+                             //${orderEntity.area}-${orderEntity.street}
+                             data: '${myOfferEntity!.quantity}',
+                             hasText: false,
+                             hasBuilding: true),
+                         SizedBox(
+                           height: h * 0.01,
+                         ),
+                         RowExpandedWidget(
+                             title: 'Price per Item',
+                             //${orderEntity.area}-${orderEntity.street}
+                             data: '${myOfferEntity!.priceUSD}\$',
+                             hasText: false,
+                             hasBuilding: false),
+                         SizedBox(
+                           height: h * 0.01,
+                         ),
+                         RowExpandedWidget(
+                             title: 'Include Delivery',
+                             //${orderEntity.area}-${orderEntity.street}
+                             data: myOfferEntity!.bIncludeDelivery==1?"Yes":'No',
+                             hasText: false,
+                             hasBuilding: false),
+                         myOfferEntity!.bIncludeDelivery==1? SizedBox(
+                           height: h * 0.01,
+                         ):Container(),
+                         myOfferEntity!.bIncludeDelivery==1?RowExpandedWidget(
+                             title: 'Delivery cost',
+                             //${orderEntity.area}-${orderEntity.street}
+                             data: myOfferEntity!.bIncludeDelivery==1?"${ myOfferEntity!.deliveryCost}\$":'No',
+                             hasText: false,
+                             hasBuilding: false):Container(),
+                         SizedBox(
+                           height: h * 0.01,
+                         ),
+                         RowExpandedWidget(
+                             title: 'Include Tax',
+                             //${orderEntity.area}-${orderEntity.street}
+                             data: myOfferEntity!.tax!=null?"Yes":'No',
+                             hasText: false,
+                             hasBuilding: false),
+                         myOfferEntity!.tax!=null? SizedBox(
+                           height: h * 0.01,
+                         ):Container(),
+                         myOfferEntity!.tax!=null?RowExpandedWidget(
+                             title: 'Tax/Vat',
+                             //${orderEntity.area}-${orderEntity.street}
+                             data: myOfferEntity!.tax!=null?"${ myOfferEntity!.tax}%":'0%',
+                             hasText: false,
+                             hasBuilding: false):Container(),
+                         SizedBox(
+                           height: h * 0.01,
+                         ),
+                         /// here for delete offer
+                         Container(
+                           width: w*0.5,
+                           child:
+                           state is LoadingDeleteOfferOrderState?const LoadingWidget():
+
+                           ButtonTextWidget(
+                               padding: 0,
+                               backgroundColor: Colors.redAccent,
+                               text: 'Delete Offer',
+                               textColor: Colors.white,
+                               textSize: w*0.05,
+                               onPressed: (){
+                                 orderBloc.add(DeleteOfferOrderEvent(offerId:myOfferEntity!.idOffer));
+                               }),
+                         )
+
+
+                       ],
+                     ),
+
+
+
                    ],
                  ),
                )

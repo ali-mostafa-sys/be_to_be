@@ -43,7 +43,7 @@ Widget _buildBody(
               UpLoginRegisterWidget(text: 'SIGN UP'),
               const LogoWidget(),
               SizedBox(
-                height: h * 0.025,
+                height: h * 0.015,
               ),
               Padding(
                 padding: const EdgeInsets.all(15.0),
@@ -60,7 +60,7 @@ Widget _buildBody(
                           fontWeight: FontWeight.w500),
                     ),
                     SizedBox(
-                      height: h * 0.05,
+                      height: h * 0.04,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -134,7 +134,7 @@ Widget _buildBody(
                       ],
                     ),
                     SizedBox(
-                      height: h * 0.01,
+                      height: h * 0.008,
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -151,7 +151,7 @@ Widget _buildBody(
                             textSize: w * 0.045,
                             textDecoration: true,
                             onTap: () {
-                              AutoRouter.of(context).pushNamed('/');
+                              AutoRouter.of(context).pushNamed('/login');
                             })
                       ],
                     )

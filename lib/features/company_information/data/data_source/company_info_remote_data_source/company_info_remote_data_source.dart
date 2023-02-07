@@ -11,6 +11,7 @@ import 'package:be_to_be/features/company_information/data/models/country_model/
 import 'package:be_to_be/features/company_information/data/models/upload_ImageModels/response_upload_image_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class CompanyInfoRemoteDataSource {
   Future<AllCompanyTypeModel> getAllCompanyType();
@@ -24,8 +25,11 @@ abstract class CompanyInfoRemoteDataSource {
 
 class CompanyInfoRemoteDataSourceImpl implements CompanyInfoRemoteDataSource {
   final http.Client client;
+  final SharedPreferences sharedPreferences;
 
-  const CompanyInfoRemoteDataSourceImpl({required this.client});
+  const CompanyInfoRemoteDataSourceImpl({required this.client,
+  required this.sharedPreferences,
+  });
 
   ///
   /// here for get all companies type
@@ -103,7 +107,7 @@ class CompanyInfoRemoteDataSourceImpl implements CompanyInfoRemoteDataSource {
   Future<List<CitiesModel>> getAllCities(int countryId)async {
     // final url='http://167.235.141.213/api/public/cities?countryId=${countryId.toString()}';
      final queryParameters = {
-       "countryId": "4"
+       "countryId": countryId.toString(),
      };
     final uri = Uri.http(baseUrl, '/api/public/cities',queryParameters,);
    // print(uri);
@@ -149,6 +153,13 @@ class CompanyInfoRemoteDataSourceImpl implements CompanyInfoRemoteDataSource {
       },
     );
     if (response.statusCode == 200) {
+
+     await sharedPreferences.setBool('companyIsComplete', true);
+      String data=jsonEncode(addCompanyModel.toJson());
+
+
+     await sharedPreferences.setString('companyInformation', data);
+
 
       return Future.value(unit);
     } else {

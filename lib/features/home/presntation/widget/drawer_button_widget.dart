@@ -4,11 +4,12 @@ import 'package:flutter/material.dart';
 
 
 class DrawerButtonWidget extends StatelessWidget {
-   DrawerButtonWidget({Key? key,required this.onTap,required this.path,required this.text}) : super(key: key);
+   DrawerButtonWidget({Key? key,required this.onTap, this.path='',required this.text,this.icon}) : super(key: key);
 
   void Function()? onTap;
   String path;
   String text;
+  Widget? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class DrawerButtonWidget extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Image.asset(path),
+              child:icon==null? Image.asset(path):icon,
             ),
 
             Text(text)

@@ -30,7 +30,11 @@ class AccountNotVerificationFailure extends Failure {
   // TODO: implement props
   List<Object?> get props => [];
 }
-
+class UnAcceptedAccountFailure extends Failure {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
 
 /// register failure
 
@@ -52,15 +56,55 @@ class InvalidMobileFailure extends Failure {
   List<Object?> get props => [];
 }
 
+/// here for order is empty failure
+class OrderIsEmptyFailure extends Failure {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+class MyOfferIsEmptyFailure extends Failure {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
 
 
 
+/// tender is empty failure
+class TenderIsEmptyFailure extends Failure {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
 
-
-
-
-
-
+class OffersIsEmptyFailure extends Failure {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+/// add tender failure
+class AddTenderDailyFailure extends Failure {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+class AddTenderMonthlyFailure extends Failure {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+/// her for notification is empty
+class NotificationIsEmptyFailure extends Failure {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+/// her for verification conflict
+class VerificationConflictFailure extends Failure {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
 
 
 

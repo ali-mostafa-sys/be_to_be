@@ -5,8 +5,9 @@ abstract class LoginEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
-
-// here for login event
+///
+///here for login event
+///
 class LoginButtonEvent extends LoginEvent{
 final LoginEntity loginEntity;
 const LoginButtonEvent({required this.loginEntity});
@@ -16,9 +17,21 @@ const LoginButtonEvent({required this.loginEntity});
 }
 
 
+///
+/// change obSecure of password
+///
 
-// change obSecure of password
+class ChangeObSecurePasswordEvent extends LoginEvent{}
+///
+/// here for get token
+///
+class GetTokenEvent extends LoginEvent{}
 
-class ChangeObSecurePasswordEvent extends LoginEvent{
 
-}
+
+
+
+
+
+
+

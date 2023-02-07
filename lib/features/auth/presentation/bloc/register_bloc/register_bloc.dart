@@ -26,6 +26,7 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
    bool isPop=false;
    bool obSecure1=true;
    String gender = "Male";
+   String date='';
 
   RegisterBloc({
     required this.registerUseCase

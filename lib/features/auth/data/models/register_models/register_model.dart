@@ -47,8 +47,7 @@ class RegisterModel extends RegisterEntity{
       'password': password,
       'birthDate': birthDate,
       'gender': gender,
-       'companyId': 3.toString(),
-      'hasMobileWhatsapp': "$hasMobileWhatsApp" ,
+      'hasMobileWhatsapp': hasMobileWhatsApp.toString() ,
     };
   }
 

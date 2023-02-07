@@ -9,10 +9,11 @@ abstract class BeToBeEvent extends Equatable {
 /// here for expanded event
 ///
 class ExpandedEvent extends BeToBeEvent{
-  final bool isExpanded;
-  const ExpandedEvent({required this.isExpanded});
+
+  final int index;
+  const ExpandedEvent({required this.index });
   @override
-  List<Object> get props => [isExpanded];
+  List<Object> get props => [index];
 }
 ///
 /// here for get all data

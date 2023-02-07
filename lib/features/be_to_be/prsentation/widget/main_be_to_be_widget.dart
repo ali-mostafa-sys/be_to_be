@@ -1,5 +1,6 @@
 import 'package:be_to_be/core/app_theme.dart';
 import 'package:be_to_be/core/widgets/button_text_widget.dart';
+import 'package:be_to_be/features/be_to_be/domain/entity/be_to_be_entity/be_to_be_entity.dart';
 import 'package:be_to_be/features/be_to_be/prsentation/bloc/be_to_be_bloc.dart';
 import 'package:be_to_be/features/be_to_be/prsentation/widget/be_to_be_row_widget.dart';
 import 'package:be_to_be/features/be_to_be/prsentation/widget/company_inf_widget.dart';
@@ -15,6 +16,7 @@ class MainBeToBeWidget extends StatelessWidget {
     required this.toExpand,
     required this.closeExpand,
     required this.onExpanded,
+    required this.data,
 
 
     required this.onAccepted}) : super(key: key);
@@ -22,6 +24,7 @@ class MainBeToBeWidget extends StatelessWidget {
   void Function()? toExpand;
   void Function()? closeExpand;
   void Function()? onAccepted;
+  BeToBeEntity data;
 
   bool onExpanded=false;
 
@@ -49,6 +52,7 @@ class MainBeToBeWidget extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
+                    /// here for image/////////////////////////////////////////////
                     Padding(
                       padding: EdgeInsetsDirectional.only(start: w * 0.03),
                       child: Image.asset('assets/images/lap.png'),
@@ -57,27 +61,27 @@ class MainBeToBeWidget extends StatelessWidget {
                       width: w * 0.06,
                     ),
 
-                    /// here data for
+                    /// here data for/////////////////////////
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Laptop',
+                          '${data.categoryName}',
                           style: TextStyle(
                               color: Colors.black,
                               fontSize: w * 0.05,
                               fontWeight: FontWeight.bold),
                         ),
                         Text(
-                          'Dell, Model E6230',
+                          '${data.brandName}',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: w * 0.04,
                           ),
                         ),
                         Text(
-                          'SA5156780002111',
+                          '${data.productName}',
                           style: TextStyle(
                             color: HexColor('#7B7B7B'),
                             fontSize: w * 0.035,
@@ -107,11 +111,12 @@ class MainBeToBeWidget extends StatelessWidget {
                // height: h * 0.8,
                 color: HexColor('#D1D1D1'),
                 child: Column(
-                  //mainAxisAlignment: MainAxisAlignment.center,
+
                   children: [
                     SizedBox(
                       height: h*0.01,
                     ),
+                    /// here for image of progress//////////////////////////
                     Image.asset('assets/images/be_to_be.png'),
                     Padding(
                       padding:  EdgeInsets.symmetric(horizontal: w*0.1),

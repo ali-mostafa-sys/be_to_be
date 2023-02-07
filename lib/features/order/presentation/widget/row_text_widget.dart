@@ -11,12 +11,14 @@ class RowTextWidget extends StatelessWidget {
      required this.validate,
       this.imagePath,
      this.onTap,
+     this.labelText,
 
    }) : super(key: key);
   TextEditingController controller;
    TextInputType textInputType;
    String? imagePath;
    String text;
+   String? labelText;
    String? Function(String?)? validate;
    void Function()? onTap;
 
@@ -43,15 +45,16 @@ class RowTextWidget extends StatelessWidget {
           Spacer(),
           Container(
             width: w * 0.3,
-            height: h * 0.045,
+            height: h * 0.1,
             child: TextFormFieldWidget(
                 controller: controller,
                 textInputType: textInputType,
                 obscureText: false,
-                labelText: '',
+                labelText: labelText==null?'':labelText!,
                 suffixPath: imagePath,
                 padding: 5,
                 onTap:onTap ,
+
 
                 validator: validate,
                 ),

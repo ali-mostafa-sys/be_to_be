@@ -35,17 +35,22 @@ dependencies:
   equatable:
   http:
   internet_connection_checker:
-  shared_preferences:
-  hexcolor:
+  shared_preferences: ^2.0.15
+  hexcolor: ^2.0.6
   auto_size_text:
   auto_route: ^3.2.0
   rxdart:
   responsive_framework:
   image_picker: ^0.8.4
   google_maps_flutter: ^2.1.2
-  geolocator: ^8.2.1
+  # here for geoLocator version     ^8.2.1
+  geolocator:
   intl:
   path:
+  dropdown_search: ^3.0.1
+  multi_select_flutter: ^4.1.2
+
+
 
 
 
@@ -57,7 +62,10 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_svg: ^1.0.3
   pin_code_fields: ^7.4.0
-  geocoding: ^2.0.5
+  geocoding:
+  firebase_core: ^2.4.1
+  firebase_messaging: ^14.2.1
+  animated_widgets: ^1.1.0
 
 dev_dependencies:
   flutter_test:

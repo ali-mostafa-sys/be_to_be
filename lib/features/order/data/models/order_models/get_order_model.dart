@@ -23,24 +23,34 @@ class GetOrderModel extends GetOrderEntity{
     required String productName,
     required String brandName,
     required String categoryName,
+    required String status,
      String? productImgUrl,
      String? area,
      String? street,
     required String deliverBefore,
      String? closedAt,
     required int quantity,
+    required int creatorScore,
+    required String from,
+    required String to,
 
 
 }):super(tenderId: tenderId,
     productName: productName,
+    creatorScore: creatorScore,
     brandName: brandName,
     categoryName: categoryName,
     productImgUrl: productImgUrl,
+    status: status,
     area: area,
     street: street,
     deliverBefore: deliverBefore,
   closedAt: closedAt,
-    quantity: quantity,);
+    quantity: quantity,
+    from: from,
+    to: to,
+
+  );
 
 
   factory GetOrderModel.fromJson(Map<String,dynamic>json){
@@ -54,14 +64,21 @@ class GetOrderModel extends GetOrderEntity{
    final deliverBefore=json['deliverBefore'];
    final closedAt=json['closedAt'];
    final quantity=json['quantity'];
+   final from=json['from'];
+   final to=json['to'];
+   final creatorScore=json['creatorScore'];
+   final status=json['status'];
    return GetOrderModel(tenderId: tenderId,
        productName: productName,
        brandName: brandName,
+       creatorScore: creatorScore,
        categoryName: categoryName,
-       productImgUrl: productImgUrl,
+       productImgUrl: productImgUrl,status: status,
        area: area,
        street: street,
-       deliverBefore: deliverBefore, closedAt: closedAt, quantity: quantity);
+       deliverBefore: deliverBefore, closedAt: closedAt, quantity: quantity,
+   from: from,to: to,
+   );
   }
 
 

@@ -69,7 +69,7 @@ class RefreshPage extends StatelessWidget {
                     textSize: w*0.09,
                     onPressed: (){
                       //TODO: here to register company info again
-                      AutoRouter.of(context).pushNamed('/main');
+                      AutoRouter.of(context).pushNamed('/login');
                     }),
               )
 

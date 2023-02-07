@@ -5,17 +5,20 @@ class LoginModel extends LoginEntity{
   const LoginModel({
     required String email,
     required String password,
-}):super(email: email,password: password);
+    required String notificationToken,
+}):super(email: email,password: password,notificationToken: notificationToken);
 
   factory LoginModel.formJson(Map<String,dynamic>json){
     final email =json['loginName'];
     final password =json['password'];
-    return LoginModel(email: email, password: password);
+    final notificationToken =json['notificationToken'];
+    return LoginModel(email: email, password: password,notificationToken: notificationToken);
   }
   Map<String, dynamic> toJson() {
     return {
       'loginName': email,
       'password': password,
+      'notificationToken': notificationToken,
     };
   }
 

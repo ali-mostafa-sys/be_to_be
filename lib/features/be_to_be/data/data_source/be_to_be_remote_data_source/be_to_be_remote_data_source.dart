@@ -30,7 +30,7 @@ class BeToBeDataSourceImpl extends BeToBeDataSource{
   ///
   @override
   Future<List<BeToBeModel>> getBeToBeData()async {
-    final uri=Uri.http(baseUrl, 'unencodedPath');
+    final uri=Uri.http(baseUrl, '/api/user/tenders/B2B');
     final cookies=sharedPreferences.getString('cookies');
     final response=await client.get(uri,headers: {
       "Accept":"application/json",
@@ -38,11 +38,16 @@ class BeToBeDataSourceImpl extends BeToBeDataSource{
     });
     if(response.statusCode==200){
       final allData=jsonDecode(response.body);
-      final data= allData as List;
-      final listData=data.map((e) {
-       return BeToBeModel.fromJson(e);
-      }).toList();
-      return listData;
+      final data= allData['data'] as List;
+      if(data.isEmpty){
+        throw  TenderIsEmptyException();
+      }else{
+        final listData=data.map((e) {
+          return BeToBeModel.fromJson(e);
+        }).toList();
+        return listData;
+      }
+
     }else{
       throw ServerException();
     }

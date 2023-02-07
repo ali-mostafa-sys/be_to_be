@@ -10,7 +10,9 @@ class LoginInitial extends LoginState {
   @override
   List<Object> get props => [];
 }
-// change obSecure of password
+///
+/// change obSecure of password
+///
 class ChangeObSecurePasswordState extends LoginState{
   final bool obSecure;
   const ChangeObSecurePasswordState({required this.obSecure});
@@ -19,7 +21,9 @@ class ChangeObSecurePasswordState extends LoginState{
 }
 
 
-// here for login state
+///
+/// here for login state
+///
 
 class LoadingLoginState extends LoginState{}
 class LoadedLoginState extends LoginState{}
@@ -29,3 +33,16 @@ class ErrorLoginState extends LoginState{
   @override
   List<Object> get props => [error];
 }
+
+///
+/// here for get token
+///
+class GetTokenState extends LoginState{}
+
+
+
+
+
+
+
+

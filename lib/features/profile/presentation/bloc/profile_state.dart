@@ -68,8 +68,17 @@ class ErrorEditUserDataState extends ProfileState{
   @override
   List<Object> get props => [error,];
 }
-
-
+///
+/// here for upload image state
+///
+class LoadingUploadProfileImageState extends ProfileState{}
+class LoadedUploadProfileImageState extends ProfileState{}
+class ErrorUploadProfileImageState extends ProfileState{
+  final String error;
+  const ErrorUploadProfileImageState({required this.error});
+  @override
+  List<Object> get props => [error];
+}
 
 
 

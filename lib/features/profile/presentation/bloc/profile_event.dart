@@ -53,8 +53,17 @@ class EditUserDataEvent extends ProfileEvent{
 
 }
 
-
-
+///
+/// here for upload profile image event
+///
+class UploadProfileImageEvent extends ProfileEvent{
+  final File imageFile;
+  const UploadProfileImageEvent({
+    required this.imageFile
+  });
+  @override
+  List<Object> get props => [imageFile];
+}
 
 
 

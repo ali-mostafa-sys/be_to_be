@@ -57,7 +57,7 @@ class PackageMainDialogWidget extends StatelessWidget {
                   Container(
                     width: w*0.21,
                     child: Center(
-                      child: Text('Golden Package',
+                      child: Text('${mainBloc.packageName } Package',
                         style: TextStyle(
                           fontSize: w*0.05,
                           color: primaryColor,
@@ -75,11 +75,11 @@ class PackageMainDialogWidget extends StatelessWidget {
               SizedBox(
                 height: h*0.05,
               ),
-              FirstPackageTextWidget(remainTender: "98", numberOfTender: "2"),
+              FirstPackageTextWidget(remainTender: "${mainBloc.remainingTender}", numberOfTender: "${mainBloc.dayTender}"),
               SizedBox(
                 height: h*0.03,
               ),
-              SecondPackageWidget(isActive: true, text: '2'),
+              SecondPackageWidget(isActive: mainBloc.isActive==1?true:false, text: '${mainBloc.packageValidate}'),
 
 
             ],

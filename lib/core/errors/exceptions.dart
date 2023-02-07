@@ -7,10 +7,36 @@ class ServerException implements Exception {}
 class InvalidEmailAndPasswordException implements Exception {}
 
 class AccountNotVerificationException implements Exception {}
+class UnAcceptedAccountException implements Exception {}
 /// register Exception
 class DuplicateUserException implements Exception {}
 class InvalidEmailException implements Exception {}
 class InvalidMobileException implements Exception {}
+
+
+/// here for order is empty exception
+class OrderIsEmptyException implements Exception {}
+class MyOfferIsEmptyException implements Exception {}
+/// here for tender is empty exception
+class TenderIsEmptyException implements Exception {}
+class OffersIsEmptyException implements Exception {}
+/// here for add tender exceptions
+class AddTenderDailyException implements Exception {}
+class AddTenderMonthlyException implements Exception {}
+/// here for notification
+class NotificationIsEmptyException implements Exception {}
+/// here for verification conflict
+class VerificationConflictException implements Exception {}
+
+
+
+
+
+
+
+
+
+
 
 
 

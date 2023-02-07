@@ -23,7 +23,10 @@ import 'package:equatable/equatable.dart';
 
 
 class GetOrderEntity extends Equatable{
+  final String from;
+  final String to;
   final int tenderId;
+  final int creatorScore;
   final String productName;
   final String brandName;
   final String categoryName;
@@ -32,6 +35,7 @@ class GetOrderEntity extends Equatable{
   final String? street;
   final String deliverBefore;
   final String? closedAt;
+  final String? status;
   // final int productId;
   final int quantity;
 
@@ -40,18 +44,22 @@ class GetOrderEntity extends Equatable{
     required this.productName,
     required this.brandName,
     required this.categoryName,
+    required this.status,
      this.productImgUrl,
      this.area,
      this.street,
     required this.deliverBefore,
      this.closedAt,
     required this.quantity,
+    required this.from,
+    required this.to,
+    required this.creatorScore,
 });
 
 
 
   @override
   // TODO: implement props
-  List<Object?> get props => [tenderId,productName,brandName,categoryName,productImgUrl,area,street,deliverBefore,closedAt,quantity];
+  List<Object?> get props => [tenderId,status,productName,brandName,categoryName,productImgUrl,area,street,deliverBefore,closedAt,quantity,from,to,creatorScore];
 
 }

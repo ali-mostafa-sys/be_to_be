@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'package:be_to_be/features/company_information/data/models/add_company_mosel/add_company_model.dart';
 import 'package:be_to_be/features/company_information/domain/entity/add_company_entity/add_company_entity.dart';
 import 'package:be_to_be/features/company_information/domain/entity/city_entity/city_entity.dart';
 import 'package:be_to_be/features/company_information/domain/entity/country_entity/country_entity.dart';
@@ -20,6 +22,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'company_information_event.dart';
 
@@ -34,10 +37,11 @@ class CompanyInformationBloc
   final GetAllCitiesUseCase getAllCitiesUseCase;
   final UploadImageUseCase uploadImageUseCase;
   final AddCompanyUseCase addCompanyUseCase;
-  // here for dialog
+  final SharedPreferences sharedPreferences;
+  /// here for dialog
   bool isPop=false;
 
-// here for fields
+/// here for fields
   TextEditingController companyName = TextEditingController();
   TextEditingController establishDate = TextEditingController();
   TextEditingController licenseNumber = TextEditingController();
@@ -46,19 +50,20 @@ class CompanyInformationBloc
   TextEditingController area = TextEditingController();
   TextEditingController buildingNumber = TextEditingController();
   TextEditingController moreAddressInfo = TextEditingController();
-  // here for dropDownButton choose company type
+  /// here for dropDownButton choose company type
   final List<CompanyTypeEntity> companyType = [];
   String? selectedCompanyType;
   int? selectedCompanyId;
-  //here for dopDownButton Choose country
+  ///here for dopDownButton Choose country
    List<CountryEntity> country = [];
   String? selectedCountry;
   int? selectedCountryId;
-  //here for dopDownButton Choose cities
+  ///here for dopDownButton Choose cities
   List<CityEntity> cities = [];
+  List<CityEntity> citiesList = [];
   String? selectedCity;
   int? selectedCityId;
-  // here for pick license image
+  /// here for pick license image
   File? licenseImage;
   ImagePicker pickedLicenseImage = ImagePicker();
   String? imageUrl;
@@ -80,14 +85,14 @@ class CompanyInformationBloc
     }
   }
 
-  // her current location
+  /// her current location
 
   Position? currentPosition;
   Future<Position> _determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Test if location services are enabled.
+    /// Test if location services are enabled.
     emit(LoadingGetCurrentLocationState());
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -112,15 +117,15 @@ class CompanyInformationBloc
     }
 
     if (permission == LocationPermission.deniedForever) {
-      // Permissions are denied forever, handle appropriately.
+      /// Permissions are denied forever, handle appropriately.
       emit(ErrorGetCurrentLocationState());
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
 
     }
 
-    // When we reach here, permissions are granted and we can
-    // continue accessing the position of the device.
+    /// When we reach here, permissions are granted and we can
+    /// continue accessing the position of the device.
     print('////////////////////////////////////////////////////////////////////////');
     print(await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high));
     emit(GetCurrentLocationState());
@@ -179,24 +184,72 @@ class CompanyInformationBloc
     required this.getAllCountryUseCase,
     required this.getAllCitiesUseCase,
     required this.addCompanyUseCase,
+    required this.sharedPreferences,
   }) : super(CompanyInformationInitial()) {
     on<CompanyInformationEvent>((event, emit) async {
       ///
       /// here for get all company types data /////////////////////////////////
       ///
       if (event is GetAllCompanyTypeEvent) {
+        print(sharedPreferences.getString('companyInformation'));
+       // final ali=sharedPreferences.getString('companyInformation');
+        //print(ali!.nameEn.toString());
+
+        String? companyInformation= sharedPreferences.getString('companyInformation');
         emit(LoadingGetCompanyTypeState());
         final failureOrGetAllCompanyType = await getAllCompanyTypeUseCase();
         failureOrGetAllCompanyType.fold((failure) async {
           emit(ErrorGetCompanyTypeState(error: _mapFailureToMessage(failure)));
-          print('error');
+
         }, (allCompanyType) async {
+
           allCompanyType.data.map((e) {
             companyType.add(e);
           }).toList();
+          if(companyInformation!=null){
 
-          print(companyType[1].companyType);
-          print('companyType[1].companyType');
+            //print(companyInformation);
+            selectedCountryId= sharedPreferences.getInt('countryId',);
+            for(int i=0;i<country.length;i++){
+              if(selectedCountryId==country[i].countryId){
+                selectedCountry=country[i].nameEn;
+
+              }
+            }
+            final data=jsonDecode(companyInformation!);
+            print('=====================================  ');
+            print(data);
+            print('++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++');
+            print(data['nameEn']);
+            companyName.text=data['nameEn'];
+
+
+
+             licenseNumber.text=data['licenseNumber'].toString();
+             establishDate.text=data['establishAt'].toString();
+             imageUrl=data['licenseImgUrl'].toString();
+             area.text=data['area'].toString();
+             street.text=data['street'].toString();
+             buildingNumber.text=data['buildingNumber'].toString();
+             markerLocation!=LatLng(double.parse(data['addressLatitude']),double.parse(data['addressLongitude']));
+            moreAddressInfo.text=data['moreAddressInfo'].toString();
+            licenseExpireDate.text=data['licenseExpirAt'].toString();
+            selectedCityId=int.parse(data['cityId']);
+            for(int i=0;i<citiesList.length;i++){
+              if(selectedCityId==citiesList[i].cityId){
+                selectedCity=citiesList[i].nameEn;
+              }
+            }
+            selectedCompanyId=int.parse(data['companyTypeId']);
+            for( int j=0;j<companyType.length;j++){
+              if(selectedCompanyId==companyType[j].companyTypeId){
+                selectedCompanyType=companyType[j].companyType;
+              }
+            }
+               // .latitude=double.parse(companyInformation.addressLatitude);
+
+          }
+
 
           emit(LoadedGetCompanyTypeState());
         });
@@ -216,18 +269,15 @@ class CompanyInformationBloc
           allCountry.map((e) {
             country.add(e);
           }).toList();
-          print(country);
-
-          print(country[1].nameEn);
-          print(country[1].countryId);
-
-          emit(LoadedGetCountiesState());
+          emit(LoadedGetCountiesState(countryId: selectedCountryId));
         });
       }
       ///
       /// here for get all cities
       ///
       if(event is GetAllCitiesEvent){
+        cities=[];
+        selectedCity=null;
         emit(LoadingGetCitiesState());
         final failureOrGetAllCities = await getAllCitiesUseCase(event.countryId);
         failureOrGetAllCities.fold((failure) async {
@@ -237,13 +287,18 @@ class CompanyInformationBloc
           cities=[];
           selectedCity=null;
 
+
+
           allCities.map((e) {
             cities.add(e);
           }).toList();
-          print(cities);
-
-          print(cities[1].nameEn);
-          print(cities[1].cityId);
+          if(selectedCityId!=null){
+            for(int i=0;i<cities.length;i++){
+              if(selectedCityId==cities[i].cityId){
+                selectedCity=cities[i].nameEn;
+              }
+            }
+          }
 
           emit(LoadedGetCitiesState(cityName: cities[1].nameEn));
         });
@@ -277,6 +332,7 @@ class CompanyInformationBloc
              print(selectedCompanyId);
           }
         }
+
         emit(SelectedValueForDropDownButtonState(
             selectedValue: selectedCompanyType!));
       }
@@ -285,13 +341,18 @@ class CompanyInformationBloc
       ///
       if (event is SelectedValueForCountriesDropDownButtonEvent) {
         selectedCountry = event.selectedValue;
+        cities=citiesList;
+        selectedCity=null;
+        selectedCountryId=null;
 
         for (int i = 0; i < country.length-1; i++) {
           if (selectedCountry == country[i].nameEn) {
             selectedCountryId = country[i].countryId;
+            await sharedPreferences.setInt('countryId', selectedCountryId!);
             // print(selectedCompanyId);
           }
         }
+        print(selectedCountryId);
         emit(SelectedValueForDropDownButtonState(
             selectedValue: selectedCountry!));
       }
@@ -303,6 +364,7 @@ class CompanyInformationBloc
       }
       if(event is DeleteLicenseImageEvent ){
         licenseImage=null;
+        imageUrl=null;
         emit(DeleteLicenseImageState());
 
       }
@@ -361,7 +423,8 @@ class CompanyInformationBloc
               (uploaded) {
                 imageUrl=uploaded.imageUrl;
                 print(uploaded.imageUrl);
-                emit(LoadedUploadImageState());
+
+                emit(LoadedUploadImageState(imgUrl:imageUrl! ));
 
               });
     }

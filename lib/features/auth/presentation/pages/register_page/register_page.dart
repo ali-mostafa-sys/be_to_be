@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:be_to_be/core/app_theme.dart';
+import 'package:be_to_be/core/routs/routes.gr.dart';
 import 'package:be_to_be/core/strings/const.dart';
 import 'package:be_to_be/core/utils/snackbar_message.dart';
 import 'package:be_to_be/core/widgets/button_text_widget.dart';
@@ -47,7 +48,9 @@ class RegisterPage extends StatelessWidget {
         print(state);
         /// here for register state
         if(state is LoadedRegisterState){
-          AutoRouter.of(context).pushNamed('/verification');
+          SnackBarMessage().showSnackBar(message: 'Registered Successfully', backgroundColor: primaryColor, context: context);
+          //AutoRouter.of(context).pushNamed('/verification');
+           AutoRouter.of(context).pushAndPopUntil(VerificationPage(), predicate: (route) => false);
         }
         if(state is ErrorRegisterState){
           SnackBarMessage().showSnackBar(message: state.error, backgroundColor: Colors.redAccent, context: context);
@@ -86,6 +89,7 @@ class RegisterPage extends StatelessWidget {
                   key: formKey,
                   child: Column(
                     children: [
+                      /// here for last and first name
                       TextFormFieldWidget(
                         controller: firstName,
                         textInputType: TextInputType.text,
@@ -120,6 +124,7 @@ class RegisterPage extends StatelessWidget {
                       SizedBox(
                         height: h * 0.03,
                       ),
+                      /// here for email
                       TextFormFieldWidget(
                         controller: email,
                         textInputType: TextInputType.emailAddress,
@@ -162,6 +167,7 @@ class RegisterPage extends StatelessWidget {
                       SizedBox(
                         height: h * 0.03,
                       ),
+                      /// here fpr password and confirm it
                       TextFormFieldWidget(
                         controller: password,
                         textInputType: TextInputType.text,
@@ -228,6 +234,7 @@ class RegisterPage extends StatelessWidget {
                               firstDate: DateTime.parse("1990-08-27T19:00:00Z"),
                               lastDate: DateTime.now())
                               .then((value) {
+                                bloc.date=value.toString();
 
                             date.text=DateFormat.yMd().format(value!,);
                           });
@@ -244,6 +251,7 @@ class RegisterPage extends StatelessWidget {
                       SizedBox(
                         height: h * 0.03,
                       ),
+                      /// here for gender
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -273,6 +281,7 @@ class RegisterPage extends StatelessWidget {
                       SizedBox(
                         height: h * 0.06,
                       ),
+                      /// here for register
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 30),
                         child: ButtonTextWidget(
@@ -282,22 +291,22 @@ class RegisterPage extends StatelessWidget {
                           textColor: Colors.white,
                           textSize: 27,
                           onPressed: () {
-                           AutoRouter.of(context).pushNamed('/verification');
-                          //   if(formKey.currentState!.validate()){
-                          //     final registerEntity=RegisterEntity(
-                          //         firstName: firstName.text,
-                          //         lastName: lastName.text,
-                          //         email: email.text,
-                          //         mobileNumber: bloc.phone.text,
-                          //         password: password.text,
-                          //         birthDate: date.text,
-                          //         gender: bloc.gender,
-                          //         hasMobileWhatsApp: bloc.hasPhone);
-                          //
-                          //
-                          //    bloc.add(RegisterButtonEvent(registerEntity: registerEntity));
-                          //
-                          //   }
+                         //  AutoRouter.of(context).pushNamed('/verification');
+                            if(formKey.currentState!.validate()){
+                              final registerEntity=RegisterEntity(
+                                  firstName: firstName.text.toString(),
+                                  lastName: lastName.text.toString(),
+                                  email: email.text.toString(),
+                                  mobileNumber: bloc.phone.text.toString(),
+                                  password: password.text.toString(),
+                                  birthDate: bloc.date.toString(),
+                                  gender: bloc.gender.toString(),
+                                  hasMobileWhatsApp: bloc.hasPhone);
+
+
+                             bloc.add(RegisterButtonEvent(registerEntity: registerEntity));
+
+                            }
                           // print(bloc.hasPhone);
 
 
@@ -323,7 +332,7 @@ class RegisterPage extends StatelessWidget {
                             textSize: 19,
                             textDecoration: true,
                             onTap: () {
-                              AutoRouter.of(context).pushNamed('/');
+                              AutoRouter.of(context).pushNamed('/login');
                             },
                           )
                         ],

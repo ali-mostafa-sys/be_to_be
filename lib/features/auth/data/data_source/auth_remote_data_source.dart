@@ -35,6 +35,11 @@ class AuthDataSourceImpl extends AuthDataSource{
 
     if (response.statusCode == 200) {
      final data= jsonDecode(response.body);
+     await sharedPreferences.remove('companyIsComplete');
+     await sharedPreferences.remove('registerIsComplete');
+     await sharedPreferences.remove('verificationIsComplete');
+     await sharedPreferences.remove('companyInformation');
+     
      final loginResponseModel=LoginResponseModel.fromJson(data);
       return loginResponseModel;
     } else if(response.statusCode == 401) {
@@ -44,7 +49,12 @@ class AuthDataSourceImpl extends AuthDataSource{
       }
       if(message['error']['code'] == "InactiveAccount") {
         throw AccountNotVerificationException();
-      }else{
+      }
+      if(message['error']['code'] == "UnAcceptedAccount") {
+        throw UnAcceptedAccountException();
+      }
+
+      else{
         throw ServerException();
       }
     }
@@ -56,20 +66,25 @@ class AuthDataSourceImpl extends AuthDataSource{
 
   @override
   Future<Unit> postRegister(RegisterModel registerModel)async {
-
     final uri = Uri.http(baseUrl, '/api/auth/signup');
     final response = await client.post(uri, body: registerModel.toJson()
-        ,headers: {"Accept":"application/json",});
+        ,headers: {
+      "Accept":"application/json",
+        });
    print(response.statusCode);
+   print(response.body);
    print(registerModel.toJson());
     if (response.statusCode == 200) {
+      await sharedPreferences.setString('email', registerModel.email.toString());
+      await sharedPreferences.setString('phone', registerModel.mobileNumber.toString());
+      await sharedPreferences.setBool('registerIsComplete', true);
       return Future.value(unit);
     } else if(response.statusCode == 409){
-      print('409');
+     // print('409');
       throw DuplicateUserException();
 
     }else if(response.statusCode == 400){
-      print('400');
+     // print('400');
       throw InvalidEmailException();
     }
     else

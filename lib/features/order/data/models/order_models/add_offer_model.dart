@@ -1,41 +1,52 @@
 import 'package:be_to_be/features/order/domain/entity/order_entity/add_offer_entity.dart';
 
 class AddOfferModel extends AddOfferEntity{
-  // final int tenderId;
-  // final int quantity;
-  // final double priceUSD;
-  // final bool includeDelivery;
-  // final double? deliveryCost;
   const AddOfferModel({
     required int tenderId,
     required int quantity,
     required double priceUSD,
-    required bool includeDelivery,
-    double? deliveryCost
-}):super(tenderId: tenderId,quantity: quantity,priceUSD: priceUSD,includeDelivery: includeDelivery,deliveryCost: deliveryCost);
+    required int includeDelivery,
+   required double? deliveryCost,
+    required double? tax
+}):super(tenderId: tenderId,quantity: quantity,priceUSD: priceUSD,includeDelivery: includeDelivery,deliveryCost: deliveryCost,tax: tax);
 
   Map<String,dynamic>toJson(){
 
-    if(includeDelivery!=false){
-      return {
-        "tenderId":tenderId.toString(),
-        "quantity":quantity.toString(),
-        "priceUSD":priceUSD.toString(),
-        "bIncludeDelivery":includeDelivery.toString(),
-        "deliveryCost":deliveryCost.toString(),
-        "deliveryAddress":"",
-      };
-    }else{
-      return {
-        "tenderId":tenderId.toString(),
-        "quantity":quantity.toString(),
-        "priceUSD":priceUSD.toString(),
-        "bIncludeDelivery":includeDelivery.toString(),
-        "deliveryCost":"",
-        "deliveryAddress":""
-      };
-    }
+    return {
+      "tenderId":tenderId.toString(),
+          "quantity":quantity.toString(),
+          "priceUSD":priceUSD.toString(),
+          "bIncludeDelivery":includeDelivery.toString(),
+          "deliveryCost":deliveryCost.toString(),
+          "deliveryAddress":"",
+          "tax":tax.toString()
 
+    };
   }
 
 }
+
+
+// if(includeDelivery!=false){
+//   return {
+//     "tenderId":tenderId.toString(),
+//     "quantity":quantity.toString(),
+//     "priceUSD":priceUSD.toString(),
+//     "bIncludeDelivery":includeDelivery.toString(),
+//     "deliveryCost":deliveryCost.toString(),
+//     "deliveryAddress":"",
+//     if(tax!=null)
+//       "tax":tax.toString()
+//   };
+// }else{
+//   return {
+//     "tenderId":tenderId.toString(),
+//     "quantity":quantity.toString(),
+//     "priceUSD":priceUSD.toString(),
+//     "bIncludeDelivery":includeDelivery.toString(),
+//     "deliveryCost":"",
+//     "deliveryAddress":"",
+//     if(tax!=null)
+//       "tax":tax.toString()
+//   };
+// }

@@ -20,7 +20,7 @@ class AuthRepositoriesImpl implements AuthRepositories {
   @override
   Future<Either<Failure, LoginResponseEntity>> postLogin(LoginEntity loginEntity) async {
     final loginModel =
-        LoginModel(email: loginEntity.email, password: loginEntity.password);
+        LoginModel(email: loginEntity.email, password: loginEntity.password,notificationToken:loginEntity.notificationToken );
 
     if (await networkInfo.isConnected) {
       try {
@@ -33,6 +33,8 @@ class AuthRepositoriesImpl implements AuthRepositories {
         return left(InvalidEmailAndPasswordFailure());
       }  on AccountNotVerificationException {
         return left(AccountNotVerificationFailure());
+      }on UnAcceptedAccountException{
+        return left(UnAcceptedAccountFailure());
       }
     } else {
       return Left(OfflineFailure());

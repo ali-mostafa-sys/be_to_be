@@ -9,7 +9,9 @@ import 'package:be_to_be/core/widgets/text_form_widget.dart';
 import 'package:be_to_be/core/widgets/up_page_widget.dart';
 import 'package:be_to_be/features/auth/presentation/widgets/background_verification_company_widget.dart';
 import 'package:be_to_be/features/auth/presentation/widgets/background_widget.dart';
+import 'package:be_to_be/features/company_information/domain/entity/country_entity/country_entity.dart';
 import 'package:be_to_be/features/company_information/presentation/bloc/company_information/company_information_bloc.dart';
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:be_to_be/injection_container.dart' as di;
@@ -36,9 +38,21 @@ class CompanyInformationPage extends StatelessWidget {
     return BlocConsumer<CompanyInformationBloc, CompanyInformationState>(
       listener: (context, state) {
         print(state);
+        if(state is LoadedGetCountiesState ){
+          if( state.countryId!=null ){
+            CompanyInformationBloc.get(context).add(GetAllCitiesEvent(countryId: state.countryId!));
+
+          }
+
+        }
       },
       builder: (context, state) {
         var bloc = CompanyInformationBloc.get(context);
+        if(state is LoadingGetCompanyTypeState){
+          return const LoadingWidget();
+
+
+        }
         if (state is LoadingGetCountiesState) {
           return const LoadingWidget();
         }
@@ -155,7 +169,7 @@ class CompanyInformationPage extends StatelessWidget {
                                   child: DropdownButton(
                                       borderRadius: BorderRadius.circular(25),
                                       key: companyId,
-                                      alignment: Alignment.bottomCenter,
+                                     // alignment: Alignment.bottomCenter,
                                       underline: Container(
                                         width: 0,
                                         height: 0,
@@ -198,16 +212,69 @@ class CompanyInformationPage extends StatelessWidget {
                                 /// here for choose country
                                 Container(
                                   padding: EdgeInsetsDirectional.only(
-                                      start: w * 0.02),
+                                     start: w * 0.02,
+                                  ),
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(25),
                                       border: Border.all(
                                           width: 1, color: primaryColor),
                                       color: HexColor('#DCDCDC')),
-                                  child: DropdownButton(
+                                  child:
+                                      ///hew/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+                                  // DropdownSearch(
+                                  //   popupBackgroundColor: HexColor('#DCDCDC'),
+                                  //
+                                  //
+                                  //
+                                  //
+                                  //   itemAsString: (CountryEntity? country)=>country!.nameEn,
+                                  //
+                                  //   dropdownSearchBaseStyle: TextStyle(
+                                  //     color: primaryColor,
+                                  //
+                                  //   ),
+                                  //
+                                  //   dropdownSearchDecoration: InputDecoration(
+                                  //     border: OutlineInputBorder(
+                                  //       borderSide: BorderSide(width: 1,color: primaryColor),
+                                  //       borderRadius: BorderRadius.all(Radius.circular(25)),
+                                  //
+                                  //     ),
+                                  //     focusedBorder: OutlineInputBorder(
+                                  //       borderSide: BorderSide(width: 1,color: primaryColor),
+                                  //       borderRadius: BorderRadius.all(Radius.circular(25)),
+                                  //
+                                  //     ),
+                                  //     enabledBorder: OutlineInputBorder(
+                                  //       borderSide: BorderSide(width: 1,color: primaryColor),
+                                  //       borderRadius: BorderRadius.all(Radius.circular(25)),
+                                  //
+                                  //     ),
+                                  //     labelText: 'Country',
+                                  //
+                                  //     contentPadding: EdgeInsetsDirectional.only(start: w*0.03),
+                                  //     labelStyle: TextStyle(
+                                  //       fontSize: w*0.045,
+                                  //       color: primaryColor
+                                  //     ),
+                                  //
+                                  //   ),
+                                  //
+                                  //
+                                  //
+                                  //   mode: Mode.MENU,
+                                  //   items: bloc.country,
+                                  //  // showSearchBox: true,
+                                  //   onChanged: (CountryEntity? country){
+                                  //     print(country);
+                                  //
+                                  //   },
+                                  // )
+                                  DropdownButton(
+
                                       borderRadius: BorderRadius.circular(25),
                                       key: countryId,
-                                      alignment: Alignment.bottomCenter,
+                                     // alignment: Alignment.bottomCenter,
                                       underline: Container(
                                         width: 0,
                                         height: 0,
@@ -235,8 +302,9 @@ class CompanyInformationPage extends StatelessWidget {
 
                                         Future.delayed(
                                             const Duration(
-                                                // seconds: ,
-                                                milliseconds: 500), () {
+                                                 seconds:2 ,
+                                              //  milliseconds: 500
+                                            ), () {
                                           print(bloc.selectedCountryId);
                                           bloc.add(GetAllCitiesEvent(
                                               countryId:
@@ -251,7 +319,8 @@ class CompanyInformationPage extends StatelessWidget {
                                             children: [Text(e.nameEn)],
                                           ),
                                         );
-                                      }).toList()),
+                                      }).toList())
+                                  ,
                                 ),
                                 bloc.selectedCountry != null
                                     ? SizedBox(
@@ -275,7 +344,7 @@ class CompanyInformationPage extends StatelessWidget {
                                             borderRadius:
                                                 BorderRadius.circular(25),
                                             key: cityId,
-                                            alignment: Alignment.bottomCenter,
+                                           // alignment: Alignment.bottomCenter,
                                             underline: Container(
                                               width: 0,
                                               height: 0,
@@ -378,7 +447,9 @@ class CompanyInformationPage extends StatelessWidget {
                                           color: primaryColor, width: 1)),
                                   child: Center(
                                     child: bloc.licenseImage == null
-                                        ? InkWell(
+                                        ? bloc.imageUrl==null?
+
+                                    InkWell(
                                             onTap: () {
                                               bloc.add(PickImageLicenseEvent());
                                             },
@@ -391,10 +462,8 @@ class CompanyInformationPage extends StatelessWidget {
                                         : Stack(
                                             alignment: Alignment.topRight,
                                             children: [
-                                              Image.file(
-                                                bloc.licenseImage!,
-                                                width: double.infinity,
-                                              ),
+                                              Image.network('${bloc.imageUrl}',width: double.infinity,height: h*0.2,)
+                                              ,
                                               IconButton(
                                                 onPressed: () {
                                                   bloc.add(
@@ -405,23 +474,59 @@ class CompanyInformationPage extends StatelessWidget {
                                                   color: primaryColor,
                                                 ),
                                               ),
-                                              Align(
-                                                  alignment:
-                                                      Alignment.bottomRight,
-                                                  child: IconButton(
-                                                      onPressed: () {
-                                                        //TODO: FOR UPLOAD IMAGE
-                                                        bloc.add(UploadImageEvent(
-                                                            imageFile: bloc
-                                                                .licenseImage!));
-                                                      },
-                                                      icon: Icon(
-                                                        Icons
-                                                            .cloud_upload_outlined,
-                                                        color: primaryColor,
-                                                      )))
+                                              // Align(
+                                              //     alignment:
+                                              //         Alignment.bottomRight,
+                                              //     child: IconButton(
+                                              //         onPressed: () {
+                                              //           //TODO: FOR UPLOAD IMAGE
+                                              //           bloc.add(UploadImageEvent(
+                                              //               imageFile: bloc
+                                              //                   .licenseImage!));
+                                              //         },
+                                              //         icon: Icon(
+                                              //           Icons
+                                              //               .cloud_upload_outlined,
+                                              //           color: primaryColor,
+                                              //         )))
                                             ],
+                                          ):
+                                    Stack(
+                                      alignment: Alignment.topRight,
+                                      children: [
+                                        Image.file(
+                                          bloc.licenseImage!,
+                                          width: double.infinity,
+                                        )
+                                        ,
+                                        IconButton(
+                                          onPressed: () {
+                                            bloc.add(
+                                                DeleteLicenseImageEvent());
+                                          },
+                                          icon: Icon(
+                                            Icons.clear,
+                                            color: primaryColor,
                                           ),
+                                        ),
+                                        Align(
+                                            alignment:
+                                            Alignment.bottomRight,
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  //TODO: FOR UPLOAD IMAGE
+                                                  bloc.add(UploadImageEvent(
+                                                      imageFile: bloc
+                                                          .licenseImage!));
+                                                },
+                                                icon: Icon(
+                                                  Icons
+                                                      .cloud_upload_outlined,
+                                                  color: primaryColor,
+                                                )))
+                                      ],
+                                    )
+                                    ,
                                   ),
                                 ),
                                 SizedBox(
@@ -439,58 +544,58 @@ class CompanyInformationPage extends StatelessWidget {
                                           .pushNamed('/companyPosition');
                                       print(bloc.imageUrl);
 
-                                      // if (formKey.currentState!.validate()) {
-                                      //   if (bloc.selectedCompanyType != null) {
-                                      //     if (bloc.licenseImage != null) {
-                                      //       if (bloc.imageUrl != null) {
-                                      //         if (bloc.selectedCountry !=
-                                      //             null) {
-                                      //           if (bloc.selectedCity != null) {
-                                      //             bloc.add(
-                                      //                 GetCurrentLocationEvent());
-                                      //             AutoRouter.of(context)
-                                      //                 .pushNamed(
-                                      //                     '/companyPosition');
-                                      //           } else {
-                                      //             SnackBarMessage()
-                                      //                 .showSnackBar(
-                                      //                     message:
-                                      //                         'Choose city',
-                                      //                     backgroundColor:
-                                      //                         Colors.redAccent,
-                                      //                     context: context);
-                                      //           }
-                                      //         } else {
-                                      //           SnackBarMessage().showSnackBar(
-                                      //               message: 'Choose  Country',
-                                      //               backgroundColor:
-                                      //                   Colors.redAccent,
-                                      //               context: context);
-                                      //         }
-                                      //       } else {
-                                      //         SnackBarMessage().showSnackBar(
-                                      //             message:
-                                      //                 'Upload your License image',
-                                      //             backgroundColor:
-                                      //                 Colors.redAccent,
-                                      //             context: context);
-                                      //       }
-                                      //     } else {
-                                      //       SnackBarMessage().showSnackBar(
-                                      //           message:
-                                      //               'Choose your License image',
-                                      //           backgroundColor:
-                                      //               Colors.redAccent,
-                                      //           context: context);
-                                      //     }
-                                      //   } else {
-                                      //     SnackBarMessage().showSnackBar(
-                                      //         message:
-                                      //             'Choose your company type ',
-                                      //         backgroundColor: Colors.redAccent,
-                                      //         context: context);
-                                      //   }
-                                      // }
+                                      if (formKey.currentState!.validate()) {
+                                        if (bloc.selectedCompanyType != null) {
+                                          if (bloc.licenseImage != null) {
+                                            if (bloc.imageUrl != null) {
+                                              if (bloc.selectedCountry !=
+                                                  null) {
+                                                if (bloc.selectedCity != null) {
+                                                  bloc.add(
+                                                      GetCurrentLocationEvent());
+                                                  AutoRouter.of(context)
+                                                      .pushNamed(
+                                                          '/companyPosition');
+                                                } else {
+                                                  SnackBarMessage()
+                                                      .showSnackBar(
+                                                          message:
+                                                              'Choose city',
+                                                          backgroundColor:
+                                                              Colors.redAccent,
+                                                          context: context);
+                                                }
+                                              } else {
+                                                SnackBarMessage().showSnackBar(
+                                                    message: 'Choose  Country',
+                                                    backgroundColor:
+                                                        Colors.redAccent,
+                                                    context: context);
+                                              }
+                                            } else {
+                                              SnackBarMessage().showSnackBar(
+                                                  message:
+                                                      'Upload your License image',
+                                                  backgroundColor:
+                                                      Colors.redAccent,
+                                                  context: context);
+                                            }
+                                          } else {
+                                            SnackBarMessage().showSnackBar(
+                                                message:
+                                                    'Choose your License image',
+                                                backgroundColor:
+                                                    Colors.redAccent,
+                                                context: context);
+                                          }
+                                        } else {
+                                          SnackBarMessage().showSnackBar(
+                                              message:
+                                                  'Choose your company type ',
+                                              backgroundColor: Colors.redAccent,
+                                              context: context);
+                                        }
+                                      }
                                     }),
                                 SizedBox(
                                   height: h * 0.1,
