@@ -1,4 +1,8 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
+import 'package:be_to_be/core/strings/const.dart';
+import 'package:http/http.dart'as http;
 
 import 'package:be_to_be/core/errors/failures.dart';
 import 'package:be_to_be/core/strings/failures_message.dart';
@@ -9,6 +13,8 @@ import 'package:be_to_be/features/upgrade/domain/usecase/post_sub_usecase/post_s
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'upgrade_event.dart';
 part 'upgrade_state.dart';
@@ -18,6 +24,7 @@ class UpgradeBloc extends Bloc<UpgradeEvent, UpgradeState> {
 
   final GetAllPackageUseCase allPackageUseCase;
   final PostSubscribeUseCase postSubscribeUseCase;
+  final SharedPreferences sharedPreferences;
  List <bool> isPop=[];
 
   bool isSelected=false;
@@ -26,9 +33,88 @@ class UpgradeBloc extends Bloc<UpgradeEvent, UpgradeState> {
   List<int>month=[];
 
 
+  /// here for stipe
+
+  Future<void> initPayment({required int subscriptionId}) async
+  {
+    try {
+      final body={
+        "subscriptionId":"$subscriptionId"
+      };
+      final cookies = sharedPreferences.getString('cookies');
+
+      final response = await http.post(Uri.parse('http://b2back.net/api/user/e-pay'),
+        headers: {
+          "Accept": "application/json",
+         // "Content-Type": "application/json",
+
+          "Cookie": "$cookies"
+        },
+          body:<String, String>{
+            "subscriptionId":"$subscriptionId"
+          });
+
+     final jsonResponse = jsonDecode(response.body);
+      log(jsonResponse.toString());
+      log(jsonResponse['token'].toString());
+     //  var StripeResponse = await http.post(
+     //    Uri.parse('https://api.stripe.com/v1/payment_intents'),
+     //    headers: {
+     //      'Authorization': 'Bearer sk_test_51MJxDgIlBqUPFzgUk0sAPWuSlhCZSjha7VkZP8yDE8IhTmZtwUvRnCq5dbmnqlCwQalN2RqKFOxb1Disenn84RhE00ScQ4TouK',
+     //      'Content-Type': 'application/x-www-form-urlencoded'
+     //    },
+     //    body:{
+     //      "amount":"5000",
+     //      "currency":"usd"
+     //      //"clientSecret":"${jsonResponse['token']}"
+     //    }
+     //  );
+     // final data =json.decode(StripeResponse.body);
+     //  print(data);
+     //  print(data['clientSecret']);
+    //  await Stripe.instance.;
+
+
+
+
+      // print('${jsonResponse.toString()}');
+       print('one');
+      // 2. Initialize the payment sheet
+      await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+            paymentIntentClientSecret: jsonResponse['token'].toString(),
+          // customerId: data['id'],
+           merchantDisplayName: 'ALI',
+            testEnv: true,
+          ),
+      );
+      print('tow');
+    //  emit(LoadingPaymentState());
+
+
+      await Stripe.instance.presentPaymentSheet().then((value) {
+        emit(LoadedPaymentState());
+      }).catchError((error){
+        emit(ErrorPaymentState(error:'Something went wrong, please try again later' ));
+        print(error);
+      });
+      print('three');
+
+
+    } catch (errors) {
+      emit(ErrorPaymentState(error:'Something went wrong, please try again later' ));
+
+    }
+  }
+
+
+
+
+
   UpgradeBloc({
     required this.allPackageUseCase,
     required this.postSubscribeUseCase,
+    required this.sharedPreferences,
 }) : super(UpgradeInitial()) {
     on<UpgradeEvent>((event, emit)async {
 
@@ -90,6 +176,7 @@ if(event is PostSubscribeEvent){
           },
           (postSubscribe) {
             emit(LoadedPostSubscribeState());
+            initPayment(subscriptionId: postSubscribe);
           });
 
 

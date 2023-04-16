@@ -35,6 +35,8 @@ class AuthRepositoriesImpl implements AuthRepositories {
         return left(AccountNotVerificationFailure());
       }on UnAcceptedAccountException{
         return left(UnAcceptedAccountFailure());
+      }on GoToProfileException{
+        return Left(GoToProfileFailure());
       }
     } else {
       return Left(OfflineFailure());
@@ -48,6 +50,7 @@ class AuthRepositoriesImpl implements AuthRepositories {
         firstName: registerEntity.firstName,
         lastName: registerEntity.lastName,
         email: registerEntity.email,
+        companyId:registerEntity.companyId ,
         mobileNumber: registerEntity.mobileNumber,
         password: registerEntity.password,
         birthDate: registerEntity.birthDate,
@@ -72,5 +75,51 @@ class AuthRepositoriesImpl implements AuthRepositories {
       return Left(OfflineFailure());
     }
 
+  }
+  ///
+  /// here for get code of forget password
+  ///
+  @override
+  Future<Either<Failure, Unit>> getForgerPasswordCode(String email) async{
+    if(await networkInfo.isConnected){
+      try {
+        await authDataSource.getForgetPasswordCode(email);
+
+        return const Right(unit);
+      } on ServerException {
+        return left(ServerFailure());
+      } on DuplicateUserException {
+        return left(DuplicateUserFailure());
+      } on InvalidEmailException {
+        return left(InvalidEmailFailure());
+      }
+
+    }else{
+
+      return Left(OfflineFailure());
+    }
+  }
+  ///
+  /// here for post new password
+  ///
+  @override
+  Future<Either<Failure, Unit>> postNewPassword({required String email, required String password, required String code})async {
+    if(await networkInfo.isConnected){
+      try {
+        await authDataSource.postNewPassword(code: code,email: email,password: password);
+
+        return const Right(unit);
+      } on ServerException {
+        return left(ServerFailure());
+      } on DuplicateUserException {
+        return left(DuplicateUserFailure());
+      } on InvalidEmailException {
+        return left(InvalidEmailFailure());
+      }
+
+    }else{
+
+      return Left(OfflineFailure());
+    }
   }
 }

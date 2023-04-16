@@ -33,7 +33,7 @@ class ProfileRemoteDataSourceImpl extends ProfileRemoteDataSource{
   /// here for get user data
   @override
   Future<GetUserDataModel> getUserData() async{
-    final url='http://91.208.95.203/api/user/profile/info';
+    final url='http://$baseUrl/api/user/profile/info';
     final cookies= sharedPreferences.getString('cookies');
     final response=await client.get(Uri.parse(url),headers: {"Accept":"application/json","Content-Type":"application/json","Cookie":"$cookies"});
     if(response.statusCode==200){

@@ -14,6 +14,9 @@ class LauncherInitial extends LauncherState {
 /// here for launcher state
 ///
 class LauncherPageState extends LauncherState{}
+class LoadingLauncherPageState extends LauncherState{}
+class ErrorLauncherPageState extends LauncherState{}
+
 
 
 

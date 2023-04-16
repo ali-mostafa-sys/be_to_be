@@ -16,6 +16,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class AuthDataSource {
   Future<LoginResponseModel> postLogin(LoginModel loginModel);
   Future<Unit> postRegister(RegisterModel registerModel);
+  Future<Unit>getForgetPasswordCode(String email);
+  Future<Unit>postNewPassword({required String email,required String password,required String code});
 
 
 }
@@ -39,8 +41,25 @@ class AuthDataSourceImpl extends AuthDataSource{
      await sharedPreferences.remove('registerIsComplete');
      await sharedPreferences.remove('verificationIsComplete');
      await sharedPreferences.remove('companyInformation');
-     
+     await sharedPreferences.remove('companyId');
+
+
+
      final loginResponseModel=LoginResponseModel.fromJson(data);
+     await sharedPreferences.setString('notes', loginResponseModel.notes.toString());
+    if(loginResponseModel.isAccepted==0){
+      if(loginResponseModel.notes!=null){
+
+        throw GoToProfileException();
+      }
+      throw UnAcceptedAccountException();
+    }
+
+    // await sharedPreferences.remove('email');
+   //  await sharedPreferences.remove('password');
+     await sharedPreferences.setString('password',loginModel.password.toString());
+     await sharedPreferences.setString('email',loginModel.email.toString());
+
       return loginResponseModel;
     } else if(response.statusCode == 401) {
       final message = jsonDecode(response.body);
@@ -75,9 +94,7 @@ class AuthDataSourceImpl extends AuthDataSource{
    print(response.body);
    print(registerModel.toJson());
     if (response.statusCode == 200) {
-      await sharedPreferences.setString('email', registerModel.email.toString());
-      await sharedPreferences.setString('phone', registerModel.mobileNumber.toString());
-      await sharedPreferences.setBool('registerIsComplete', true);
+     await sharedPreferences.setBool('registerIsComplete', true);
       return Future.value(unit);
     } else if(response.statusCode == 409){
      // print('409');
@@ -103,6 +120,55 @@ class AuthDataSourceImpl extends AuthDataSource{
       int index = rawCookie.indexOf(';');
       response. headers['cookie'] =
       (index == -1) ? rawCookie : rawCookie.substring(0, index);
+    }
+  }
+///
+  /// here for get code of forget password
+  ///
+  @override
+  Future<Unit> getForgetPasswordCode(String email)async {
+    final uri = Uri.http(baseUrl, '/api/auth/code/reset-password/generate');
+    Map<String,String>body={
+      "loginName":email.toString()
+    };
+    final response = await client.post(uri, headers: {
+          "Accept":"application/json",
+        },
+      body: body
+        );
+    print(response.body);
+    print(response.statusCode);
+
+    if(response.statusCode==200){
+      return Future.value(unit);
+    }else{
+      throw ServerException();
+
+    }
+  }
+
+  ///
+  /// here for post new password
+  ///
+  @override
+  Future<Unit> postNewPassword({required String email, required String password, required String code})async {
+    final uri = Uri.http(baseUrl, '/api/auth/reset-password');
+    Map<String,String>body={
+      "loginName":email.toString(),
+      "code":code.toString(),
+      "newPassword":password.toString(),
+    };
+    final response = await client.post(uri, headers: {
+      "Accept":"application/json",
+    },
+        body: body
+    );
+
+    if(response.statusCode==200){
+      return Future.value(unit);
+    }else{
+      throw ServerException();
+
     }
   }
 

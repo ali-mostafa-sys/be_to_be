@@ -148,17 +148,24 @@ class CompanyInfoRemoteDataSourceImpl implements CompanyInfoRemoteDataSource {
     final response = await client.post(
       uri,
       body: addCompanyModel.toJson(),
-      headers: {"Accept":"application/json",
+      headers: {
+        "Accept":"application/json",
+       //"Content-Type":"application/json"
 
       },
     );
+    print(response.statusCode);
+    print(addCompanyModel.toJson());
     if (response.statusCode == 200) {
+      final realData =jsonDecode(response.body);
+/// here for get company id and save it for register
+      await sharedPreferences.setString('companyId', realData['newId'].toString());
+      print(realData['newId']);
 
+/// here for detect finished the level and save company data
      await sharedPreferences.setBool('companyIsComplete', true);
       String data=jsonEncode(addCompanyModel.toJson());
-
-
-     await sharedPreferences.setString('companyInformation', data);
+   //  await sharedPreferences.setString('companyInformation', data);
 
 
       return Future.value(unit);

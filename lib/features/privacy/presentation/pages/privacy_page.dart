@@ -68,9 +68,9 @@ class PrivacyPage extends StatelessWidget {
                       child: Column(
                         children: [
                           /// here for privacy
-                          Text('Privacy And policy',style: TextStyle(
-                              fontSize: w*0.05
-                          ),),
+                          // Text('Privacy And policy',style: TextStyle(
+                          //     fontSize: w*0.05
+                          // ),),
                           Text('${bloc.privacyEntity?.contentEn} ')
 
                         ],

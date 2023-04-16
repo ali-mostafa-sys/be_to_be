@@ -9,6 +9,7 @@ class GetAllTenderEntity extends Equatable{
   final String? productImgUrl;
   final String brandName;
   final String categoryName;
+  final String name;
   final String status;
   final String from;
   final String? area;
@@ -18,6 +19,7 @@ class GetAllTenderEntity extends Equatable{
     required this.tenderId,
     required this.creatorScore,
     required this.productName,
+    required this.name,
      this.productImgUrl,
      this.area,
     required this.brandName,
@@ -31,7 +33,7 @@ class GetAllTenderEntity extends Equatable{
 
   @override
   // TODO: implement props
-  List<Object?> get props => [tenderId,productName,productImgUrl,brandName,categoryName,status,from,to,deliverBefore,creatorScore,area];
+  List<Object?> get props => [name,tenderId,productName,productImgUrl,brandName,categoryName,status,from,to,deliverBefore,creatorScore,area];
 
 
 }

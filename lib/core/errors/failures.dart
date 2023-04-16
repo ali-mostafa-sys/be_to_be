@@ -36,6 +36,12 @@ class UnAcceptedAccountFailure extends Failure {
   List<Object?> get props => [];
 }
 
+class GoToProfileFailure extends Failure {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+
 /// register failure
 
 class DuplicateUserFailure extends Failure {
@@ -106,11 +112,19 @@ class VerificationConflictFailure extends Failure {
   List<Object?> get props => [];
 }
 
+/// here for be to be failure
+class OffersOnTenderB2BIsEmptyFailure extends Failure {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
+/// here for choose tender my interests is empty
 
-
-
-
-
+class MyInterestsIsEmptyFailure extends Failure {
+  @override
+  // TODO: implement props
+  List<Object?> get props => [];
+}
 
 
 

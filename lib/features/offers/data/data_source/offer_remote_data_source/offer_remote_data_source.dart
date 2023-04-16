@@ -31,7 +31,7 @@ class OfferRemoteDataSourceImpl extends OfferRemoteDataSource {
 
   @override
   Future<List<GetAllTenderModel>> getAllTender() async {
-    final uri = 'http://91.208.95.203/api/user/tenders?onlyCreated=1';
+    final uri = 'http://$baseUrl/api/user/tenders?onlyCreated=1';
     final cookies = sharedPreferences.getString('cookies');
     final response = await client.get(Uri.parse(uri), headers: {
       "Accept": "application/json",
@@ -60,7 +60,7 @@ class OfferRemoteDataSourceImpl extends OfferRemoteDataSource {
   @override
   Future<List<GetAllOffersModel>> getAllOffers(int tenderId) async {
     final uri =
-        'http://91.208.95.203/api/user/offers?tenderId=${tenderId.toString()}';
+        'http://$baseUrl/api/user/offers?tenderId=${tenderId.toString()}';
     final cookies = sharedPreferences.getString('cookies');
     final response = await client.get(Uri.parse(uri), headers: {
       "Accept": "application/json",
@@ -88,7 +88,7 @@ class OfferRemoteDataSourceImpl extends OfferRemoteDataSource {
   ///
   @override
   Future<Unit> deleteOffer(int offerId) async {
-    final uri = 'http://91.208.95.203/api/user/offer';
+    final uri = 'http://$baseUrl/api/user/offer';
     final cookies = sharedPreferences.getString('cookies');
     final response = await client.delete(Uri.parse(uri), headers: {
       "Accept": "application/json",
@@ -130,7 +130,7 @@ class OfferRemoteDataSourceImpl extends OfferRemoteDataSource {
   @override
   Future<Unit> postAcceptOffer(int offerId)async {
 
-    final uri = 'http://b2back.net/api/user/offer/accept';
+    final uri = 'http://$baseUrl/api/user/offer/accept';
     final cookies = sharedPreferences.getString('cookies');
     final response = await client.post(Uri.parse(uri), headers: {
       "Accept": "application/json",

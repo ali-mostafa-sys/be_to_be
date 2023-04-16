@@ -10,4 +10,8 @@ abstract class AuthRepositories {
 Future <Either<Failure,LoginResponseEntity>> postLogin(LoginEntity loginEntity);
 
 Future <Either<Failure,Unit>> postRegister(RegisterEntity registerEntity);
+///  here for forget password
+Future<Either<Failure,Unit>>getForgerPasswordCode(String email);
+Future<Either<Failure,Unit>>postNewPassword({required String email,required String password,required String code});
+
 }

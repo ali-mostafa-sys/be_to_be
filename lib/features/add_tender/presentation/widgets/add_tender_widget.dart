@@ -9,6 +9,7 @@ import 'package:be_to_be/features/add_tender/domain/entity/add_tender_entity/add
 import 'package:be_to_be/features/add_tender/presentation/bloc/add_tender/add_tender_bloc.dart';
 import 'package:be_to_be/features/add_tender/presentation/widgets/radio_button_tender_widger.dart';
 import 'package:be_to_be/features/home/presntation/bloc/main_bloc/main_page_bloc.dart';
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -34,12 +35,12 @@ class AddTenderWidget extends StatelessWidget {
 
     return BlocConsumer<AddTenderBloc,AddTenderState>(
       listener: (context,state){
-        // if(state is LoadedAddTenderState){
-        //   SnackBarMessage().showSnackBar(message: 'Added TENDER Successfully', backgroundColor: primaryColor, context: context);
-        // }
-        // if(state is ErrorAddTenderState){
-        //   SnackBarMessage().showSnackBar(message: state.error, backgroundColor: Colors.redAccent, context: context);
-        // }
+        if(state is LoadedAddTenderState){
+          SnackBarMessage().showSnackBar(message: 'Added TENDER Successfully', backgroundColor: primaryColor, context: context);
+        }
+        if(state is ErrorAddTenderState){
+          SnackBarMessage().showSnackBar(message: state.error, backgroundColor: Colors.redAccent, context: context);
+        }
         // print(state);
       },
       builder: (context,state){
@@ -94,9 +95,15 @@ class AddTenderWidget extends StatelessWidget {
                                   textInputType: TextInputType.text,
                                   obscureText: false,
                                   suffixPath: 'assets/images/delivery_tender.png',
-                                  labelText: 'Item Name',
+                                  labelText: 'Tender name',
 
-                                  validator: (value){}),
+                                  validator: (value){
+                                    if(value!.isEmpty){
+                                      return 'Field Shoudn\'t be Empty';
+                                    }else{
+                                      return null;
+                                    }
+                                  }),
                             ),
                             SizedBox(
                               height: sizedBoxHeight,
@@ -125,79 +132,7 @@ class AddTenderWidget extends StatelessWidget {
                             SizedBox(
                               height: sizedBoxHeight,
                             ),
-                            /// here max tender period
-                            Container(
-                              width:w*0.8,
-                              height: containerHeight,
-                              child: TextFormFieldWidget(
-                                  controller:addBloc. maxTenderPeriod,
-                                  textInputType: TextInputType.none,
-                                  obscureText: false,
-                                  onTap: (){
-                                    showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime.now(),
-                                        lastDate:DateTime.now().add(Duration(seconds: mainBloc.tenderDurationInSeconds)),
-                                        // DateTime.parse(
-                                        //     "2077-08-27T19:00:00Z")
-                                           )
-                                        .then((value) {
-                                      addBloc.from=DateTime.now().toString();
-                                      addBloc.to=value.toString();
 
-
-                                      addBloc.  maxTenderPeriod.text =
-                                          DateFormat.yMd().format(
-                                            value!,
-                                          );
-                                    });
-                                  },
-                                  suffixPath: 'assets/images/calendar.png',
-                                  labelText: 'Maximum Tender Period',
-
-                                  validator: (value){}),
-                            ),
-                            SizedBox(
-                              height: sizedBoxHeight,
-                            ),
-                            /// here for de period
-                            Container(
-                              width:w*0.8,
-                              height: containerHeight,
-                              child: TextFormFieldWidget(
-                                  controller:addBloc. deliveryTimePeriod,
-                                  textInputType: TextInputType.none,
-                                  obscureText: false,
-                                  suffixPath: 'assets/images/calendar.png',
-                                  labelText: 'Delivery Time Period',
-                                  onTap: (){
-                                    showDatePicker(
-                                        context: context,
-                                        initialDate: DateTime.now(),
-                                        firstDate: DateTime.now(),
-                                        lastDate: DateTime.now().add(Duration(seconds: mainBloc.tenderDurationInSeconds))
-                                        // DateTime.parse(
-                                        //     "2077-08-27T19:00:00Z")
-                                    )
-                                        .then((value) {
-
-                                      addBloc.deliverBefore=value.toString();
-
-
-                                      addBloc.  deliveryTimePeriod.text =
-                                          DateFormat.yMd().format(
-                                            value!,
-                                          );
-                                    });
-                                  },
-
-                                  validator: (value){}),
-                            ),
-
-                            SizedBox(
-                              height: sizedBoxHeight,
-                            ),
                             /// here for choose product
                             Container(
                               width:w*0.8,
@@ -247,174 +182,443 @@ class AddTenderWidget extends StatelessWidget {
                             SizedBox(
                               height: sizedBoxHeight,
                             ),
-                            /// here for country
-                            Container(
-                              width:w*0.8,
-                              height: containerHeight,
-                              padding: EdgeInsetsDirectional.only(
-                                  start: w * 0.02),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25),
-                                  border: Border.all(
-                                      width: 1, color: primaryColor),
-                                  color: HexColor('#DCDCDC')),
-                              child: DropdownButton(
-                                  borderRadius: BorderRadius.circular(25),
-                                  key: countryId,
-                                  underline: Container(
-                                    width: 0,
-                                    height: 0,
-                                  ),
-                                  dropdownColor: HexColor('#DCDCDC'),
-                                  menuMaxHeight: h * 0.3,
-                                  isExpanded: true,
-                                  isDense: false,
-                                  value: addBloc.selectedCountry,
-                                  icon: Icon(
-                                    Icons.keyboard_arrow_down_rounded,
-                                    color: primaryColor,
-                                    size: w * 0.1,
-                                  ),
-                                  elevation: 16,
-                                  hint: Text(
-                                    'Choose Country',
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(color: primaryColor),
-                                  ),
-                                  style: TextStyle(color: primaryColor),
-                                  onChanged: (String? newValue) {
-                                    addBloc.add(SelectedCountryAddTenderEvent(country: newValue!));
-                                    Future.delayed(Duration(microseconds: 900)).then((value) {
-                                      addBloc.add(GetAllCitiesAddTenderEvent());
-                                    });
-                                  },
-                                  items: addBloc.allCountry
-                                      .map<DropdownMenuItem<String>>((e) {
-                                    return DropdownMenuItem<String>(
-                                      value: e.nameEn,
-                                      child: Text(e.nameEn),
-                                    );
-                                  }).toList()),
-                            ),
-                            SizedBox(
-                              height: sizedBoxHeight,
-                            ),
-                            /// here for city
-                            addBloc.selectedCountry!=null?
-                            Container(
-                              width:w*0.8,
-                              height: containerHeight,
-                              padding: EdgeInsetsDirectional.only(
-                                  start: w * 0.02),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(25),
-                                  border: Border.all(
-                                      width: 1, color: primaryColor),
-                                  color: HexColor('#DCDCDC')),
-                              child: DropdownButton(
-                                  borderRadius: BorderRadius.circular(25),
-                                  key: cityId,
-                                  underline: Container(
-                                    width: 0,
-                                    height: 0,
-                                  ),
-                                  dropdownColor: HexColor('#DCDCDC'),
-                                  menuMaxHeight: h * 0.3,
-                                  isExpanded: true,
-                                  isDense: false,
-                                  value: addBloc.selectedCity,
-                                  icon: Icon(
-                                    Icons.keyboard_arrow_down_rounded,
-                                    color: primaryColor,
-                                    size: w * 0.1,
-                                  ),
-                                  elevation: 16,
-                                  hint: Text(
-                                    'Choose City',
-                                    textAlign: TextAlign.start,
-                                    style: TextStyle(color: primaryColor),
-                                  ),
-                                  style: TextStyle(color: primaryColor),
-                                  onChanged: (String? newValue) {
-                                    addBloc.add(SelectedCityAddTenderEvent(city: newValue!));
-                                  },
-                                  items: addBloc.allCities
-                                      .map<DropdownMenuItem<String>>((e) {
-                                    return DropdownMenuItem<String>(
-                                      value: e.nameEn,
-                                      child: Text(e.nameEn),
-                                    );
-                                  }).toList()),
-                            ):Container(),
-                            addBloc.selectedCountry!=null?
-                            SizedBox(
-                              height: sizedBoxHeight,
-                            ):Container(),
-                            /// here for area
-                            Container(
-                              width:w*0.8,
-                              height: containerHeight,
-                              child: TextFormFieldWidget(
-                                  controller:addBloc. area,
-                                  textInputType: TextInputType.text,
-                                  obscureText: false,
-                                  suffixPath: 'assets/images/location.png',
-                                  labelText: 'Area',
 
-                                  validator: (value){}),
-                            ),
-                            SizedBox(
-                              height: sizedBoxHeight,
-                            ),
-                            /// here for street
-                            Container(
-                              width:w*0.8,
-                              height: containerHeight,
-                              child: TextFormFieldWidget(
-                                  controller:addBloc. street,
-                                  textInputType: TextInputType.text,
-                                  obscureText: false,
-                                  suffixPath: 'assets/images/location.png',
-                                  labelText: 'Street',
 
-                                  validator: (value){}),
-                            ),
-                            SizedBox(
-                              height: sizedBoxHeight,
-                            ),
-                            /// here for building number
-                            Container(
-                              width:w*0.8,
-                              height: containerHeight,
-                              child: TextFormFieldWidget(
-                                  controller:addBloc. buildingNumber,
-                                  textInputType: TextInputType.text,
-                                  obscureText: false,
-                                  suffixPath: 'assets/images/location.png',
-                                  labelText: 'Building Number',
+                            Padding(
+                              padding:  EdgeInsets.symmetric(horizontal: w*0.02),
+                              child: Container(
+                                width: w,
+                                //height: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.all(Radius.circular(10)),
+                                  color: primaryColor.withOpacity(0.1)
+                                ),
+                                child: Column(
 
-                                  validator: (value){}),
+                                  children: [
+                                  Text('Delivery info',style: TextStyle(color: primaryColor),),
+                                    /// here frome
+                                    Container(
+                                      width:w*0.8,
+                                      height: containerHeight,
+                                      child: TextFormFieldWidget(
+                                          controller:addBloc. maxTenderPeriod,
+                                          textInputType: TextInputType.none,
+                                          obscureText: false,
+                                          onTap: (){
+                                            showDatePicker(
+                                              context: context,
+                                              initialDate: DateTime.now(),
+                                              firstDate: DateTime.now(),
+                                              lastDate:DateTime.now().add(Duration(seconds: mainBloc.tenderDurationInSeconds)),
+                                              // DateTime.parse(
+                                              //     "2077-08-27T19:00:00Z")
+                                            )
+                                                .then((value) {
+                                              addBloc.from=value.toString();
+                                              // addBloc.to=value.toString();
+                                              print(addBloc.from);
+
+
+                                              addBloc.  maxTenderPeriod.text =
+                                                  DateFormat.yMd().format(
+                                                    value!,
+                                                  );
+                                            });
+                                          },
+                                          suffixPath: 'assets/images/calendar.png',
+                                          labelText: 'From',
+
+                                          validator: (value){
+                                            if(value!.isEmpty){
+                                              return 'This field is required';
+                                            }else{
+                                              return null;
+                                            }
+                                          }),
+                                    ),
+                                    SizedBox(
+                                      height: sizedBoxHeight,
+                                    ),
+                                    /// here to
+                                   // addBloc.maxTenderPeriod.text.isEmpty?Container():
+                                    Container(
+                                      width:w*0.8,
+                                      height: containerHeight,
+                                      child: TextFormFieldWidget(
+                                          controller:addBloc. toDateText,
+                                          textInputType: TextInputType.none,
+                                          obscureText: false,
+                                          onTap: (){
+                                            showDatePicker(
+                                              context: context,
+                                              initialDate:DateTime.parse( addBloc.from),
+                                              firstDate: DateTime.parse( addBloc.from),
+                                              lastDate:DateTime.now().add(Duration(days: 90)),
+                                              // DateTime.parse(
+                                              //     "2077-08-27T19:00:00Z")
+                                            )
+                                                .then((value) {
+                                              addBloc.to=value.toString();
+                                              // addBloc.to=value.toString();
+                                              print(addBloc.to);
+
+
+                                              addBloc.  toDateText.text =
+                                                  DateFormat.yMd().format(
+                                                    value!,
+                                                  );
+                                            });
+                                          },
+                                          suffixPath: 'assets/images/calendar.png',
+                                          labelText: 'To',
+
+                                          validator: (value){
+                                            if(value!.isEmpty){
+                                              return 'This field is required';
+                                            }else{
+                                              return null;
+                                            }
+                                          }),
+                                    ),
+                                   // addBloc.from==''?Container():
+                                    SizedBox(
+                                      height: sizedBoxHeight,
+                                    ),
+
+                                    /// here for de period
+
+                                  // addBloc.to==''?Container():
+                                    Container(
+                                      width:w*0.8,
+                                      height: containerHeight,
+                                      child: TextFormFieldWidget(
+                                          controller:addBloc. deliveryTimePeriod,
+                                          textInputType: TextInputType.none,
+                                          obscureText: false,
+                                          hintText: 'Delivery info',
+                                          suffixPath: 'assets/images/calendar.png',
+                                          labelText: 'Delivery Time Period',
+                                          onTap: (){
+                                            showDatePicker(
+                                                context: context,
+                                                initialDate: DateTime.parse( addBloc.to),
+                                                firstDate: DateTime.parse( addBloc.to),
+                                                lastDate: DateTime.now().add(const Duration(days: 90))
+
+                                            )
+                                                .then((value) {
+
+                                              addBloc.deliverBefore=value.toString();
+
+
+                                              addBloc.  deliveryTimePeriod.text =
+                                                  DateFormat.yMd().format(
+                                                    value!,
+                                                  );
+                                            });
+                                          },
+
+                                          validator: (value){
+                                            if(value!.isEmpty){
+                                              return 'This field is required';
+                                            }else{
+                                              return null;
+                                            }
+                                          }),
+                                    ),
+                                  //  addBloc.to==''?Container():
+
+                                    SizedBox(
+                                      height: sizedBoxHeight,
+                                    ),
+
+                                    /// here for area
+                                    Container(
+                                      width:w*0.8,
+                                      height: containerHeight,
+                                      child: TextFormFieldWidget(
+                                          hintText: 'Delivery info',
+                                          controller:addBloc. area,
+                                          textInputType: TextInputType.text,
+                                          obscureText: false,
+                                          suffixPath: 'assets/images/location.png',
+                                          labelText: 'Area',
+
+                                          validator: (value){
+                                            if(value!.isEmpty){
+                                              return 'This field is required';
+                                            }else{
+                                              return null;
+                                            }
+                                          }),
+                                    ),
+                                    SizedBox(
+                                      height: sizedBoxHeight,
+                                    ),
+                                    /// here for street
+                                    Container(
+                                      width:w*0.8,
+                                      height: containerHeight,
+                                      child: TextFormFieldWidget(
+                                          hintText: 'Delivery info',
+                                          controller:addBloc. street,
+                                          textInputType: TextInputType.text,
+                                          obscureText: false,
+                                          suffixPath: 'assets/images/location.png',
+                                          labelText: 'Street',
+
+                                          validator: (value){
+                                            if(value!.isEmpty){
+                                              return 'This field is required';
+                                            }else{
+                                              return null;
+                                            }
+                                          }),
+                                    ),
+                                    SizedBox(
+                                      height: sizedBoxHeight,
+                                    ),
+                                    /// here for building number
+                                    Container(
+                                      width:w*0.8,
+                                      height: containerHeight,
+                                      child: TextFormFieldWidget(
+                                          hintText: 'Delivery info',
+                                          controller:addBloc. buildingNumber,
+                                          textInputType: TextInputType.text,
+                                          obscureText: false,
+                                          suffixPath: 'assets/images/location.png',
+                                          labelText: 'Building Number',
+
+                                          validator: (value){
+                                            if(value!.isEmpty){
+                                              return 'This field is required';
+                                            }else{
+                                              return null;
+                                            }
+                                          }),
+                                    ),
+
+                                    SizedBox(
+                                      height: sizedBoxHeight,
+                                    ),
+                                    /// here for more Address Info
+                                    Container(
+                                      width:w*0.8,
+                                      height: containerHeight,
+                                      child: TextFormFieldWidget(
+                                          hintText: 'Delivery info',
+                                          controller:addBloc. moreAddressInfo,
+                                          textInputType: TextInputType.text,
+                                          obscureText: false,
+                                          suffixPath: 'assets/images/location.png',
+                                          labelText: ' More Address Info',
+
+                                          validator: (value){
+                                            if(value!.isEmpty){
+                                              return 'This field is required';
+                                            }else{
+                                              return null;
+                                            }
+                                          }),
+                                    ),
+                                    SizedBox(
+                                      height: sizedBoxHeight,
+                                    ),
+                                    /// here for country
+                                    SizedBox(
+                                      height: containerHeight,
+                                      child: Padding(
+                                        padding:  EdgeInsets.symmetric(horizontal: w*0.1),
+                                        child: DropDownTextField(
+                                          dropDownItemCount: 6
+                                          // addBloc.allCountry.length
+                                          ,
+
+                                          listTextStyle: TextStyle(color: primaryColor,),
+                                          textStyle: TextStyle(color: primaryColor),
+                                          dropdownRadius: 25,
+                                          dropDownIconProperty: IconProperty(
+                                            color: primaryColor,
+                                            icon: Icons.keyboard_arrow_down_rounded,
+                                            size: w * 0.1,
+                                          ),
+                                          textFieldDecoration: InputDecoration(
+
+                                            hintText: 'Country',
+                                            hintStyle: TextStyle(
+                                              color: primaryColor,
+                                            ),
+                                            // contentPadding: EdgeInsets.symmetric(
+                                            //     vertical: 0, horizontal: 3),
+                                          ),
+                                          enableSearch: true,
+                                          clearIconProperty: IconProperty(color: Colors.green),
+                                          clearOption: false,
+                                          initialValue: addBloc.selectedCountry ?? '',
+
+
+                                          searchDecoration:  InputDecoration(
+                                            hintText: "Search .....",
+
+
+
+
+
+
+                                          ),
+                                          validator: (value) {
+                                            print('++++++++++++++++++++++++++++');
+                                            print(value);
+                                            print("++++++++++++++++++++++++++++");
+                                            if (value == null) {
+                                              return "Required field";
+                                            } else {
+                                              return null;
+                                            }
+                                          },
+
+                                          onChanged: ( newValue) {
+                                            DropDownValueModel countryModel=newValue  ;
+                                            String? country=countryModel!.name;
+
+                                            addBloc.add(
+                                                SelectedCountryAddTenderEvent(
+                                                    country: country));
+
+
+                                            Future.delayed(
+                                                const Duration(
+                                                  seconds:2 ,
+                                                  //  milliseconds: 500
+                                                ), () {
+                                              print(addBloc.selectedCountryId);
+                                              addBloc.add(GetAllCitiesAddTenderEvent());
+                                              // bloc.add(GetAllCitiesEvent(
+                                              //     countryId:
+                                              //     bloc.selectedCountryId!));
+                                            });
+
+
+                                          },
+
+
+
+
+                                          dropDownList: addBloc.allCountry.map((e) {
+                                            return DropDownValueModel(
+                                              value: e.nameEn, name: e.nameEn,);
+                                          }).toList(),
+                                        ),
+                                      ),
+                                    ),
+                                    // Container(
+                                    //   width:w*0.8,
+                                    //   height: containerHeight,
+                                    //   padding: EdgeInsetsDirectional.only(
+                                    //       start: w * 0.02),
+                                    //   decoration: BoxDecoration(
+                                    //       borderRadius: BorderRadius.circular(25),
+                                    //       border: Border.all(
+                                    //           width: 1, color: primaryColor),
+                                    //       color: HexColor('#DCDCDC')),
+                                    //   child: DropdownButton(
+                                    //       borderRadius: BorderRadius.circular(25),
+                                    //       key: countryId,
+                                    //       underline: Container(
+                                    //         width: 0,
+                                    //         height: 0,
+                                    //       ),
+                                    //       dropdownColor: HexColor('#DCDCDC'),
+                                    //       menuMaxHeight: h * 0.3,
+                                    //       isExpanded: true,
+                                    //       isDense: false,
+                                    //       value: addBloc.selectedCountry,
+                                    //       icon: Icon(
+                                    //         Icons.keyboard_arrow_down_rounded,
+                                    //         color: primaryColor,
+                                    //         size: w * 0.1,
+                                    //       ),
+                                    //       elevation: 16,
+                                    //       hint: Text(
+                                    //         'Choose Country',
+                                    //         textAlign: TextAlign.start,
+                                    //         style: TextStyle(color: primaryColor),
+                                    //       ),
+                                    //       style: TextStyle(color: primaryColor),
+                                    //       onChanged: (String? newValue) {
+                                    //         addBloc.add(SelectedCountryAddTenderEvent(country: newValue!));
+                                    //         Future.delayed(Duration(microseconds: 900)).then((value) {
+                                    //           addBloc.add(GetAllCitiesAddTenderEvent());
+                                    //         });
+                                    //       },
+                                    //       items: addBloc.allCountry
+                                    //           .map<DropdownMenuItem<String>>((e) {
+                                    //         return DropdownMenuItem<String>(
+                                    //           value: e.nameEn,
+                                    //           child: Text(e.nameEn),
+                                    //         );
+                                    //       }).toList()),
+                                    // ),
+                                    SizedBox(
+                                      height: sizedBoxHeight,
+                                    ),
+                                    /// here for city
+                                    addBloc.selectedCountry!=null?
+                                    Container(
+                                      width:w*0.8,
+                                      height: containerHeight,
+                                      padding: EdgeInsetsDirectional.only(
+                                          start: w * 0.02),
+                                      decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(25),
+                                          border: Border.all(
+                                              width: 1, color: primaryColor),
+                                          color: HexColor('#DCDCDC')),
+                                      child: DropdownButton(
+                                          borderRadius: BorderRadius.circular(25),
+                                          key: cityId,
+                                          underline: Container(
+                                            width: 0,
+                                            height: 0,
+                                          ),
+                                          dropdownColor: HexColor('#DCDCDC'),
+                                          menuMaxHeight: h * 0.3,
+                                          isExpanded: true,
+                                          isDense: false,
+                                          value: addBloc.selectedCity,
+                                          icon: Icon(
+                                            Icons.keyboard_arrow_down_rounded,
+                                            color: primaryColor,
+                                            size: w * 0.1,
+                                          ),
+                                          elevation: 16,
+                                          hint: Text(
+                                            'Choose City',
+                                            textAlign: TextAlign.start,
+                                            style: TextStyle(color: primaryColor),
+                                          ),
+                                          style: TextStyle(color: primaryColor),
+                                          onChanged: (String? newValue) {
+                                            addBloc.add(SelectedCityAddTenderEvent(city: newValue!));
+                                          },
+                                          items: addBloc.allCities
+                                              .map<DropdownMenuItem<String>>((e) {
+                                            return DropdownMenuItem<String>(
+                                              value: e.nameEn,
+                                              child: Text(e.nameEn),
+                                            );
+                                          }).toList()),
+                                    ):Container(),
+                                    addBloc.selectedCountry!=null?
+                                    SizedBox(
+                                      height: sizedBoxHeight,
+                                    ):Container(),
+                                ],),
+                              ),
                             ),
 
-                            SizedBox(
-                              height: sizedBoxHeight,
-                            ),
-                            /// here for more Address Info
-                            Container(
-                              width:w*0.8,
-                              height: containerHeight,
-                              child: TextFormFieldWidget(
-                                  controller:addBloc. moreAddressInfo,
-                                  textInputType: TextInputType.text,
-                                  obscureText: false,
-                                  suffixPath: 'assets/images/location.png',
-                                  labelText: ' More Address Info',
-
-                                  validator: (value){}),
-                            ),
-                            SizedBox(
-                              height: sizedBoxHeight,
-                            ),
                             /// here for marker address
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -468,7 +672,7 @@ class AddTenderWidget extends StatelessWidget {
                                 ),
                                 RadioButtonTenderWidget(
                                     groupValue:addBloc.paymentType ,
-                                    textValue: "Cash",
+                                    textValue: "COD",
                                     value: "CASH",
                                     onChanged: (value) {
                                       // bloc.add(ChooseGenderEvent(gender: value));

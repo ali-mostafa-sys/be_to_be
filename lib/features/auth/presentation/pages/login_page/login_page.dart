@@ -22,7 +22,7 @@ import 'package:be_to_be/injection_container.dart'as di;
 
 class LoginPage extends StatelessWidget {
   LoginPage({Key? key}) : super(key: key);
-  final TextEditingController email = TextEditingController();
+ // final TextEditingController email = TextEditingController();
   final TextEditingController password = TextEditingController();
   var formKey = GlobalKey<FormState>();
 
@@ -56,6 +56,18 @@ class LoginPage extends StatelessWidget {
                 context: context);
             if(state.error=='The account is not activated yet'){
               AutoRouter.of(context).pushNamed('/verification');
+
+            }
+            if(state.error=='Un Accepted Account'){
+              Future.delayed(Duration(seconds: 1)).then((value) {
+                AutoRouter.of(context).pushAndPopUntil(RefreshPage(), predicate: (route) => false);
+              });
+
+            }
+            if(state.error=='Your account is under review. It may take from an hour to a full day'){
+              Future.delayed(Duration(seconds: 1)).then((value) {
+                AutoRouter.of(context).pushAndPopUntil(RefreshPage(), predicate: (route) => false);
+              });
             }
           }
 
@@ -82,11 +94,28 @@ class LoginPage extends StatelessWidget {
                       key: formKey,
                       child: Column(
                         children: [
+                          bloc.byEmail==false?
                           TextFormFieldWidget(
-                            controller: email,
+                            controller:bloc. phoneText,
+                            textInputType: TextInputType.text,
+                            obscureText: false,
+                            labelText: 'Mobile',
+                            hintText: '+963946******',
+                            prefixPath: 'assets/images/phone.png',
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Phone shouldn\'t not be empty';
+                              } else if(value.length<10){
+                                return 'The phone number must not be less than 10 digits ';
+                              }
+                            },
+                          )
+                              :
+                          TextFormFieldWidget(
+                            controller:bloc. emailText,
                             textInputType: TextInputType.emailAddress,
                             obscureText: false,
-                            labelText: 'Email/Mobil',
+                            labelText: 'Email',
                             prefixPath: 'assets/images/email.png',
                             validator: (value) {
                               if (!RegExp(validationEmail).hasMatch(value!)) {
@@ -102,7 +131,7 @@ class LoginPage extends StatelessWidget {
                             height: h * 0.028,
                           ),
                           TextFormFieldWidget(
-                            controller: password,
+                            controller: bloc.passwordText,
                             textInputType: TextInputType.text,
                             obscureText: bloc.obSecure,
                             labelText: 'Password',
@@ -137,7 +166,10 @@ class LoginPage extends StatelessWidget {
                                   textColor: primaryColor,
                                   textSize: 19,
                                   textDecoration: false,
-                                  onTap: () {}),
+                                  onTap: () {
+                                    AutoRouter.of(context).pushNamed('/forgetPasswordFirst');
+
+                                  }),
                             ],
                           ),
                           SizedBox(
@@ -154,8 +186,8 @@ class LoginPage extends StatelessWidget {
                               onPressed: () {
                                if(formKey.currentState!.validate()){
                                  final loginEntity=LoginEntity(
-                                     email: email.text,
-                                     password: password.text,
+                                     email:bloc.byEmail==false?bloc.phoneText.text: bloc. emailText.text,
+                                     password:bloc. passwordText.text,
                                    notificationToken: bloc.token.toString(),
                                  );
                                  bloc.add(LoginButtonEvent(loginEntity: loginEntity));
@@ -183,7 +215,7 @@ class LoginPage extends StatelessWidget {
                                 textSize: 19,
                                 textDecoration: true,
                                 onTap: () {
-                                  AutoRouter.of(context).pushNamed('/chooseVerification');
+                                  AutoRouter.of(context).pushNamed('/companyInformation');
                                 },
                               )
                             ],

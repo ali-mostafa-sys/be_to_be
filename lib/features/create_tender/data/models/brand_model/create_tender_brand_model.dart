@@ -10,13 +10,15 @@ class BrandCreateTenderModel extends BrandCreateTenderEntity{
 
   const BrandCreateTenderModel({
     required int idBrand,
+    required int categoryId,
     required String nameEn
-  }):super(nameEn: nameEn,idBrand: idBrand);
+  }):super(nameEn: nameEn,idBrand: idBrand,categoryId: categoryId);
 
   factory BrandCreateTenderModel.fromJson(Map<String,dynamic>json){
     final idBrand=json['idBrand'];
+    final categoryId=json['categoryId'];
     final nameEn=json['nameEn'];
-    return BrandCreateTenderModel(idBrand: idBrand, nameEn: nameEn);
+    return BrandCreateTenderModel(idBrand: idBrand, nameEn: nameEn,categoryId: categoryId);
   }
 
 

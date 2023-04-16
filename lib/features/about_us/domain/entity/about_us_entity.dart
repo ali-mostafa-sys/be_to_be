@@ -16,6 +16,6 @@ class AboutUsEntity extends Equatable {
         required this.whoAreWeEn});
 
   @override
-  // TODO: implement props
+
   List<Object?> get props => [companyInfoEn,viewEn,targetEn,otherInfoEn,whoAreWeEn];
 }

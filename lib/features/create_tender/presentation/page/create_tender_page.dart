@@ -46,6 +46,7 @@ class CreateTenderPage extends StatelessWidget {
               brand.text = '';
               brandDes.text = '';
               CreateTenderBloc.get(context).selectedCategoryId = null;
+              CreateTenderBloc.get(context).add(GetBrandCreateTenderEvent());
               SnackBarMessage().showSnackBar(
                   message: "Added new brand successfully",
                   backgroundColor: primaryColor,
@@ -80,6 +81,7 @@ class CreateTenderPage extends StatelessWidget {
               CreateTenderBloc.get(context).productImage = null;
               CreateTenderBloc.get(context).imageUrl = null;
 
+
               SnackBarMessage().showSnackBar(
                   message: "Added new product successfully",
                   backgroundColor: primaryColor,
@@ -97,7 +99,10 @@ class CreateTenderPage extends StatelessWidget {
             final w = MediaQuery.of(context).size.width;
             final h = MediaQuery.of(context).size.height;
 
-            if (state is LoadingGetCategoriesCreateTenderState) {
+            // if (state is LoadingGetCategoriesCreateTenderState) {
+            //   return const LoadingWidget();
+            // }
+            if (state is LoadingGetBrandsCreateTenderState) {
               return const LoadingWidget();
             }
 
@@ -271,22 +276,131 @@ class CreateTenderPage extends StatelessWidget {
                             SizedBox(
                               height: h * 0.02,
                             ),
+                            SizedBox(
+                              height: h*0.08,
+                              child: TextFormField(
+                                controller: ctBloc.brandCat,
+                                keyboardType: TextInputType.none,
+                                decoration: InputDecoration(
+                                    hintText: 'Select Brand',
 
-                            DropDownButtonCreateWidget(
-                              selected: ctBloc.selectedBrand,
-                              hintText: "Choose Brand",
-                              items: ctBloc.brandsList
-                                  .map<DropdownMenuItem<String>>((e) {
-                                return DropdownMenuItem<String>(
-                                  value: e.nameEn,
-                                  child: Text('${e.nameEn}'),
-                                );
-                              }).toList(),
-                              onChanged: (String? newValue) {
-                                ctBloc.add(SelectedBrandCreateTenderEvent(
-                                    selectedBrand: newValue!));
-                              },
+                                    hintStyle: TextStyle(color: primaryColor),
+                                    suffixIcon: Icon(
+                                      Icons.arrow_drop_down_outlined,
+                                      color: primaryColor,
+                                      size: 30,
+                                    ),
+
+                                ),
+                                validator: (value){
+                                  if(value!.isEmpty){
+                                    return 'Brand should not be empty  ';
+                                  }else{
+                                    return null;
+                                  }
+                                },
+                                onTap: () {
+                                  ctBloc.add(ShowDropdownButtonCreateTenderEvent());
+
+                                 // choBloc.add(TextBrandTap());
+                                },
+                              ),
                             ),
+                            ctBloc.choBrand==true?
+                            Container(
+                              width: w * 0.8,
+                              height: h * 0.3,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: w * 0.01, vertical: w * 0.01),
+                              decoration: BoxDecoration(
+                                  color: HexColor("#DCDCDC"),
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(25))),
+                              child: SingleChildScrollView(
+                                child: Column(
+
+                                  children: ctBloc.categoriesList.map((cat) {
+
+                                    int index = ctBloc.categoriesList.indexOf(cat);
+
+                                    return Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Text(
+                                                '${ctBloc.categoriesList[index].nameEn}'),
+                                            Spacer(),
+                                            InkWell(
+                                              onTap: () {
+                                                ctBloc.add(ExpandedCatCTEvent(index:index ));
+
+                                               // choBloc.add(CheckBoxBrandSelected(index: index));
+                                              },
+                                              child: Icon(
+                                                Icons
+                                                    .arrow_drop_down_outlined,
+                                                color: primaryColor,
+                                                size: 30,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        /// here init list
+                                        ctBloc.expandedCatList[index] == false
+                                            ? Container()
+                                            : Column(
+                                            children: [
+                                              Column(
+                                                children: ctBloc.brandsList.map((brand) {
+                                                  int indexs = ctBloc.brandsList.indexOf(brand);
+                                                  return ctBloc.categoriesList[index].idCategory == ctBloc.brandsList[indexs].categoryId
+                                                      ? Container(
+                                                    width: w * 0.5,
+                                                    child: Row(
+                                                      children: [
+                                                        InkWell(
+                                                          onTap:(){
+                                                            ctBloc.add(ChooseBrandCTEvent(brand:ctBloc.brandsList[indexs] ));
+
+                                                          },
+                                                            child: Text('${ctBloc.brandsList[indexs].nameEn}')),
+                                                       // Spacer(),
+                                                        // Checkbox(
+                                                        //   /// here init list
+                                                        //     value: ctBloc.checkBoxProductOfBrandtList[indexs],
+                                                        //     onChanged: (onChanged) {
+                                                        //       print(indexs);
+                                                        //      // choBloc.add(CheckBoxProductOfBrandSelectedEvent(index: indexs, productChooseTenderEntity: choBloc.productEntity[indexs]));
+                                                        //     })
+                                                      ],
+                                                    ),
+                                                  )
+                                                      : Container();
+                                                }).toList(),
+                                              ),
+                                            ])
+                                      ],
+                                    );
+                                  }).toList(),
+                                ),
+                              ),
+                            ):Container(),
+
+                            // DropDownButtonCreateWidget(
+                            //   selected: ctBloc.selectedBrand,
+                            //   hintText: "Choose Brand",
+                            //   items: ctBloc.brandsList
+                            //       .map<DropdownMenuItem<String>>((e) {
+                            //     return DropdownMenuItem<String>(
+                            //       value: e.nameEn,
+                            //       child: Text('${e.nameEn}'),
+                            //     );
+                            //   }).toList(),
+                            //   onChanged: (String? newValue) {
+                            //     ctBloc.add(SelectedBrandCreateTenderEvent(
+                            //         selectedBrand: newValue!));
+                            //   },
+                            // ),
                             SizedBox(
                               height: h * 0.02,
                             ),
@@ -401,7 +515,7 @@ class CreateTenderPage extends StatelessWidget {
                                   textSize: w * 0.05,
                                   onPressed: () {
                                     if (productKey.currentState!.validate()) {
-                                      if (ctBloc.selectedBrand != null) {
+                                      if (ctBloc.selectedBrandId != null) {
                                         if (ctBloc.productImage != null) {
                                           if (ctBloc.imageUrl != null) {
                                             final addProductEntity =

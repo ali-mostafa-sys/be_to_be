@@ -22,16 +22,15 @@ import 'package:flutter/painting.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
+import 'package:be_to_be/injection_container.dart'as di;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegisterPage extends StatelessWidget {
   RegisterPage({Key? key}) : super(key: key);
   var formKey = GlobalKey<FormState>();
-  TextEditingController firstName = TextEditingController();
-  TextEditingController lastName = TextEditingController();
-  TextEditingController email = TextEditingController();
-  TextEditingController password = TextEditingController();
-  TextEditingController rePassword = TextEditingController();
-  TextEditingController date = TextEditingController();
+
+  SharedPreferences sh=di.sl();
+
 
   @override
   Widget build(BuildContext context) {
@@ -49,8 +48,8 @@ class RegisterPage extends StatelessWidget {
         /// here for register state
         if(state is LoadedRegisterState){
           SnackBarMessage().showSnackBar(message: 'Registered Successfully', backgroundColor: primaryColor, context: context);
-          //AutoRouter.of(context).pushNamed('/verification');
-           AutoRouter.of(context).pushAndPopUntil(VerificationPage(), predicate: (route) => false);
+          AutoRouter.of(context).pushNamed('/verification');
+           //AutoRouter.of(context).pushAndPopUntil(VerificationPage(), predicate: (route) => false);
         }
         if(state is ErrorRegisterState){
           SnackBarMessage().showSnackBar(message: state.error, backgroundColor: Colors.redAccent, context: context);
@@ -91,7 +90,7 @@ class RegisterPage extends StatelessWidget {
                     children: [
                       /// here for last and first name
                       TextFormFieldWidget(
-                        controller: firstName,
+                        controller: bloc.firstName,
                         textInputType: TextInputType.text,
                         obscureText: false,
                         labelText: 'First Name',
@@ -108,7 +107,7 @@ class RegisterPage extends StatelessWidget {
                         height: h * 0.03,
                       ),
                       TextFormFieldWidget(
-                        controller: lastName,
+                        controller: bloc. lastName,
                         textInputType: TextInputType.text,
                         obscureText: false,
                         labelText: 'Last Name',
@@ -126,7 +125,7 @@ class RegisterPage extends StatelessWidget {
                       ),
                       /// here for email
                       TextFormFieldWidget(
-                        controller: email,
+                        controller: bloc. email,
                         textInputType: TextInputType.emailAddress,
                         obscureText: false,
                         labelText: 'Email',
@@ -169,7 +168,7 @@ class RegisterPage extends StatelessWidget {
                       ),
                       /// here fpr password and confirm it
                       TextFormFieldWidget(
-                        controller: password,
+                        controller: bloc. password,
                         textInputType: TextInputType.text,
                         obscureText: bloc.obSecure1,
                         labelText: 'Password',
@@ -196,7 +195,7 @@ class RegisterPage extends StatelessWidget {
                         height: h * 0.03,
                       ),
                       TextFormFieldWidget(
-                        controller: rePassword,
+                        controller: bloc. rePassword,
                         textInputType: TextInputType.text,
                         obscureText: bloc.obSecure1,
                         labelText: 'Confirm Password',
@@ -210,7 +209,7 @@ class RegisterPage extends StatelessWidget {
                           color: HexColor('#878787'),
                         ),
                         validator: (value) {
-                          if (value != password.text) {
+                          if (value != bloc. password.text) {
                             return 'Password is not much';
                           } else {
                             return null;
@@ -221,7 +220,7 @@ class RegisterPage extends StatelessWidget {
                         height: h * 0.03,
                       ),
                       TextFormFieldWidget(
-                        controller: date,
+                        controller: bloc. birthDate,
                         textInputType: TextInputType.none,
                         obscureText: false,
                         labelText: 'Birth Date',
@@ -230,13 +229,13 @@ class RegisterPage extends StatelessWidget {
                         onTap: (){
                           showDatePicker(
                               context: context,
-                              initialDate:DateTime.parse("1990-08-27T19:00:00Z"),
-                              firstDate: DateTime.parse("1990-08-27T19:00:00Z"),
+                              initialDate:DateTime.parse("1990-03-08T19:00:00Z"),
+                              firstDate: DateTime.parse("1900-01-01T19:00:00Z"),
                               lastDate: DateTime.now())
                               .then((value) {
                                 bloc.date=value.toString();
 
-                            date.text=DateFormat.yMd().format(value!,);
+                                bloc. birthDate.text=DateFormat.yMd().format(value!,);
                           });
                         },
                         validator: (value) {
@@ -271,7 +270,7 @@ class RegisterPage extends StatelessWidget {
                               }),
                           RadioButtonWidget(
                               groupValue: bloc.gender,
-                              textValue: "FeMale",
+                              textValue: "Female",
                               value: "Female",
                               onChanged: (value) {
                                 bloc.add(ChooseGenderEvent(gender: value));
@@ -290,21 +289,30 @@ class RegisterPage extends StatelessWidget {
                           text: 'SignUp',
                           textColor: Colors.white,
                           textSize: 27,
-                          onPressed: () {
+                          onPressed: ()async {
                          //  AutoRouter.of(context).pushNamed('/verification');
                             if(formKey.currentState!.validate()){
-                              final registerEntity=RegisterEntity(
-                                  firstName: firstName.text.toString(),
-                                  lastName: lastName.text.toString(),
-                                  email: email.text.toString(),
-                                  mobileNumber: bloc.phone.text.toString(),
-                                  password: password.text.toString(),
-                                  birthDate: bloc.date.toString(),
-                                  gender: bloc.gender.toString(),
-                                  hasMobileWhatsApp: bloc.hasPhone);
+                              await sh.setString('email', bloc.email.text.toString());
+                              await sh.setString('phone', bloc.phone.text.toString());
+                              await sh.setString('password', bloc.password.text.toString());
+                              AutoRouter.of(context).pushNamed('/verification');
+
+                              // String? companyId=sh.getString('companyId');
+                              // final registerEntity=RegisterEntity(
+                              //     firstName:bloc. firstName.text.toString(),
+                              //     lastName:bloc. lastName.text.toString(),
+                              //     email: bloc.email.text.toString(),
+                              //     mobileNumber: bloc.phone.text.toString(),
+                              //     password:bloc. password.text.toString(),
+                              //     birthDate: bloc.date,
+                              //     companyId:companyId! ,
+                              //     gender: bloc.gender.toString(),
+                              //     hasMobileWhatsApp: bloc.hasPhone);
+                              // print(registerEntity);
 
 
-                             bloc.add(RegisterButtonEvent(registerEntity: registerEntity));
+
+                             // bloc.add(RegisterButtonEvent(registerEntity: registerEntity));
 
                             }
                           // print(bloc.hasPhone);

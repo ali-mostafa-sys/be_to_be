@@ -16,7 +16,14 @@ class NotificationInitial extends NotificationState {
 ///
 
 class LoadingGetNotificationState extends NotificationState{}
-class LoadedGetNotificationState extends NotificationState{}
+class LoadedGetNotificationState extends NotificationState{
+  final List<NotificationEntity> notificationList;
+  const LoadedGetNotificationState({
+    required this.notificationList
+});
+  @override
+  List<Object> get props => [notificationList];
+}
 class ErrorGetNotificationState extends NotificationState{
   final String error;
   const ErrorGetNotificationState({

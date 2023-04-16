@@ -58,7 +58,7 @@ class NotificationPage extends StatelessWidget {
                           itemBuilder: (context,index){
                             return InkWell(
                               onTap: (){
-                                notBloc.add(ReadNotificationEvent(notificationsIds: notBloc.notificationList[index].notificationId,index: index));
+                               // notBloc.add(ReadNotificationEvent(notificationsIds: notBloc.notificationList[index].notificationId,index: index));
                                 print(notBloc.notificationList[index].notificationId);
 
                               },

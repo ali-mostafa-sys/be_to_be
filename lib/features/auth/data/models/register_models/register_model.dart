@@ -11,6 +11,7 @@ class RegisterModel extends RegisterEntity{
     required String password,
     required String birthDate ,
     required String gender ,
+    required String companyId ,
     required bool hasMobileWhatsApp,
 }):super(
     firstName: firstName,
@@ -20,6 +21,7 @@ class RegisterModel extends RegisterEntity{
     password: password,
     birthDate: birthDate,
     gender: gender,
+    companyId: companyId,
     hasMobileWhatsApp: hasMobileWhatsApp,
   );
   factory RegisterModel.fromJson(Map<String,dynamic>json){
@@ -30,10 +32,12 @@ class RegisterModel extends RegisterEntity{
     final password=json['password'];
     final birthDate=json['birthDate'];
     final gender=json['gender'];
+    final companyId=json['companyId'];
     final hasMobileWhatsApp=json['hasMobileWhatsapp'];
     return RegisterModel(firstName: firstName,
         lastName: lastName,
         email: email,
+        companyId: companyId,
         mobileNumber: mobileNumber, password: password, birthDate: birthDate, gender: gender, hasMobileWhatsApp: hasMobileWhatsApp);
   }
 
@@ -47,6 +51,7 @@ class RegisterModel extends RegisterEntity{
       'password': password,
       'birthDate': birthDate,
       'gender': gender,
+      'companyId': companyId,
       'hasMobileWhatsapp': hasMobileWhatsApp.toString() ,
     };
   }

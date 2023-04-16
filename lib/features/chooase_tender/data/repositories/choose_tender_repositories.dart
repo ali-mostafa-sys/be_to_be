@@ -8,6 +8,7 @@ import 'package:be_to_be/features/chooase_tender/data/models/care_model/care_mod
 import 'package:be_to_be/features/chooase_tender/domain/entity/brand_entity/brand_entity.dart';
 import 'package:be_to_be/features/chooase_tender/domain/entity/care_entity/care_entity.dart';
 import 'package:be_to_be/features/chooase_tender/domain/entity/categories_entity/categories_entity.dart';
+import 'package:be_to_be/features/chooase_tender/domain/entity/my_interests_entity/my_interests_entity.dart';
 import 'package:be_to_be/features/chooase_tender/domain/entity/product_entity/product_entity.dart';
 import 'package:be_to_be/features/chooase_tender/domain/repositories/choose_tender_repositories/choose_tender_repositories.dart';
 import 'package:dartz/dartz.dart';
@@ -98,6 +99,25 @@ class ChooseTenderRepositoriesImpl implements ChooseTenderRepositories{
 
       }on ServerException{
         return Left(ServerFailure());
+      }
+    }else{
+      return Left(OfflineFailure());
+    }
+  }
+///
+  /// here for get my interests
+  ///
+  @override
+  Future<Either<Failure, List<MyInterestsEntity>>> getMyInterests()async {
+    if(await networkInfo.isConnected){
+      try{
+        final myInterests=await chooseTenderRemoteDataSource.getMyInterests();
+        return Right(myInterests);
+
+      }on ServerException{
+        return Left(ServerFailure());
+      }on MyInterestsIsEmptyException{
+        return Left(MyInterestsIsEmptyFailure());
       }
     }else{
       return Left(OfflineFailure());

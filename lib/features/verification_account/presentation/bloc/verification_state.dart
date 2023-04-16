@@ -34,6 +34,15 @@ class ErrorGetOTPCodeState extends  VerificationState{
 ///
 class LoadingSendOTPCodeState extends  VerificationState{}
 class LoadedSendOTPCodeState extends  VerificationState{}
+class LoadingRegisterVState extends VerificationState{}
+class ErrorRegisterVState extends VerificationState{
+  final String error;
+  const ErrorRegisterVState({
+    required this.error
+  });
+  @override
+  List<Object> get props => [error];
+}
 class ErrorSendOTPCodeState extends  VerificationState{
   final String error;
   const ErrorSendOTPCodeState({

@@ -1,14 +1,14 @@
 import 'package:be_to_be/core/app_theme.dart';
 import 'package:be_to_be/core/routs/routes.gr.dart';
-import 'package:be_to_be/features/add_tender/presentation/bloc/add_tender/add_tender_bloc.dart';
+import 'package:be_to_be/core/strings/const.dart';
 import 'package:be_to_be/features/auth/presentation/bloc/register_bloc/register_bloc.dart';
 import 'package:be_to_be/features/company_information/presentation/bloc/company_information/company_information_bloc.dart';
 import 'package:be_to_be/features/home/presntation/bloc/main_bloc/main_page_bloc.dart';
-import 'package:be_to_be/features/order/presentation/bloc/order_bloc.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:responsive_framework/responsive_framework.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'injection_container.dart' as di;
@@ -18,12 +18,14 @@ import 'firebase_options.dart';
 /// here for background and terminated notification
 Future backgroundMessage (RemoteMessage message)async{
 
-print("${message.notification!.body}");
-
 }
 
 void main()async {
   WidgetsFlutterBinding.ensureInitialized();
+  ///here for stipe
+  Stripe.publishableKey=stripePublishableKey;
+  await Stripe.instance.applySettings();
+
   await di.init();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -41,10 +43,11 @@ void main()async {
     provisional: false,
     sound: true,
   );
+  settings.alert;
 
-  print('User granted permission: ${settings.authorizationStatus}');
+
   await messaging.getToken().then((value) async{
-    print(value);
+
    await sh.setString('token', value.toString());
   });
 /// here for foreground messaging notification
@@ -62,13 +65,12 @@ void main()async {
       print('Message also contained a notification: ${message.notification}');
     }
   });
- // await di.init();
   runApp( MyApp());
 }
 
 class MyApp extends StatelessWidget {
    MyApp({Key? key}) : super(key: key);
-   final _appRouter = AppRouter();
+    final _appRouter = AppRouter();
 
 
 
@@ -91,10 +93,6 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (_)=>di.sl<MainPageBloc>()..add(IsLoggedEvent())
         ..add(GetUserPackageUsedEvent())..add(GetSettingEvent())
         ),
-        //BlocProvider(create: (_)=>di.sl<OrderBloc>()..add(GetAllOrderEvent()) ),
-
-
-       // OrderBloc()..add(IntEvent())
 
 
       ],

@@ -6,6 +6,6 @@ import 'package:dartz/dartz.dart';
 
 abstract class UpgradeRepositories{
   Future<Either<Failure,List<UpgradeEntity>>>getAllPackages();
-  Future<Either<Failure,Unit>>postSubscribe(SubscribeEntity subscribeEntity);
+  Future<Either<Failure,int>>postSubscribe(SubscribeEntity subscribeEntity);
 
 }

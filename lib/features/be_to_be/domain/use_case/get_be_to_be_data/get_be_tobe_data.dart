@@ -9,7 +9,7 @@ import 'package:dartz/dartz.dart';
 class GetBeToBeData{
 final BeToBeRepositories beToBeRepositories;
 const GetBeToBeData({required this.beToBeRepositories});
-  Future<Either<Failure,List<BeToBeEntity>>>call()async{
-    return beToBeRepositories.getBeToBePage();
+  Future<Either<Failure,List<BeToBeEntity>>>call(bool isPending)async{
+    return beToBeRepositories.getBeToBePage(isPending);
   }
 }

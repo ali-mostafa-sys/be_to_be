@@ -31,7 +31,7 @@ Widget _buildBody(
       listener: (context, state) {
 
         if(state is VerificationByPhoneOrEmailState){
-          AutoRouter.of(context).pushNamed('/register');
+          AutoRouter.of(context).pushNamed('/login');
         }
       },
       builder: (context, state) {
@@ -40,7 +40,7 @@ Widget _buildBody(
             widgets: SingleChildScrollView(
           child: Column(
             children: [
-              UpLoginRegisterWidget(text: 'SIGN UP'),
+              UpLoginRegisterWidget(text: 'Login'),
               const LogoWidget(),
               SizedBox(
                 height: h * 0.015,
@@ -51,7 +51,7 @@ Widget _buildBody(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     AutoSizeText(
-                      'Choose how to register your account',
+                      'Choose how you want to log in',
                       style: TextStyle(
 // 0.05 =21
 // 0.01=4.2
@@ -136,25 +136,25 @@ Widget _buildBody(
                     SizedBox(
                       height: h * 0.008,
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        AutoSizeText(
-                          'Already have an account?',
-                          style: TextStyle(
-                            fontSize: w * 0.045,
-                          ),
-                        ),
-                        TextButtonWidget(
-                            text: 'Login',
-                            textColor: primaryColor,
-                            textSize: w * 0.045,
-                            textDecoration: true,
-                            onTap: () {
-                              AutoRouter.of(context).pushNamed('/login');
-                            })
-                      ],
-                    )
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.center,
+                    //   children: [
+                    //     AutoSizeText(
+                    //       'Already have an account?',
+                    //       style: TextStyle(
+                    //         fontSize: w * 0.045,
+                    //       ),
+                    //     ),
+                    //     TextButtonWidget(
+                    //         text: 'Login',
+                    //         textColor: primaryColor,
+                    //         textSize: w * 0.045,
+                    //         textDecoration: true,
+                    //         onTap: () {
+                    //           AutoRouter.of(context).pushNamed('/login');
+                    //         })
+                    //   ],
+                    // )
                   ],
                 ),
               )

@@ -71,9 +71,10 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
           emit(ErrorGetMyOfferState(error: _mapFailureToMessage(failure)));
         }, (myOffer) {
           print(myOffer);
-          if (myOffer.status == 'PENDING') {
+        //  if (myOffer.status == 'PENDING') {
+
             myOfferEntity = myOffer;
-          }
+         // }
 
           loadingWidget[event.index] = false;
 

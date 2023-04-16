@@ -48,28 +48,28 @@ class VerificationRemoteDataSourceImpl extends VerificationRemoteDataSource {
     }
 
   }
-
+///
+  /// here for get result of verification code
+  ///
   @override
   Future<Unit> getVerificationCode(String loginName, String code)async {
-    final queryParameters = {
-      "loginName": loginName.toString(),
-      "code": code.toString(),
-    };
-    final uri = Uri.http(baseUrl, '/api/auth/activate/',queryParameters,);
-    final url='http://${baseUrl}/api/auth/activate/:$loginName/:$code';
+
+
+    final url=Uri.encodeFull('http://${baseUrl}/api/auth/activate/$loginName/$code');
     print(url);
-    print(uri);
+    print('===========================================================================');
     final response = await client.get(
-      Uri.parse(url),
+     Uri.parse(url)
+
+      ,
       headers: {"Accept":"application/json",
-        //"Content-Type":"application/json"
+        "Content-Type":"application/json"
 
       },
     );
     print(response.statusCode);
-    print(response.body);
     if(response.statusCode==200){
-      await sharedPreferences.setBool('verificationIsComplete', true);
+    //  await sharedPreferences.setBool('verificationIsComplete', true);
       return Future.value(unit);
     }else if(response.statusCode==409){
 

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:be_to_be/core/app_theme.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +24,7 @@ class SwitchButtonWidget extends StatelessWidget {
               fontSize: w*0.05
           ),),
           Spacer(),
+          Platform.isAndroid?Container():Container(),
           Switch(
             onChanged:onChange,
 

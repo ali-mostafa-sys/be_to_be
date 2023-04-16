@@ -26,7 +26,12 @@ class OrderPage extends StatelessWidget {
         create: (context)=>di.sl<OrderBloc>()..add(GetAllOrderEvent(sortValue: 'ali')),
         child: BlocConsumer<OrderBloc, OrderState>(
           listener: (context, state) {
+
             if(state is ErrorGetMyOfferState){
+              SnackBarMessage().showSnackBar(message: state.error, backgroundColor: Colors.redAccent, context: context);
+
+            }
+            if(state is ErrorGetAllOrderState){
               SnackBarMessage().showSnackBar(message: state.error, backgroundColor: Colors.redAccent, context: context);
 
             }

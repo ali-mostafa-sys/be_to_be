@@ -56,9 +56,9 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
               tenderList=[];
 
               tenders.map((e) {
-                if(e.status=='CLOSED'){
+                // if(e.status=='CLOSED'){
                   tenderList.add(e);
-                }
+              //}
 
               }).toList();
               emit(LoadedGetTenderHState(tenderList:tenderList));
@@ -83,9 +83,9 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
                   orderList=[];
 
                   orders.map((e) {
-                    if(e.status!='PENDING'){
+                   // if(e.status!='PENDING'){
                       orderList.add(e);
-                    }
+                  //  }
                   }).toList();
                   print(orderList);
                   emit(LoadedGetOrdersHState(orderList: orderList));

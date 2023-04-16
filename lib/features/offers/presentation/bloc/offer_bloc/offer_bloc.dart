@@ -71,7 +71,7 @@ class OfferBloc extends Bloc<OfferEvent, OfferState> {
         loadingWidget[event.index] = false;
 
         emit(LoadingGetOffersAndExpandedState());
-        print(event.tenderId);
+
 
         final failureOrGetOffersOnTender =
             await getAllOffersUseCase(event.tenderId);
@@ -125,8 +125,7 @@ class OfferBloc extends Bloc<OfferEvent, OfferState> {
               isExpanded: isExpandedList[event.index]));
         });
 
-        // isExpandedList[event.index]=!isExpandedList[event.index];
-        // emit(LoadedGetOffersAndExpandedState(isExpanded: isExpandedList[event.index]));
+
       }
 
       ///

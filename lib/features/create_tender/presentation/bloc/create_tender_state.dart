@@ -113,4 +113,42 @@ class ErrorAddProductState extends CreateTenderState{
   List<Object> get props => [error];
 }
 
+///
+/// here for choose brand new event
+///
+class ShowDropdownButtonCreateTenderState extends CreateTenderState{
+  final bool choBrand;
+  const ShowDropdownButtonCreateTenderState({
+
+    required this.choBrand,
+  });
+  @override
+  List<Object> get props => [choBrand];
+}
+/// here for expanded state cat
+class ExpandingCatCTState extends CreateTenderState{}
+class ExpandedCatCTState extends CreateTenderState{
+  final List<bool>listBool;
+  const ExpandedCatCTState({
+    required this.listBool
+});
+  @override
+  List<Object> get props => [listBool];
+
+}
+/// coose brand state
+class LoadingChooseBrandCTSTate extends CreateTenderState{}
+class LoadedChooseBrandCTSTate extends CreateTenderState{
+  final BrandCreateTenderEntity brand;
+
+  const LoadedChooseBrandCTSTate({
+    required this.brand
+  });
+  @override
+  List<Object> get props => [brand];
+}
+
+
+
+
 

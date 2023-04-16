@@ -22,6 +22,7 @@ class GetOrderModel extends GetOrderEntity{
     required int tenderId,
     required String productName,
     required String brandName,
+    required String name,
     required String categoryName,
     required String status,
      String? productImgUrl,
@@ -39,6 +40,7 @@ class GetOrderModel extends GetOrderEntity{
     productName: productName,
     creatorScore: creatorScore,
     brandName: brandName,
+    name: name,
     categoryName: categoryName,
     productImgUrl: productImgUrl,
     status: status,
@@ -55,6 +57,7 @@ class GetOrderModel extends GetOrderEntity{
 
   factory GetOrderModel.fromJson(Map<String,dynamic>json){
    final tenderId=json['idTender'];
+   final name=json['name'];
    final productName=json['productName'];
    final brandName=json['brandName'];
    final categoryName=json['categoryName'];
@@ -71,6 +74,7 @@ class GetOrderModel extends GetOrderEntity{
    return GetOrderModel(tenderId: tenderId,
        productName: productName,
        brandName: brandName,
+     name: name,
        creatorScore: creatorScore,
        categoryName: categoryName,
        productImgUrl: productImgUrl,status: status,

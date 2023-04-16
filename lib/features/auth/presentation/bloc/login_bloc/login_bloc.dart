@@ -7,6 +7,7 @@ import 'package:be_to_be/features/auth/domain/usecase/login_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,9 +20,18 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   static LoginBloc get(context)=>BlocProvider.of(context);
   final LoginUseCase loginUseCase;
   final SharedPreferences sharedPreferences;
+  final TextEditingController emailText = TextEditingController();
+  final TextEditingController passwordText = TextEditingController();
+  final TextEditingController phoneText = TextEditingController();
 
    bool obSecure=true;
    String token='';
+   String email='';
+   String password='';
+   String notes='';
+   bool byEmail=false;
+
+
 
 
 
@@ -36,6 +46,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       ///
       if(event is LoginButtonEvent){
         emit(LoadingLoginState());
+        await sharedPreferences.setString('password', event.loginEntity.password);
+        await sharedPreferences.setString('email', emailText.text.toString());
+        await sharedPreferences.setString('phone', phoneText.text.toString());
+
 
         final failureOrLogin=await loginUseCase(event.loginEntity);
 
@@ -44,6 +58,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
                   emit(ErrorLoginState(error: _mapFailureToMessage(failure)));
                 },
                 (login)async {
+
+
+
 
 
                   emit(LoadedLoginState());
@@ -68,6 +85,13 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
 
       if(event is GetTokenEvent){
          token=sharedPreferences.getString('token').toString();
+         email=sharedPreferences.getString('email').toString();
+         password=sharedPreferences.getString('password').toString();
+         notes=sharedPreferences.getString('notes').toString();
+         emailText.text=sharedPreferences.getString('email')==null?'':sharedPreferences.getString('email').toString();
+         passwordText.text=sharedPreferences.getString('password')==null?'':sharedPreferences.getString('password').toString();
+         byEmail=sharedPreferences.getBool('byEmail')!;
+         phoneText.text=sharedPreferences.getString('phone')==null?'':sharedPreferences.getString('phone').toString();
           emit(GetTokenState());
 
       }
@@ -88,6 +112,8 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
         return accountNotVerificationFailureMessage;
       case UnAcceptedAccountFailure:
         return unAcceptedAccountFailureMessage;
+      case GoToProfileFailure:
+        return goToProfileFailureMessage;
 
       default:
         return " Unexpected error,Please try again later.";

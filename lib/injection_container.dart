@@ -16,21 +16,26 @@ import 'package:be_to_be/features/add_tender/presentation/bloc/add_tender/add_te
 import 'package:be_to_be/features/auth/data/data_source/auth_remote_data_source.dart';
 import 'package:be_to_be/features/auth/data/repositories/auth_repositories_impl.dart';
 import 'package:be_to_be/features/auth/domain/repositories/auth_repositories.dart';
+import 'package:be_to_be/features/auth/domain/usecase/get_code_forget_password_usecase.dart';
 import 'package:be_to_be/features/auth/domain/usecase/login_usecase.dart';
+import 'package:be_to_be/features/auth/domain/usecase/post_new_password_usecase.dart';
 import 'package:be_to_be/features/auth/domain/usecase/register_usecase.dart';
 import 'package:be_to_be/features/auth/presentation/bloc/choose_verification_bloc/choose_verification_bloc.dart';
+import 'package:be_to_be/features/auth/presentation/bloc/forget_password/forget_password_bloc.dart';
 import 'package:be_to_be/features/auth/presentation/bloc/login_bloc/login_bloc.dart';
 import 'package:be_to_be/features/auth/presentation/bloc/register_bloc/register_bloc.dart';
 import 'package:be_to_be/features/be_to_be/data/data_source/be_to_be_remote_data_source/be_to_be_remote_data_source.dart';
 import 'package:be_to_be/features/be_to_be/data/repositories/be_to_be_repositories/be_to_be_repositories.dart';
 import 'package:be_to_be/features/be_to_be/domain/repositories/be_to_be_repositories/be_to_be_repositories.dart';
 import 'package:be_to_be/features/be_to_be/domain/use_case/get_be_to_be_data/get_be_tobe_data.dart';
+import 'package:be_to_be/features/be_to_be/domain/use_case/get_offers_on_tender_b2b_usecase/get_offers_on_tender_b2b_usecase.dart';
 import 'package:be_to_be/features/be_to_be/prsentation/bloc/be_to_be_bloc.dart';
 import 'package:be_to_be/features/chooase_tender/data/data_source/choose_tender_data_cource/choose_tender_remot_data_source.dart';
 import 'package:be_to_be/features/chooase_tender/data/repositories/choose_tender_repositories.dart';
 import 'package:be_to_be/features/chooase_tender/domain/repositories/choose_tender_repositories/choose_tender_repositories.dart';
 import 'package:be_to_be/features/chooase_tender/domain/usecsae/get_brand_usecase/get_brand_usecase.dart';
 import 'package:be_to_be/features/chooase_tender/domain/usecsae/get_categories_usecase/get_categories_usecase.dart';
+import 'package:be_to_be/features/chooase_tender/domain/usecsae/get_my_interests_usecase/get_my_interests_usecase.dart';
 import 'package:be_to_be/features/chooase_tender/domain/usecsae/get_pruduct_usecase/get_produts_usecase.dart';
 import 'package:be_to_be/features/chooase_tender/domain/usecsae/post_care_usecase/post_care_usecase.dart';
 import 'package:be_to_be/features/chooase_tender/presentation/bloc/choose_tender_bloc.dart';
@@ -75,7 +80,18 @@ import 'package:be_to_be/features/home/domain/usecase/get_package_used_usecase/g
 import 'package:be_to_be/features/home/domain/usecase/get_setting_usecase/get_setting_usecase.dart';
 import 'package:be_to_be/features/home/domain/usecase/is_logged_usecase/is_logged_usecase.dart';
 import 'package:be_to_be/features/home/presntation/bloc/main_bloc/main_page_bloc.dart';
+import 'package:be_to_be/features/launcher/data/data_source/launcher_remote_data_source.dart';
+import 'package:be_to_be/features/launcher/data/repositories/launcher_repositories.dart';
+import 'package:be_to_be/features/launcher/domain/repositories/launcher_cities_repositories.dart';
+import 'package:be_to_be/features/launcher/domain/usecase/get_cities_usecase/get_luancher_cities_usecase.dart';
 import 'package:be_to_be/features/launcher/presentation/bloc/launcher_bloc.dart';
+import 'package:be_to_be/features/more_info/data/data_source/more_info_remote_data_source/more_remote_data_source.dart';
+import 'package:be_to_be/features/more_info/data/repositories/more_info_repository/more_info_repository.dart';
+import 'package:be_to_be/features/more_info/domain/repositories/more_info_b2b_repositories/more_info_b2b_repositories.dart';
+import 'package:be_to_be/features/more_info/domain/usecase/get_offer_owner_info_usecase/get_offer_owner_info_usecase.dart';
+import 'package:be_to_be/features/more_info/domain/usecase/get_tender_owner_info_usecase/get_tender_owner_info_usecase.dart';
+import 'package:be_to_be/features/more_info/domain/usecase/post_offer_executed_usecase/post_offer_executed_usecase.dart';
+import 'package:be_to_be/features/more_info/presentation/bloc/more_info_b2b_bloc.dart';
 import 'package:be_to_be/features/notification/data/data_source/notification_remote_data_source/notification_remote_data_source.dart';
 import 'package:be_to_be/features/notification/data/repositories/notification_repositories.dart';
 import 'package:be_to_be/features/notification/domain/repositories/notification_repositories.dart';
@@ -145,11 +161,15 @@ Future<void>init()async{
   sl.registerFactory(() => LoginBloc(loginUseCase: sl(),sharedPreferences: sl()));
   sl.registerFactory(() => RegisterBloc(registerUseCase: sl()));
   sl.registerFactory(() => ChooseVerificationBloc(sharedPreferences: sl()));
+  sl.registerFactory(() => ForgetPasswordBloc(getForgetPasswordUseCase: sl(),postNewPasswordUseCase: sl()));
 
 
   // useCase
   sl.registerLazySingleton(() => LoginUseCase(authRepositories: sl()));
   sl.registerLazySingleton(() => RegisterUseCase(authRepositories: sl()));
+  sl.registerLazySingleton(() => GetForgetPasswordUseCase(authRepositories: sl()));
+  sl.registerLazySingleton(() => PostNewPasswordUseCase(authRepositories: sl()));
+
   // repository
   sl.registerLazySingleton<AuthRepositories>(() => AuthRepositoriesImpl(authDataSource: sl(), networkInfo: sl()));
   // dataSource
@@ -159,7 +179,7 @@ Future<void>init()async{
       ///Verification Page//////////////////////////////////////////////////////////////////////
 
   // Bloc
-  sl.registerFactory(() => VerificationBloc(sharedPreferences: sl(),verificationCodeUseCase: sl(),getVerificationCodeUseCase: sl()));
+  sl.registerFactory(() => VerificationBloc(sharedPreferences: sl(),verificationCodeUseCase: sl(),getVerificationCodeUseCase: sl(),registerUseCase: sl()));
   // useCase
   sl.registerLazySingleton(() => PostVerificationCodeUseCase(verificationRepositories: sl()));
   sl.registerLazySingleton(() => GetVerificationCodeUseCase(verificationRepositories: sl()));
@@ -240,9 +260,10 @@ Future<void>init()async{
 
 /// be to be///////////////////////////////////////////////////////////////////////
   //Bloc
-  sl.registerFactory(() => BeToBeBloc(getBeToBeData: sl()));
+  sl.registerFactory(() => BeToBeBloc(getBeToBeData: sl(),sharedPreferences: sl(),getOffersOnTenderB2BUseCase: sl()));
   // useCase
   sl.registerLazySingleton(() => GetBeToBeData(beToBeRepositories: sl()));
+  sl.registerLazySingleton(() => GetOffersOnTenderB2BUseCase(beToBeRepositories: sl()));
   // repository
   sl.registerLazySingleton<BeToBeRepositories>(() => BeToBeRepositoriesImpl(beDataSource: sl(), networkInfo: sl()));
   // dataSource
@@ -255,7 +276,7 @@ Future<void>init()async{
   // dataSource
 /// upgrade//////////////////////////////////////////////////////////////////////
   //Bloc
-  sl.registerFactory(() => UpgradeBloc(allPackageUseCase: sl(),postSubscribeUseCase: sl()));
+  sl.registerFactory(() => UpgradeBloc(allPackageUseCase: sl(),postSubscribeUseCase: sl(),sharedPreferences: sl()));
   // useCase
   sl.registerLazySingleton(() => GetAllPackageUseCase(upgradeRepositories: sl()));
   sl.registerLazySingleton(() => PostSubscribeUseCase(upgradeRepositories: sl()));
@@ -301,7 +322,7 @@ Future<void>init()async{
 
   //Bloc
   sl.registerFactory(() => ChooseTenderBloc(getCategoriesChooseTenderUseCase: sl(),postCareUseCase: sl(),getBrandsChooseTenderUseCase: sl()
-  ,getProductsChooseTenderUseCase: sl(),sharedPreferences: sl()
+  ,getProductsChooseTenderUseCase: sl(),sharedPreferences: sl(),getMyInterestsUseCase: sl()
   ));
 
 
@@ -310,6 +331,7 @@ Future<void>init()async{
  sl.registerLazySingleton(() => GetBrandsChooseTenderUseCase(chooseTenderRepositories: sl()));
  sl.registerLazySingleton(() => GetProductsChooseTenderUseCase(chooseTenderRepositories: sl()));
  sl.registerLazySingleton(() => PostCareUseCase(chooseTenderRepositories: sl()));
+ sl.registerLazySingleton(() => GetMyInterestsUseCase(chooseTenderRepositories: sl()));
 
   // repository
 
@@ -367,10 +389,13 @@ sl.registerLazySingleton<NotificationRemoteDataSource>(() => NotificationRemoteD
 /// launcher
 
   //Bloc
-  sl.registerFactory(() => LauncherBloc(sharedPreferences: sl()));
+  sl.registerFactory(() => LauncherBloc(sharedPreferences: sl(),getLauncherCitiesUseCase: sl()));
   // useCase
+  sl.registerLazySingleton(() => GetLauncherCitiesUseCase(launcherRepositories: sl()));
   // repository
+  sl.registerLazySingleton<LauncherRepositories>(() => LauncherRepositoriesImpl(networkInfo: sl(), launcherRemoteDataSource: sl()));
   // dataSource
+  sl.registerLazySingleton<LauncherRemoteDataSource>(() => LauncherRemoteDataSourceImpl(sharedPreferences: sl(), client: sl()));
 
 
 /// about us
@@ -426,8 +451,17 @@ sl.registerLazySingleton<NotificationRemoteDataSource>(() => NotificationRemoteD
   sl.registerLazySingleton<FAQRemoteDataSource>(() => FAQRemoteDataSourceImpl(sharedPreferences: sl(), client: sl()));
 
 
-
-
+/// here for more info B2B
+  //Bloc
+  sl.registerFactory(() => MoreInfoB2bBloc(getTenderOwnerInfoUseCase: sl(),getOfferOwnerInfoUseCase: sl(),offerExecutedUseCase: sl()));
+  // useCase
+  sl.registerLazySingleton(() => GetTenderOwnerInfoUseCase(moreInfoB2BRepositories: sl()));
+  sl.registerLazySingleton(() => GetOfferOwnerInfoUseCase(moreInfoB2BRepositories: sl()));
+  sl.registerLazySingleton(() => PostOfferExecutedUseCase(moreInfoB2BRepositories: sl()));
+  // repository
+  sl.registerLazySingleton<MoreInfoB2BRepositories>(() => MoreInfoB2BRepositoryImpl(networkInfo: sl(), moreInfoRemoteDataSource: sl()));
+  // dataSource
+  sl.registerLazySingleton<MoreInfoRemoteDataSource>(() => MoreInfoRemoteDataSourceImpl(sharedPreferences: sl(), client: sl()));
 
 
   //Bloc

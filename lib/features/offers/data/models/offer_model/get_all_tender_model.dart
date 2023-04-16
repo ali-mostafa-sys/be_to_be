@@ -16,14 +16,16 @@ const  GetAllTenderModel({
     required String categoryName,
     required String status,
     required String from,
+    required String name,
     required String to,
     required String deliverBefore,
 }):super(tenderId: tenderId,productImgUrl: productImgUrl,categoryName: categoryName,brandName: brandName,productName: productName,status: status,
-from: from,to: to,deliverBefore: deliverBefore,creatorScore: creatorScore,area: area);
+from: from,to: to,deliverBefore: deliverBefore,creatorScore: creatorScore,area: area,name:name);
 
 
   factory GetAllTenderModel.fromJson(Map<String,dynamic>json){
     final tenderId=json['idTender'];
+    final name=json['name'];
     final productName=json['productName'];
     final productImgUrl=json['productImgUrl'];
     final brandName=json['brandName'];
@@ -35,7 +37,7 @@ from: from,to: to,deliverBefore: deliverBefore,creatorScore: creatorScore,area: 
     final deliverBefore=json['deliverBefore'];
     final creatorScore=json['creatorScore'];
 
-    return GetAllTenderModel(tenderId: tenderId,
+    return GetAllTenderModel(tenderId: tenderId,name:name,
         productName: productName, productImgUrl: productImgUrl, brandName: brandName, categoryName: categoryName, status: status,
     from: from,to: to,deliverBefore: deliverBefore,creatorScore: creatorScore,area: area);
 

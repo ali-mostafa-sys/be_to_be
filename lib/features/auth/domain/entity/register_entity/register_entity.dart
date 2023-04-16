@@ -8,6 +8,7 @@ class RegisterEntity extends Equatable{
   final String password;
   final String birthDate ;
   final String gender ;
+  final String companyId ;
   final bool hasMobileWhatsApp;
   const RegisterEntity({
     required this.firstName,
@@ -17,6 +18,7 @@ class RegisterEntity extends Equatable{
     required this.password,
     required this.birthDate,
     required this.gender,
+    required this.companyId,
     required this.hasMobileWhatsApp,
 });
 
@@ -24,6 +26,6 @@ class RegisterEntity extends Equatable{
 
   @override
   // TODO: implement props
-  List<Object?> get props => [firstName,lastName,email,mobileNumber,password,birthDate,gender,hasMobileWhatsApp];
+  List<Object?> get props => [firstName,lastName,email,mobileNumber,password,birthDate,gender,hasMobileWhatsApp,companyId];
 
 }

@@ -59,8 +59,19 @@ class ErrorPostSubscribeState extends UpgradeState{
   List<Object> get props => [error];
 }
 
-
-
+///
+/// here for payment state
+///
+class LoadingPaymentState extends UpgradeState{}
+class LoadedPaymentState extends UpgradeState{}
+class ErrorPaymentState extends UpgradeState{
+  final String error;
+  const ErrorPaymentState({
+    required this.error
+  });
+  @override
+  List<Object> get props => [error];
+}
 
 
 

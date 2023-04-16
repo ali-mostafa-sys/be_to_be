@@ -39,6 +39,12 @@ class ChangePremiumBottomNavigationBarState extends MainPageState{
   @override
   List<Object> get props => [currentPremiumIndexPage];
 }
+class CreatePageState extends MainPageState{
+  final bool createPage;
+  const CreatePageState({required this.createPage});
+  @override
+  List<Object> get props => [createPage];
+}
 
 ///
 ///  here for is logged state
@@ -143,7 +149,10 @@ class ErrorGetSettingState extends MainPageState{
   List<Object> get props => [error];
 }
 
-
+///
+/// here for log out state
+///
+class LogOutHomeState extends MainPageState{}
 
 
 

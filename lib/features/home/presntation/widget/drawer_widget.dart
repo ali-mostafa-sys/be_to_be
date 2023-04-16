@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:be_to_be/core/routs/routes.gr.dart';
 import 'package:be_to_be/features/auth/presentation/widgets/background_widget.dart';
 import 'package:be_to_be/features/home/domain/entiy/is_logged_entity/is_logged_entity.dart';
 import 'package:be_to_be/features/home/presntation/bloc/main_bloc/main_page_bloc.dart';
@@ -15,7 +16,11 @@ class DrawerWidget extends StatelessWidget {
     double w = MediaQuery.of(context).size.width;
     double h = MediaQuery.of(context).size.height;
     return BlocConsumer<MainPageBloc,MainPageState>(
-        listener: (context ,state){},
+        listener: (context ,state){
+          if(state is LogOutHomeState){
+            AutoRouter.of(context).pushAndPopUntil(LoginPage(), predicate: (route)=>false);
+          }
+        },
         builder: (context ,state){
           var mainBloc=MainPageBloc.get(context);
           return Drawer(
@@ -39,7 +44,7 @@ class DrawerWidget extends StatelessWidget {
                             ),
                             Padding(
                               padding:  EdgeInsetsDirectional.only(
-                                  start: w*0.2,
+                                  start: w*0.1,
                                   top: h*0.25
                               ),
                               child: Column(
@@ -54,7 +59,17 @@ class DrawerWidget extends StatelessWidget {
                                     style: TextStyle(
                                         fontSize: w*0.05,
                                         color: Colors.white
-                                    ),)
+                                    ),),
+                                  SizedBox(
+                                    height: h*0.01,
+                                  ),
+                                  Text(
+                                    mainBloc.packageName!=''?
+                                    'Your package is  ${mainBloc!.packageName}':'You are not Premium',
+                                    style: TextStyle(
+                                        fontSize: w*0.05,
+                                        color: Colors.white
+                                    ),),
                                 ],
                               ),
                             )
@@ -68,7 +83,10 @@ class DrawerWidget extends StatelessWidget {
 
                       DrawerButtonWidget(onTap: (){
                         AutoRouter.of(context).pushNamed('/upgrade');
-                      }, path: 'assets/images/premium.png', text: 'Upgrade'),
+                      },
+                          icon: Icon(Icons.star_sharp,color: Colors.amber,),
+                         // path: 'assets/images/premium.png',
+                          text: 'Upgrade'),
                       SizedBox(
                         height: h*0.01,
                       ),
@@ -88,7 +106,7 @@ class DrawerWidget extends StatelessWidget {
                       },
                           icon: Icon(Icons.create_outlined,color: Colors.black,),
 
-                          text: 'Create tenders'),
+                          text: 'Add Product'),
                       SizedBox(
                         height: h*0.01,
                       ),
@@ -146,7 +164,9 @@ class DrawerWidget extends StatelessWidget {
                         height: h*0.01,
                       ),
                       /// here Sign Out
-                      DrawerButtonWidget(onTap: (){}, path: 'assets/images/logout.png', text: 'Sign Out'),
+                      DrawerButtonWidget(onTap: (){
+                        mainBloc.add(LogeOutHomeEvent());
+                      }, path: 'assets/images/logout.png', text: 'Sign Out'),
                       SizedBox(
                         height: h*0.01,
                       ),

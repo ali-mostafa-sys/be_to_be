@@ -8,13 +8,14 @@ import 'package:be_to_be/core/strings/const.dart';
 import 'package:be_to_be/features/chooase_tender/data/models/brand_model/brand_model.dart';
 import 'package:be_to_be/features/chooase_tender/data/models/care_model/care_model.dart';
 import 'package:be_to_be/features/chooase_tender/data/models/categories_model/categories_model.dart';
+import 'package:be_to_be/features/chooase_tender/data/models/my_interests_model/my_interests_model.dart';
 import 'package:be_to_be/features/chooase_tender/data/models/product_model/product_model.dart';
 import 'package:dartz/dartz.dart';
 import 'package:http/http.dart'as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class ChooseTenderRemoteDataSource {
-
+Future<List<MyInterestsModel>>getMyInterests();
   Future<List<CategoriesChooseTenderModel>>getCategories();
   Future<List<BrandChooseTenderModel>>getBrands();
   Future<List<ProductChooseTenderModel>>getProducts();
@@ -127,6 +128,34 @@ class ChooseTenderRemoteDataSourceImpl extends ChooseTenderRemoteDataSource{
         return ProductChooseTenderModel.fromJson(e);
       }).toList();
       return products;
+    }else{
+      throw ServerException();
+    }
+  }
+///
+  /// here get my interests
+  ///
+  @override
+  Future<List<MyInterestsModel>> getMyInterests() async{
+    final uri = Uri.http(baseUrl, '/api/user/cares');
+    final cookies = sharedPreferences.getString('cookies');
+    final response = await client.get(uri,headers: {
+      "Accept":"application/json",
+      "Content-Type": "application/json",
+      "Cookie": "$cookies"
+    });
+    if(response.statusCode==200){
+      final allData=jsonDecode(response.body);
+      final data=allData['data']as List;
+      if(data.isEmpty){
+        throw MyInterestsIsEmptyException();
+      }
+
+
+      final myInterestsModel=data.map((e) {
+        return MyInterestsModel.fromJson(e);
+      }).toList();
+      return myInterestsModel;
     }else{
       throw ServerException();
     }

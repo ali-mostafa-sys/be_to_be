@@ -6,9 +6,11 @@ import 'package:be_to_be/core/strings/failures_message.dart';
 import 'package:be_to_be/features/chooase_tender/domain/entity/brand_entity/brand_entity.dart';
 import 'package:be_to_be/features/chooase_tender/domain/entity/care_entity/care_entity.dart';
 import 'package:be_to_be/features/chooase_tender/domain/entity/categories_entity/categories_entity.dart';
+import 'package:be_to_be/features/chooase_tender/domain/entity/my_interests_entity/my_interests_entity.dart';
 import 'package:be_to_be/features/chooase_tender/domain/entity/product_entity/product_entity.dart';
 import 'package:be_to_be/features/chooase_tender/domain/usecsae/get_brand_usecase/get_brand_usecase.dart';
 import 'package:be_to_be/features/chooase_tender/domain/usecsae/get_categories_usecase/get_categories_usecase.dart';
+import 'package:be_to_be/features/chooase_tender/domain/usecsae/get_my_interests_usecase/get_my_interests_usecase.dart';
 import 'package:be_to_be/features/chooase_tender/domain/usecsae/get_pruduct_usecase/get_produts_usecase.dart';
 import 'package:be_to_be/features/chooase_tender/domain/usecsae/post_care_usecase/post_care_usecase.dart';
 import 'package:bloc/bloc.dart';
@@ -26,6 +28,7 @@ class ChooseTenderBloc extends Bloc<ChooseTenderEvent, ChooseTenderState> {
   final GetBrandsChooseTenderUseCase getBrandsChooseTenderUseCase;
   final GetProductsChooseTenderUseCase getProductsChooseTenderUseCase;
   final PostCareUseCase postCareUseCase;
+  final GetMyInterestsUseCase getMyInterestsUseCase;
   final SharedPreferences sharedPreferences;
 
   /// here for categories drop down button
@@ -44,22 +47,61 @@ class ChooseTenderBloc extends Bloc<ChooseTenderEvent, ChooseTenderState> {
   List<int> selectedProductId = [];
 
 
+  /// here for new categories and brands
+// on tap cat
+  bool textCatTap = false;
+  List<bool> checkboxCatTapList = [];
+  List<bool> expandedCatList = [];
+  List<bool> checkBoxBrandOfCatList = [];
 
+  // on tap brand
+  bool textBrandTap = false;
+  List<bool> expandedBrandList = [];
+  List<bool> checkBoxProductOfBrandtList = [];
+//  List<>
 
-  /// here for select list of list of brand
-
-  List<List<BrandChooseTenderEntity>> listOfBrandList=[];
-
-
+  // List<bool>checkboxCatTapList=[];
+  // List<bool>expandedCatList=[];
+  // List<bool>checkBoxBrandOfCatList=[];
+///here for get my interests
+ List<MyInterestsEntity>myInterestsList=[];
 
   ChooseTenderBloc({
     required this.getCategoriesChooseTenderUseCase,
     required this.getBrandsChooseTenderUseCase,
     required this.getProductsChooseTenderUseCase,
     required this.postCareUseCase,
+    required this.getMyInterestsUseCase,
     required this.sharedPreferences,
   }) : super(ChooseTenderInitial()) {
     on<ChooseTenderEvent>((event, emit) async {
+      ///
+      /// here for get my interest event
+      ///
+      if(event is GetMyInterestsEvent){
+        emit(LoadingGetMyInterestsState());
+
+        final failureOrGetMyInterests=await getMyInterestsUseCase();
+        failureOrGetMyInterests.fold(
+                (failure) {
+                  emit(ErrorGetMyInterestsState(error: _mapFailureToMessage(failure)));
+
+            },
+                (myInterests) {
+                  myInterests.map((e) {
+                    myInterestsList.add(e);
+                  }).toList();
+                  print(myInterests);
+                  emit(LoadedGetMyInterestsState());
+                });
+      }
+
+
+
+
+
+
+
       ///
       /// here for get categories
       ///
@@ -70,7 +112,13 @@ class ChooseTenderBloc extends Bloc<ChooseTenderEvent, ChooseTenderState> {
           emit(ErrorGetChooseTenderCategoriesState(
               error: _mapFailureToMessage(failure)));
         }, (allCategories) {
+          checkboxCatTapList = [];
+          expandedCatList = [];
           categoriesEntity = allCategories;
+          allCategories.map((e) {
+            checkboxCatTapList.add(false);
+            expandedCatList.add(false);
+          }).toList();
           emit(LoadedGetChooseTenderCategoriesState());
         });
       }
@@ -80,14 +128,10 @@ class ChooseTenderBloc extends Bloc<ChooseTenderEvent, ChooseTenderState> {
       ///
       if (event is SelectedChooseTenderCategoriesEvent) {
         selectedCategoryId = [];
-        categoriesSelected=[];
+        categoriesSelected = [];
         event.categories.map((e) {
-
           selectedCategoryId.add(e.idCategory);
         }).toList();
-
-
-
 
         print(selectedCategoryId);
         emit(SelectedChooseTenderCategoriesState(categories: event.categories));
@@ -97,12 +141,19 @@ class ChooseTenderBloc extends Bloc<ChooseTenderEvent, ChooseTenderState> {
       /// here for get brands event
       ///
       if (event is GetBrandsChooseTenderEvent) {
-        emit(LoadingGetBrandsState());
+        // emit(LoadingGetBrandsState());
+        emit(LoadingGetChooseTenderCategoriesState());
         final failureOrGetBrands = await getBrandsChooseTenderUseCase();
         failureOrGetBrands.fold((failure) {
           emit(ErrorGetBrandsState(error: _mapFailureToMessage(failure)));
         }, (brands) {
+          checkBoxBrandOfCatList = [];
+          expandedBrandList = [];
           brandEntity = brands;
+          brands.map((e) {
+            checkBoxBrandOfCatList.add(false);
+            expandedBrandList.add(false);
+          }).toList();
           emit(LoadedGetBrandsState());
         });
       }
@@ -123,12 +174,17 @@ class ChooseTenderBloc extends Bloc<ChooseTenderEvent, ChooseTenderState> {
       /// here for get product event
       ///
       if (event is GetProductChooseTenderEvent) {
-        emit(LoadingGetProductState());
+        // emit(LoadingGetProductState());
+        emit(LoadingGetChooseTenderCategoriesState());
         final failureOrGetProduct = await getProductsChooseTenderUseCase();
         failureOrGetProduct.fold((failure) {
           emit(ErrorGetProductState(error: _mapFailureToMessage(failure)));
         }, (products) {
+          checkBoxProductOfBrandtList=[];
           productEntity = products;
+          products.map((e) {
+            checkBoxProductOfBrandtList.add(false );
+          }).toList();
           emit(LoadedGetProductState());
         });
       }
@@ -158,11 +214,124 @@ class ChooseTenderBloc extends Bloc<ChooseTenderEvent, ChooseTenderState> {
         failureOrPostCares.fold((failure) {
           emit(ErrorPostCareState(error: _mapFailureToMessage(failure)));
         }, (postCare) {
-           sharedPreferences.setBool('chooseTender', true);
+          sharedPreferences.setBool('chooseTender', true);
           // chooseTenders= sharedPreferences.getBool('chooseTender');
           emit(LoadedPostCareState());
         });
       }
+
+      ///
+      /// text cat tap event//////////////////////////////////////////////////////
+      ///
+
+      if (event is TextCatTap) {
+        textCatTap = !textCatTap;
+        emit(TextCatTapState(tap: textCatTap));
+      }
+
+      ///
+      /// here for chexk box cat event
+      ///
+
+      if (event is CheckBoxCatSelected) {
+        emit(ChecksBoxCatState());
+        checkboxCatTapList[event.index] = !checkboxCatTapList[event.index];
+        if (checkboxCatTapList[event.index] == true) {
+          selectedCategoryId.add(event.categories.idCategory);
+          expandedCatList[event.index] = true;
+          ///here where i change the brand///////////////////////////////////////////////////////////////////////////////
+          for(int i=0;i<brandEntity.length;i++){
+            if(brandEntity[i].categoryId==event.categories.idCategory){
+              checkBoxBrandOfCatList[i]=true;
+              brandSelected.add(brandEntity[i]);
+            }
+          }
+        } else if (checkboxCatTapList[event.index] == false) {
+          selectedCategoryId.remove(event.categories.idCategory);
+          expandedCatList[event.index] = false;
+        }
+        print(selectedCategoryId);
+        emit(CheckBoxCatState(
+            listCheckBool: checkboxCatTapList,
+            listExpandedBool: expandedCatList));
+      }
+
+      /// here close expanded cat event
+      if (event is CloseCheckCatExpanded) {
+        emit(CloseExpandedCatsState());
+        expandedCatList[event.index] = false;
+        emit(CloseExpandedCatState(
+            listExpandedBool: expandedCatList, index: event.index));
+      }
+
+      /// here for check box brand of cat event selected
+
+      if (event is CheckBoxBrandOfCatSelectedEvent) {
+        emit(CheckBoxBrandsOfCatState());
+
+        checkBoxBrandOfCatList[event.index] =
+            !checkBoxBrandOfCatList[event.index];
+        if (checkBoxBrandOfCatList[event.index] == true) {
+          brandSelected.add(event.brandChooseTenderEntity);
+          selectedBrandId.add(event.brandChooseTenderEntity.idBrand);
+        } else if (checkBoxBrandOfCatList[event.index] == false) {
+          brandSelected.remove(event.brandChooseTenderEntity);
+          selectedBrandId.remove(event.brandChooseTenderEntity.idBrand);
+        }
+        print(selectedBrandId);
+        emit(CheckBoxBrandOfCatState(value: checkBoxBrandOfCatList));
+      }
+
+      ///
+      /// text brand tap event//////////////////////////////////////////////////////
+      ///
+
+      if (event is TextBrandTap) {
+        textBrandTap = !textBrandTap;
+        emit(TextBrandTapState(tap: textBrandTap));
+      }
+      ///
+      /// here for expanded box brand event
+      ///
+
+      if (event is CheckBoxBrandSelected) {
+        emit(ChecksBoxBrandsState());
+        expandedBrandList[event.index] = !expandedBrandList[event.index];
+        print(expandedBrandList);
+        emit(CheckBoxBrandState(listExpandedBool: expandedCatList));
+      }
+      /// here for check box brand of cat event selected
+
+      if (event is CheckBoxProductOfBrandSelectedEvent) {
+        emit(CheckBoxProductOfBrandsState());
+
+        checkBoxProductOfBrandtList[event.index] = !checkBoxProductOfBrandtList[event.index];
+        if (checkBoxProductOfBrandtList[event.index] == true) {
+          selectedProductId.add(event.productChooseTenderEntity.idProduct);
+        } else if (checkBoxProductOfBrandtList[event.index] == false) {
+          selectedProductId.remove(event.productChooseTenderEntity.idProduct);
+        }
+        print(selectedProductId);
+        emit(CheckBoxProductOfBrandtState(value: checkBoxProductOfBrandtList));
+      }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     });
   }
 
@@ -172,6 +341,8 @@ class ChooseTenderBloc extends Bloc<ChooseTenderEvent, ChooseTenderState> {
         return serverFailureMessage;
       case OfflineFailure:
         return offlineFailureMessage;
+      case MyInterestsIsEmptyFailure:
+        return myInterestsIsEmptyMessage;
 
       default:
         return " Unexpected error,Please try again later.";

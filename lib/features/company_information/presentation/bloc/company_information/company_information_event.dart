@@ -90,6 +90,26 @@ class AddCompanyEvent extends CompanyInformationEvent{
   List<Object> get props => [addCompanyEntity];
 }
 
+///
+/// here for search google map event
+///
+class GoogleMapSearchEvent extends CompanyInformationEvent{
+  final String text;
+  const GoogleMapSearchEvent({required this.text});
+  @override
+  List<Object> get props => [text];
+}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -12,6 +12,7 @@ import 'package:be_to_be/features/auth/presentation/widgets/background_widget.da
 import 'package:be_to_be/features/company_information/domain/entity/country_entity/country_entity.dart';
 import 'package:be_to_be/features/company_information/presentation/bloc/company_information/company_information_bloc.dart';
 import 'package:dropdown_search/dropdown_search.dart';
+import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:be_to_be/injection_container.dart' as di;
@@ -38,24 +39,27 @@ class CompanyInformationPage extends StatelessWidget {
     return BlocConsumer<CompanyInformationBloc, CompanyInformationState>(
       listener: (context, state) {
         print(state);
-        if(state is LoadedGetCountiesState ){
-          if( state.countryId!=null ){
-            CompanyInformationBloc.get(context).add(GetAllCitiesEvent(countryId: state.countryId!));
+        if (state is LoadedGetCountiesState) {
 
+          if (state.countryId != null) {
+
+            CompanyInformationBloc.get(context)
+                .add(GetAllCitiesEvent(countryId: state.countryId!));
           }
-
         }
       },
       builder: (context, state) {
         var bloc = CompanyInformationBloc.get(context);
-        if(state is LoadingGetCompanyTypeState){
+        if (state is LoadingGetCurrentLocationState) {
           return const LoadingWidget();
-
-
+        }
+        if (state is LoadingGetCompanyTypeState) {
+          return const LoadingWidget();
         }
         if (state is LoadingGetCountiesState) {
           return const LoadingWidget();
         }
+
         if (state is LoadingUploadImageState) {
           return const LoadingWidget();
         }
@@ -134,11 +138,14 @@ class CompanyInformationPage extends StatelessWidget {
                                       showDatePicker(
                                               context: context,
                                               initialDate: DateTime.parse(
-                                                  "2020-08-27T19:00:00Z"),
+                                                  "1994-02-28T19:00:00Z"),
                                               firstDate: DateTime.parse(
-                                                  "2020-08-27T19:00:00Z"),
+                                                  "1900-01-01T19:00:00Z"),
                                               lastDate: DateTime.now())
                                           .then((value) {
+                                        bloc.establish = value.toString();
+                                        print(bloc.establish);
+
                                         bloc.establishDate.text =
                                             DateFormat.yMd().format(
                                           value!,
@@ -169,7 +176,7 @@ class CompanyInformationPage extends StatelessWidget {
                                   child: DropdownButton(
                                       borderRadius: BorderRadius.circular(25),
                                       key: companyId,
-                                     // alignment: Alignment.bottomCenter,
+                                      // alignment: Alignment.bottomCenter,
                                       underline: Container(
                                         width: 0,
                                         height: 0,
@@ -210,118 +217,65 @@ class CompanyInformationPage extends StatelessWidget {
                                 ),
 
                                 /// here for choose country
-                                Container(
-                                  padding: EdgeInsetsDirectional.only(
-                                     start: w * 0.02,
+                                DropDownTextField(
+                                   // controller: cnt,
+                                  listTextStyle: TextStyle(color: primaryColor),
+                                  textStyle: TextStyle(color: primaryColor),
+                                  dropdownRadius: 25,
+                                  dropDownIconProperty: IconProperty(
+                                    color: primaryColor,
+                                    icon: Icons.keyboard_arrow_down_rounded,
+                                    size: w * 0.1,
                                   ),
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(25),
-                                      border: Border.all(
-                                          width: 1, color: primaryColor),
-                                      color: HexColor('#DCDCDC')),
-                                  child:
-                                      ///hew/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-                                  // DropdownSearch(
-                                  //   popupBackgroundColor: HexColor('#DCDCDC'),
-                                  //
-                                  //
-                                  //
-                                  //
-                                  //   itemAsString: (CountryEntity? country)=>country!.nameEn,
-                                  //
-                                  //   dropdownSearchBaseStyle: TextStyle(
-                                  //     color: primaryColor,
-                                  //
-                                  //   ),
-                                  //
-                                  //   dropdownSearchDecoration: InputDecoration(
-                                  //     border: OutlineInputBorder(
-                                  //       borderSide: BorderSide(width: 1,color: primaryColor),
-                                  //       borderRadius: BorderRadius.all(Radius.circular(25)),
-                                  //
-                                  //     ),
-                                  //     focusedBorder: OutlineInputBorder(
-                                  //       borderSide: BorderSide(width: 1,color: primaryColor),
-                                  //       borderRadius: BorderRadius.all(Radius.circular(25)),
-                                  //
-                                  //     ),
-                                  //     enabledBorder: OutlineInputBorder(
-                                  //       borderSide: BorderSide(width: 1,color: primaryColor),
-                                  //       borderRadius: BorderRadius.all(Radius.circular(25)),
-                                  //
-                                  //     ),
-                                  //     labelText: 'Country',
-                                  //
-                                  //     contentPadding: EdgeInsetsDirectional.only(start: w*0.03),
-                                  //     labelStyle: TextStyle(
-                                  //       fontSize: w*0.045,
-                                  //       color: primaryColor
-                                  //     ),
-                                  //
-                                  //   ),
-                                  //
-                                  //
-                                  //
-                                  //   mode: Mode.MENU,
-                                  //   items: bloc.country,
-                                  //  // showSearchBox: true,
-                                  //   onChanged: (CountryEntity? country){
-                                  //     print(country);
-                                  //
-                                  //   },
-                                  // )
-                                  DropdownButton(
+                                  textFieldDecoration: InputDecoration(
+                                    hintText: 'Country',
+                                    hintStyle: TextStyle(
+                                      color: primaryColor,
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(
+                                        vertical: 0, horizontal: 3),
+                                  ),
+                                  enableSearch: true,
+                                  clearIconProperty: IconProperty(color: Colors.green),
+                                  clearOption: false,
+                                  initialValue: bloc.selectedCountry ?? '',
+                                  searchDecoration: const InputDecoration(
+                                    hintText: "Search .....",
+                                  ),
+                                  validator: (value) {
+                                    print('++++++++++++++++++++++++++++');
+                                    print(value);
+                                    print("++++++++++++++++++++++++++++");
+                                    if (value == null) {
+                                      return "Required field";
+                                    } else {
+                                      return null;
+                                    }
+                                  },
+                                  dropDownItemCount: bloc.country.length,
+                                  onChanged: ( newValue) {
+                                    DropDownValueModel countryModel=newValue  ;
+                                    String? country=countryModel!.name;
+                                    bloc.add(
+                                        SelectedValueForCountriesDropDownButtonEvent(selectedValue: country));
 
-                                      borderRadius: BorderRadius.circular(25),
-                                      key: countryId,
-                                     // alignment: Alignment.bottomCenter,
-                                      underline: Container(
-                                        width: 0,
-                                        height: 0,
-                                      ),
-                                      dropdownColor: HexColor('#DCDCDC'),
-                                      menuMaxHeight: h * 0.3,
-                                      isExpanded: true,
-                                      isDense: false,
-                                      value: bloc.selectedCountry,
-                                      icon: Icon(
-                                        Icons.keyboard_arrow_down_rounded,
-                                        color: primaryColor,
-                                        size: w * 0.1,
-                                      ),
-                                      elevation: 16,
-                                      hint: Text(
-                                        'Country',
-                                        style: TextStyle(color: primaryColor),
-                                      ),
-                                      style: TextStyle(color: primaryColor),
-                                      onChanged: (String? newValue) {
-                                        bloc.add(
-                                            SelectedValueForCountriesDropDownButtonEvent(
-                                                selectedValue: newValue!));
-
-                                        Future.delayed(
-                                            const Duration(
-                                                 seconds:2 ,
-                                              //  milliseconds: 500
-                                            ), () {
-                                          print(bloc.selectedCountryId);
-                                          bloc.add(GetAllCitiesEvent(
-                                              countryId:
-                                                  bloc.selectedCountryId!));
-                                        });
-                                      },
-                                      items: bloc.country
-                                          .map<DropdownMenuItem<String>>((e) {
-                                        return DropdownMenuItem<String>(
-                                          value: e.nameEn,
-                                          child: Row(
-                                            children: [Text(e.nameEn)],
-                                          ),
-                                        );
-                                      }).toList())
-                                  ,
+                                    Future.delayed(
+                                        const Duration(
+                                          seconds:2 ,
+                                          //  milliseconds: 500
+                                        ), () {
+                                      print(bloc.selectedCountryId);
+                                      bloc.add(GetAllCitiesEvent(
+                                          countryId:
+                                          bloc.selectedCountryId!));
+                                    });
+                                  },
+                                  dropDownList: bloc.country.map((e) {
+                                    return DropDownValueModel(
+                                        value: e.nameEn, name: e.nameEn,);
+                                  }).toList(),
                                 ),
+
                                 bloc.selectedCountry != null
                                     ? SizedBox(
                                         height: h * 0.02,
@@ -344,7 +298,7 @@ class CompanyInformationPage extends StatelessWidget {
                                             borderRadius:
                                                 BorderRadius.circular(25),
                                             key: cityId,
-                                           // alignment: Alignment.bottomCenter,
+                                            // alignment: Alignment.bottomCenter,
                                             underline: Container(
                                               width: 0,
                                               height: 0,
@@ -367,9 +321,6 @@ class CompanyInformationPage extends StatelessWidget {
                                             ),
                                             style:
                                                 TextStyle(color: primaryColor),
-                                            // underline: Container(
-                                            //   height: 0,
-                                            // ),
                                             onChanged: (String? newValue) {
                                               //newValue=cubits.countryLanguage;
 
@@ -418,9 +369,14 @@ class CompanyInformationPage extends StatelessWidget {
                                               context: context,
                                               initialDate: DateTime.now(),
                                               firstDate: DateTime.now(),
-                                              lastDate: DateTime.parse(
-                                                  "2050-08-27T19:00:00Z"))
+                                              lastDate: DateTime.now().add(Duration(days: 50000)),
+                                              // DateTime.parse(
+                                              //     "2050-08-27T19:00:00Z")
+                                      )
                                           .then((value) {
+                                        bloc.expire = value.toString();
+                                        print(bloc.expire);
+
                                         bloc.licenseExpireDate.text =
                                             DateFormat.yMd().format(
                                           value!,
@@ -447,23 +403,60 @@ class CompanyInformationPage extends StatelessWidget {
                                           color: primaryColor, width: 1)),
                                   child: Center(
                                     child: bloc.licenseImage == null
-                                        ? bloc.imageUrl==null?
-
-                                    InkWell(
-                                            onTap: () {
-                                              bloc.add(PickImageLicenseEvent());
-                                            },
-                                            child: Text(
-                                              'Pick License Image',
-                                              style: TextStyle(
-                                                  color: primaryColor),
-                                            ),
-                                          )
+                                        ? bloc.imageUrl == null
+                                            ? InkWell(
+                                                onTap: () {
+                                                  bloc.add(
+                                                      PickImageLicenseEvent());
+                                                },
+                                                child: Text(
+                                                  'Pick License Image',
+                                                  style: TextStyle(
+                                                      color: primaryColor),
+                                                ),
+                                              )
+                                            : Stack(
+                                                alignment: Alignment.topRight,
+                                                children: [
+                                                  Image.network(
+                                                    '${bloc.imageUrl}',
+                                                    width: double.infinity,
+                                                    height: h * 0.2,
+                                                  ),
+                                                  IconButton(
+                                                    onPressed: () {
+                                                      bloc.add(
+                                                          DeleteLicenseImageEvent());
+                                                    },
+                                                    icon: Icon(
+                                                      Icons.clear,
+                                                      color: primaryColor,
+                                                    ),
+                                                  ),
+                                                  // Align(
+                                                  //     alignment:
+                                                  //         Alignment.bottomRight,
+                                                  //     child: IconButton(
+                                                  //         onPressed: () {
+                                                  //           //TODO: FOR UPLOAD IMAGE
+                                                  //           bloc.add(UploadImageEvent(
+                                                  //               imageFile: bloc
+                                                  //                   .licenseImage!));
+                                                  //         },
+                                                  //         icon: Icon(
+                                                  //           Icons
+                                                  //               .cloud_upload_outlined,
+                                                  //           color: primaryColor,
+                                                  //         )))
+                                                ],
+                                              )
                                         : Stack(
                                             alignment: Alignment.topRight,
                                             children: [
-                                              Image.network('${bloc.imageUrl}',width: double.infinity,height: h*0.2,)
-                                              ,
+                                              Image.file(
+                                                bloc.licenseImage!,
+                                                width: double.infinity,
+                                              ),
                                               IconButton(
                                                 onPressed: () {
                                                   bloc.add(
@@ -474,59 +467,23 @@ class CompanyInformationPage extends StatelessWidget {
                                                   color: primaryColor,
                                                 ),
                                               ),
-                                              // Align(
-                                              //     alignment:
-                                              //         Alignment.bottomRight,
-                                              //     child: IconButton(
-                                              //         onPressed: () {
-                                              //           //TODO: FOR UPLOAD IMAGE
-                                              //           bloc.add(UploadImageEvent(
-                                              //               imageFile: bloc
-                                              //                   .licenseImage!));
-                                              //         },
-                                              //         icon: Icon(
-                                              //           Icons
-                                              //               .cloud_upload_outlined,
-                                              //           color: primaryColor,
-                                              //         )))
+                                              Align(
+                                                  alignment:
+                                                      Alignment.bottomRight,
+                                                  child: IconButton(
+                                                      onPressed: () {
+                                                        //TODO: FOR UPLOAD IMAGE
+                                                        bloc.add(UploadImageEvent(
+                                                            imageFile: bloc
+                                                                .licenseImage!));
+                                                      },
+                                                      icon: Icon(
+                                                        Icons
+                                                            .cloud_upload_outlined,
+                                                        color: primaryColor,
+                                                      )))
                                             ],
-                                          ):
-                                    Stack(
-                                      alignment: Alignment.topRight,
-                                      children: [
-                                        Image.file(
-                                          bloc.licenseImage!,
-                                          width: double.infinity,
-                                        )
-                                        ,
-                                        IconButton(
-                                          onPressed: () {
-                                            bloc.add(
-                                                DeleteLicenseImageEvent());
-                                          },
-                                          icon: Icon(
-                                            Icons.clear,
-                                            color: primaryColor,
                                           ),
-                                        ),
-                                        Align(
-                                            alignment:
-                                            Alignment.bottomRight,
-                                            child: IconButton(
-                                                onPressed: () {
-                                                  //TODO: FOR UPLOAD IMAGE
-                                                  bloc.add(UploadImageEvent(
-                                                      imageFile: bloc
-                                                          .licenseImage!));
-                                                },
-                                                icon: Icon(
-                                                  Icons
-                                                      .cloud_upload_outlined,
-                                                  color: primaryColor,
-                                                )))
-                                      ],
-                                    )
-                                    ,
                                   ),
                                 ),
                                 SizedBox(
@@ -539,9 +496,9 @@ class CompanyInformationPage extends StatelessWidget {
                                     textColor: Colors.white,
                                     textSize: w * 0.06,
                                     onPressed: () {
-                                      // bloc.add(GetCurrentLocationEvent());
-                                      AutoRouter.of(context)
-                                          .pushNamed('/companyPosition');
+                                       // bloc.add(GetCurrentLocationEvent());
+                                      // AutoRouter.of(context)
+                                      //     .pushNamed('/companyPosition');
                                       print(bloc.imageUrl);
 
                                       if (formKey.currentState!.validate()) {

@@ -1,6 +1,7 @@
 
 
-
+const stripePublishableKey=
+    "pk_test_51MJxDgIlBqUPFzgU2B6A4xFkEvAaCSaFVBvrcAE5d5eKv0ZMb66qSvJ9CFFFz1U3UMKtvnJ0fSidV371IgMyzJOZ00AzDaR9mC";
 const String baseUrl='b2back.net';
  String? roleId;
  String? setCookies;

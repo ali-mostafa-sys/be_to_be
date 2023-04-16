@@ -81,12 +81,31 @@ class AddNewProductEvent extends CreateTenderEvent{
 }
 
 
+///
+/// here for choose brand new event
+///
+class ShowDropdownButtonCreateTenderEvent extends CreateTenderEvent{}
 
+/// here for expanded
+class ExpandedCatCTEvent extends CreateTenderEvent{
+  final int index;
+  const ExpandedCatCTEvent({
+    required this.index
+});
+  @override
+  List<Object> get props => [index];
 
+}
+class ChooseBrandCTEvent extends CreateTenderEvent{
+  final BrandCreateTenderEntity brand;
 
+  const ChooseBrandCTEvent({
+    required this.brand
+});
+  @override
+  List<Object> get props => [brand];
 
-
-
+}
 
 
 

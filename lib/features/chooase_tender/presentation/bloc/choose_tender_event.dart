@@ -69,4 +69,80 @@ class SelectedChooseTenderProductEvent extends ChooseTenderEvent{
 
 class PostCaresEvent extends ChooseTenderEvent{}
 
+///
+/// text cat tap///////////////////////////////////////////
+///
+class TextCatTap extends ChooseTenderEvent{}
+/// here for check  box cat  list
+
+class CheckBoxCatSelected extends ChooseTenderEvent{
+  final CategoriesChooseTenderEntity categories;
+  final int index;
+  const CheckBoxCatSelected({
+    required this.categories,
+    required this.index,
+  });
+  @override
+  List<Object> get props => [categories,index];
+}
+/// here for close cat expanded
+class CloseCheckCatExpanded extends ChooseTenderEvent{
+  final int index;
+  CloseCheckCatExpanded({
+    required this.index
+});
+  @override
+  List<Object> get props => [index];
+}
+
+/// here for check box brand of cat event selected
+class  CheckBoxBrandOfCatSelectedEvent extends ChooseTenderEvent{
+  final int index;
+  final BrandChooseTenderEntity brandChooseTenderEntity;
+  CheckBoxBrandOfCatSelectedEvent({
+    required this.brandChooseTenderEntity,
+    required this.index,
+});
+  @override
+  List<Object> get props => [index,brandChooseTenderEntity];
+}
+
+///
+/// text brand tap///////////////////////////////////////////
+///
+class TextBrandTap extends ChooseTenderEvent{}
+
+/// here for check  box brand  list
+
+class CheckBoxBrandSelected extends ChooseTenderEvent{
+
+  final int index;
+  const CheckBoxBrandSelected({
+    required this.index,
+  });
+  @override
+  List<Object> get props => [index];
+}
+
+/// here for check box brand of cat event selected
+class  CheckBoxProductOfBrandSelectedEvent extends ChooseTenderEvent{
+  final int index;
+  final ProductChooseTenderEntity productChooseTenderEntity;
+  CheckBoxProductOfBrandSelectedEvent({
+    required this.productChooseTenderEntity,
+    required this.index,
+  });
+  @override
+  List<Object> get props => [index,productChooseTenderEntity];
+}
+
+///
+/// here for get my interests event
+///
+
+
+class GetMyInterestsEvent extends ChooseTenderEvent{}
+
+
+
 

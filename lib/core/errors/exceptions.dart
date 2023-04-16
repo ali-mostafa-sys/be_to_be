@@ -8,6 +8,7 @@ class InvalidEmailAndPasswordException implements Exception {}
 
 class AccountNotVerificationException implements Exception {}
 class UnAcceptedAccountException implements Exception {}
+class GoToProfileException implements Exception {}
 /// register Exception
 class DuplicateUserException implements Exception {}
 class InvalidEmailException implements Exception {}
@@ -27,9 +28,12 @@ class AddTenderMonthlyException implements Exception {}
 class NotificationIsEmptyException implements Exception {}
 /// here for verification conflict
 class VerificationConflictException implements Exception {}
+/// here for b2b exceptions
+class OffersOnTenderB2BIsEmptyException implements Exception {}
 
 
-
+/// here for choose tender my interests is empty
+class MyInterestsIsEmptyException implements Exception {}
 
 
 

@@ -32,7 +32,15 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    //TODO: here for kotlin i added by my self if dose not work delete it
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+    }
+// TODO: for here to delete
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.intellitch.B2B"
@@ -72,4 +80,8 @@ android {
 
 flutter {
     source '../..'
+}
+//TODO: here for kotlin i added by my self if dose not work delete it
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

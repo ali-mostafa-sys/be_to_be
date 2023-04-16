@@ -43,7 +43,7 @@ class NotificationBloc extends Bloc<NotificationEvent, NotificationState> {
                 (notification) {
                   notificationList=notification;
                   print(notificationList);
-                  emit(LoadedGetNotificationState());
+                  emit(LoadedGetNotificationState(notificationList: notificationList));
                 }
         );
 

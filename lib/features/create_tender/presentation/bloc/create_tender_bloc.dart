@@ -15,6 +15,7 @@ import 'package:be_to_be/features/create_tender/domain/usecase/get_categories_us
 import 'package:be_to_be/features/create_tender/domain/usecase/upload_ct_image_usecase/upload_ct_image_usecase.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -58,7 +59,11 @@ int? selectedBrandId;
     }
   }
 
+  /// here for choose brand new
 
+bool choBrand=false;
+  List<bool>expandedCatList=[];
+  TextEditingController brandCat = TextEditingController();
 
 
   CreateTenderBloc({
@@ -74,7 +79,8 @@ int? selectedBrandId;
       /// here for get categories
       ///
       if(event is GetCategoriesCreateTenderEvent){
-        emit(LoadingGetCategoriesCreateTenderState());
+        emit(LoadingGetBrandsCreateTenderState());
+        // emit(LoadingGetCategoriesCreateTenderState());
         final failureOrGetCategories=await getCreateTenderCategoriesUseCase();
         failureOrGetCategories.fold(
                 (failure) {
@@ -82,6 +88,9 @@ int? selectedBrandId;
                   },
                 (categories) {
                   categoriesList=categories;
+                  categories.map((e) {
+                    expandedCatList.add(false);
+                  }).toList();
 
 
                   emit(LoadedGetCategoriesCreateTenderState());
@@ -207,9 +216,47 @@ if(event is UploadCTImageEvent){
 
       }
 
+      ///
+      /// here for show dropdown button
+      ///
+if(event is ShowDropdownButtonCreateTenderEvent){
+  choBrand=!choBrand;
+  emit(ShowDropdownButtonCreateTenderState(choBrand: choBrand));
+}
+///
+      /// here for expande cat event
+      ///
+
+if(event is ExpandedCatCTEvent){
+  emit(ExpandingCatCTState());
+  for(int i=0;i<expandedCatList.length;i++){
+    if(event.index==i){
+      expandedCatList[i]=!expandedCatList[i];
+    }else{
+      expandedCatList[i]=false;
+    }
+  }
+  emit(ExpandedCatCTState(listBool:expandedCatList ));
+}
+///
+      /// here for choose brand event
+      ///
+if(event is ChooseBrandCTEvent){
+  emit(LoadingChooseBrandCTSTate());
+  brandCat.text=event.brand.nameEn.toString();
+  selectedBrandId=event.brand.idBrand;
+  choBrand=false;
+  print( brandCat.text);
 
 
+for(int i=0;i<expandedCatList.length;i++){
+  expandedCatList[i]=false;
 
+}
+emit(LoadedChooseBrandCTSTate(brand: event.brand));
+
+
+}
 
 
 

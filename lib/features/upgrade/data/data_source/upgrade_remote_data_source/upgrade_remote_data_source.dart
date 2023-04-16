@@ -13,7 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 abstract class UpgradeRemoteDataSource {
 
   Future<List<UpgradeModel>>getAllPackage();
-  Future<Unit>postSubscribe(SubscribeModel subscribeModel);
+  Future<int>postSubscribe(SubscribeModel subscribeModel);
 }
 
 class UpgradeRemoteDataSourceImpl extends UpgradeRemoteDataSource{
@@ -54,7 +54,7 @@ class UpgradeRemoteDataSourceImpl extends UpgradeRemoteDataSource{
   /// here for post subscribe
   ///
   @override
-  Future<Unit> postSubscribe(SubscribeModel subscribeModel)async {
+  Future<int> postSubscribe(SubscribeModel subscribeModel)async {
     final url=Uri.http(baseUrl,'/api/user/subscription/subscribe');
     final cookies = sharedPreferences.getString('cookies');
     final response = await client.post(url, headers: {
@@ -64,7 +64,11 @@ class UpgradeRemoteDataSourceImpl extends UpgradeRemoteDataSource{
       body: subscribeModel.toJson(),
     );
     if(response.statusCode==200){
-      return Future.value(unit);
+      final data=jsonDecode(response.body);
+      print(data['subscriptionId']);
+
+
+      return data['subscriptionId'];
     }else{
       throw ServerException();
     }

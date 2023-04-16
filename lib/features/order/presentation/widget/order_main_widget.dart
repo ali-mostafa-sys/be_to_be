@@ -9,6 +9,7 @@ import 'package:be_to_be/features/order/presentation/widget/show_offer_dialog_wi
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 
 class OrderMainWidget extends StatelessWidget {
    OrderMainWidget({Key? key,
@@ -87,6 +88,23 @@ class OrderMainWidget extends StatelessWidget {
                          ),
                          Text(
                            orderEntity.productName,
+                           style: TextStyle(
+                             color: HexColor('#7B7B7B'),
+                             fontSize: w * 0.035,
+                           ),
+                         ),
+                         Text(
+                           orderEntity.name,
+                           style: TextStyle(
+                             color: HexColor('#7B7B7B'),
+                             fontSize: w * 0.035,
+                           ),
+                         ),
+                         Text(
+
+                           DateFormat.yMd().format(
+                             DateTime.parse(orderEntity.from),
+                           ),
                            style: TextStyle(
                              color: HexColor('#7B7B7B'),
                              fontSize: w * 0.035,

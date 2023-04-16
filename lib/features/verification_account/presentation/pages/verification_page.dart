@@ -8,6 +8,8 @@ import 'package:be_to_be/core/widgets/error_page_widget.dart';
 import 'package:be_to_be/core/widgets/loading_widget.dart';
 import 'package:be_to_be/core/widgets/text_button_widget.dart';
 import 'package:be_to_be/core/widgets/up_page_widget.dart';
+import 'package:be_to_be/features/auth/domain/entity/register_entity/register_entity.dart';
+import 'package:be_to_be/features/auth/presentation/bloc/register_bloc/register_bloc.dart';
 import 'package:be_to_be/features/auth/presentation/widgets/background_verification_company_widget.dart';
 import 'package:be_to_be/features/auth/presentation/widgets/background_widget.dart';
 import 'package:be_to_be/features/verification_account/presentation/bloc/verification_bloc.dart';
@@ -16,11 +18,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:be_to_be/injection_container.dart' as di;
+import 'package:shared_preferences/shared_preferences.dart';
 
 class VerificationPage extends StatelessWidget {
   VerificationPage({Key? key}) : super(key: key);
   final TextEditingController verificationController = TextEditingController();
   var formKey = GlobalKey<FormState>();
+  SharedPreferences sh=di.sl();
 
   @override
   Widget build(BuildContext context) {
@@ -29,14 +33,14 @@ class VerificationPage extends StatelessWidget {
 
     return Scaffold(
       body: BlocProvider(
-        create: (context) => di.sl<VerificationBloc>()..add(GetOTPCodeEvent()),
+        create: (context) => di.sl<VerificationBloc>()..add(GetOTPCodeEvent(byEmail: true)),
         child: BlocConsumer<VerificationBloc, VerificationState>(
           listener: (context, state) {
             print(state);
 
             if (state is LoadedGetOTPCodeState) {
               SnackBarMessage().showSnackBar(
-                  message: 'The message will reach you ',
+                  message: 'The message will come to your email ',
                   backgroundColor: primaryColor,
                   context: context);
             }
@@ -47,11 +51,17 @@ class VerificationPage extends StatelessWidget {
             if(state is ErrorSendOTPCodeState){
               SnackBarMessage().showSnackBar(message: state.error, backgroundColor: Colors.redAccent, context: context);
             }
-            if(state is LoadedSendOTPCodeState){
-              SnackBarMessage().showSnackBar(message: 'Success ', backgroundColor: Colors.redAccent, context: context);
-              AutoRouter.of(context).pushAndPopUntil(CompanyInformationPage(), predicate: (route) => false);
+            if(state is LoadingRegisterVState){
+              SnackBarMessage().showSnackBar(message: 'Email verification succeeded ', backgroundColor: primaryColor, context: context);
+              AutoRouter.of(context).pushNamed('/verificationPhone');
+             // AutoRouter.of(context).pushAndPopUntil(const RefreshPage(), predicate: (route) => false);
             }
+            /// here for error register message
 
+            if(state is ErrorRegisterVState){
+              SnackBarMessage().showSnackBar(message: state.error, backgroundColor: Colors.redAccent, context: context);
+              AutoRouter.of(context).pushAndPopUntil( RegisterPage(), predicate: (route) => false);
+            }
 
 
             /// here for otp message
@@ -67,7 +77,7 @@ class VerificationPage extends StatelessWidget {
                     children: [
                       UpPageWidget(
                         title: "Verification Code ",
-                        text: bloc.byPhone == true
+                        text: bloc.byPhone == false
                             ? "Please enter the 4 digits code that we have sent to your mobile number ."
                             : 'Please enter the 4 digits code that we have sent to your email .',
                         textPadding: w * 0.008,
@@ -82,6 +92,7 @@ class VerificationPage extends StatelessWidget {
                                 SizedBox(
                                   height: h * 0.05,
                                 ),
+
                                 Image.asset(
                                   'assets/images/verification.png',
                                   width: w * 0.4,
@@ -140,22 +151,45 @@ class VerificationPage extends StatelessWidget {
                                           height: h * 0.05,
                                         ),
                                         state is LoadingSendOTPCodeState?const LoadingWidget():
-                                        ButtonTextWidget(
-                                          onPressed: () {
-                                            if (formKey.currentState!.validate()) {
-                                              bloc.add(SendOTPMessageEvent(loginName:bloc.loginName.toString(),
-                                                  code: verificationController.text.toString()));
-                                              print('okk');
-                                              print(verificationController.text);
-                                              // print(verificationController.text);
-                                              //AutoRouter.of(context).pushNamed('/companyInformation');
-                                            }
-                                          },
-                                          text: 'Accept',
-                                          padding: 4,
-                                          backgroundColor: primaryColor,
-                                          textSize: w * 0.08,
-                                          textColor: Colors.white,
+                                        BlocConsumer<RegisterBloc, RegisterState>(
+                                            listener: (context,state){
+
+                                            },
+                                            builder: (context,state){
+                                              var reBloc=RegisterBloc.get(context);
+                                              return ButtonTextWidget(
+                                                onPressed: () {
+                                                  if (formKey.currentState!.validate()) {
+                                                    String? companyId=sh.getString('companyId');
+                                                    final registerEntity=RegisterEntity(
+                                                        firstName:reBloc. firstName.text.toString(),
+                                                        lastName:reBloc. lastName.text.toString(),
+                                                        email: reBloc.email.text.toString(),
+                                                        mobileNumber: reBloc.phone.text.toString(),
+                                                        password:reBloc. password.text.toString(),
+                                                        birthDate: reBloc.date,
+                                                        companyId:companyId! ,
+                                                        gender: reBloc.gender.toString(),
+                                                        hasMobileWhatsApp: reBloc.hasPhone);
+
+                                                    bloc.add(SendOTPMessageEvent(loginName:bloc.loginName.toString(),
+                                                        code: verificationController.text.toString(),registerEntity: registerEntity));
+
+                                                    print(registerEntity);
+                                                    print('okk');
+                                                    print(verificationController.text);
+                                                    // print(verificationController.text);
+                                                    //AutoRouter.of(context).pushNamed('/companyInformation');
+                                                  }
+                                                },
+                                                text: 'Accept',
+                                                padding: 4,
+                                                backgroundColor: primaryColor,
+                                                textSize: w * 0.08,
+                                                textColor: Colors.white,
+                                              );
+                                            },
+
                                         ),
                                         SizedBox(
                                           height: h * 0.05,
@@ -175,7 +209,7 @@ class VerificationPage extends StatelessWidget {
                                               textSize: w * 0.04,
                                               textDecoration: true,
                                               onTap: () {
-                                                bloc.add(GetOTPCodeEvent());
+                                                bloc.add(GetOTPCodeEvent(byEmail: true));
                                                 // AutoRouter.of(context).pushNamed('/');
                                               },
                                             )

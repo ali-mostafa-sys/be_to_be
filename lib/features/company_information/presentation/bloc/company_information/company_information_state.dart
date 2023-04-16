@@ -162,6 +162,34 @@ class ErrorAddCompanyState extends CompanyInformationState{
 }
 
 
+///
+/// here for search google map state
+///
+
+class LoadingSearchGoogleMapState extends CompanyInformationState{}
+class LoadedSearchGoogleMapState extends CompanyInformationState{
+  final Set<Marker> markers;
+  const LoadedSearchGoogleMapState({required this.markers});
+  @override
+  List<Object> get props => [markers];
+}
+
+///
+/// here for move the camera
+///
+class MoveTheCameraState extends CompanyInformationState{
+  final double latitude;
+  final double longitude;
+  const MoveTheCameraState({required this.latitude,required this.longitude});
+  @override
+  List<Object> get props => [latitude,longitude];
+}
+
+
+
+
+
+
 
 
 

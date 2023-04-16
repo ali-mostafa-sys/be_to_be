@@ -92,6 +92,24 @@ class SortButtonEvent extends MainPageEvent{
 ///
 
 class GetSettingEvent extends MainPageEvent{}
+///
+/// here for log out
+///
+class LogeOutHomeEvent extends MainPageEvent{}
+
+
+class AcceptLeaveCreatePageEvent extends MainPageEvent{}
+
+
+
+
+
+
+
+
+
+
+
 
 
 

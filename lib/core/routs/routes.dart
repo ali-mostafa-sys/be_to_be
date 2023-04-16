@@ -2,6 +2,8 @@ import 'package:auto_route/auto_route.dart';
 import 'package:be_to_be/features/about_us/presentation/pages/about_us.dart';
 import 'package:be_to_be/features/add_tender/presentation/pages/add_tender_page.dart';
 import 'package:be_to_be/features/auth/presentation/pages/choose_verification_page/choose_verification_page.dart';
+import 'package:be_to_be/features/auth/presentation/pages/forget_password_page/forget_password_page.dart';
+import 'package:be_to_be/features/auth/presentation/pages/forget_password_page/forget_password_second_page.dart';
 import 'package:be_to_be/features/auth/presentation/pages/login_page/login_page.dart';
 import 'package:be_to_be/features/auth/presentation/pages/register_page/register_page.dart';
 import 'package:be_to_be/features/be_to_be/prsentation/pages/be_to_be_page.dart';
@@ -18,6 +20,7 @@ import 'package:be_to_be/features/faq/presentation/pages/faq_page.dart';
 import 'package:be_to_be/features/history/presentation/pages/history_page.dart';
 import 'package:be_to_be/features/home/presntation/pages/home/main_page.dart';
 import 'package:be_to_be/features/launcher/presentation/pages/launcher_page.dart';
+import 'package:be_to_be/features/more_info/presentation/presentation/more_info_page.dart';
 import 'package:be_to_be/features/notification/presentation/page/notifications_page.dart';
 import 'package:be_to_be/features/offers/presentation/pages/offer_page.dart';
 import 'package:be_to_be/features/order/presentation/pages/order_page.dart';
@@ -27,6 +30,7 @@ import 'package:be_to_be/features/profile/presentation/pages/profile_page.dart';
 import 'package:be_to_be/features/terms/presentation/pages/terms_page.dart';
 import 'package:be_to_be/features/upgrade/presentation/pages/upgrade_page.dart';
 import 'package:be_to_be/features/verification_account/presentation/pages/verification_page.dart';
+import 'package:be_to_be/features/verification_account/presentation/pages/verification_phone_page.dart';
 
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
@@ -45,6 +49,10 @@ import 'package:be_to_be/features/verification_account/presentation/pages/verifi
         path: '/verification',
         page: VerificationPage,
         name: 'VerificationPage'),
+    AutoRoute(
+        path: '/verificationPhone',
+        page: VerificationPhonePage,
+        name: 'VerificationPhonePage'),
     AutoRoute(
         path: '/companyInformation',
         page: CompanyInformationPage,
@@ -138,6 +146,22 @@ import 'package:be_to_be/features/verification_account/presentation/pages/verifi
         path: '/faq',
         page: FAQPage,
         name: 'FAQPage'),
+    AutoRoute(
+      path: '/moreInfoB2B',
+      page: MoreInfoB2BPage,
+      name: 'MoreInfoB2BPage'
+    ),
+    AutoRoute(
+        path: '/forgetPasswordFirst',
+        page: ForgetPasswordFirstPage,
+        name: 'ForgetPasswordFirstPage'
+    ),
+    AutoRoute(
+        path: '/forgetPasswordSecond',
+        page: ForgetPasswordSecondPage,
+        name: 'forgetPasswordSecondPage'
+    )
+
 
   ],
 )

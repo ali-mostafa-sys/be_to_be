@@ -41,15 +41,15 @@ class UpgradeRepositoriesImpl implements UpgradeRepositories{
   /// here for post subscribe
   ///
   @override
-  Future<Either<Failure, Unit>> postSubscribe(SubscribeEntity subscribeEntity)async {
+  Future<Either<Failure, int>> postSubscribe(SubscribeEntity subscribeEntity)async {
    final subscribeModel=SubscribeModel(
        subscriptionPackageId:subscribeEntity. subscriptionPackageId,promotionCode: subscribeEntity.promotionCode
    );
 
    if(await networkInfo.isConnected){
      try{
-       await upgradeRemoteDataSource.postSubscribe(subscribeModel);
-       return const Right(unit);
+     final subscriptionId=  await upgradeRemoteDataSource.postSubscribe(subscribeModel);
+       return  Right(subscriptionId);
 
      }on ServerException{
        return Left(ServerFailure( ));

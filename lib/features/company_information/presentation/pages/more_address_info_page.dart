@@ -1,5 +1,6 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:be_to_be/core/app_theme.dart';
+import 'package:be_to_be/core/routs/routes.gr.dart';
 import 'package:be_to_be/core/utils/snackbar_message.dart';
 import 'package:be_to_be/core/widgets/button_text_widget.dart';
 import 'package:be_to_be/core/widgets/loading_widget.dart';
@@ -46,7 +47,8 @@ class MoreAddressInfoPage extends StatelessWidget {
            if(state is LoadedAddCompanyState){
             // isPop = true;
              SnackBarMessage().showSnackBar(message: 'Added successfully', backgroundColor: primaryColor, context: context);
-             AutoRouter.of(context).pushNamed('/refresh');
+             //AutoRouter.of(context).pushNamed('/refresh');
+             AutoRouter.of(context).pushAndPopUntil(  RegisterPage(), predicate: (route)=>false);
 
            }
          },
@@ -127,10 +129,10 @@ class MoreAddressInfoPage extends StatelessWidget {
                                            textInputType: TextInputType.number,
                                            obscureText: false,
                                            suffixIcon:const  Icon(Icons.location_on_outlined),
-                                           labelText: 'Building Number',
+                                           labelText: 'Building name',
                                            validator: (value){
                                              if(value!.isEmpty){
-                                               return 'Building Number shouldn\'t be empty ';
+                                               return 'Building name shouldn\'t be empty ';
                                              }else{
                                                return null;
                                              }
@@ -170,12 +172,15 @@ class MoreAddressInfoPage extends StatelessWidget {
                                              textColor: Colors.white,
                                              textSize: w*0.06,
                                              onPressed: (){
+                                               // AutoRouter.of(context).pushNamed('/register');
+
+
                                                if(formKey.currentState!.validate()){
                                                  final addCompanyEntity =AddCompanyEntity(
                                                      nameEn: bloc.companyName.text.toString(),
                                                      companyTypeId: bloc.selectedCompanyId!,
                                                      licenseNumber: bloc.licenseNumber.text.toString(),
-                                                     establishAt: bloc.establishDate.text.toString(),
+                                                     establishAt: bloc.establish,
                                                      licenseImgUrl: bloc.imageUrl.toString(),
                                                      cityId: bloc.selectedCityId!,
                                                      area: bloc.area.text.toString(),
@@ -184,7 +189,7 @@ class MoreAddressInfoPage extends StatelessWidget {
                                                      addressLatitude: bloc.markerLocation!.latitude.toString(),
                                                      addressLongitude: bloc.markerLocation!.longitude.toString(),
                                                      moreAddressInfo: bloc.moreAddressInfo.text.toString(),
-                                                     licenseExpirAt: bloc.licenseExpireDate.text.toString()
+                                                     licenseExpirAt: bloc.expire
                                                  );
                                                  bloc.add(AddCompanyEvent(addCompanyEntity: addCompanyEntity));
 

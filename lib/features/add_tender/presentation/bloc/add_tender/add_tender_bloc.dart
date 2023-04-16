@@ -35,6 +35,7 @@ class AddTenderBloc extends Bloc<AddTenderEvent, AddTenderState> {
   final TextEditingController street=TextEditingController();
   final TextEditingController buildingNumber=TextEditingController();
   final TextEditingController moreAddressInfo=TextEditingController();
+  final TextEditingController toDateText=TextEditingController();
 
 
 ///a////////////////////////////////////////////////////////////////////////

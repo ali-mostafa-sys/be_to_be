@@ -59,9 +59,9 @@ class TermsPage extends StatelessWidget {
                       child: Column(
                         children: [
                           /// here for terms
-                          Text('Terms',style: TextStyle(
-                              fontSize: w*0.05
-                          ),),
+                          // Text('Terms',style: TextStyle(
+                          //     fontSize: w*0.05
+                          // ),),
                           Text('${bloc.termsEntity?.contentEn} ')
                         ],
                       ),

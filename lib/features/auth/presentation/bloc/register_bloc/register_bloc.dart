@@ -21,6 +21,12 @@ class RegisterBloc extends Bloc<RegisterEvent, RegisterState> {
 
   TextEditingController phone = TextEditingController();
   var formKey = GlobalKey<FormState>();
+  TextEditingController firstName = TextEditingController();
+  TextEditingController lastName = TextEditingController();
+  TextEditingController email = TextEditingController();
+  TextEditingController password = TextEditingController();
+  TextEditingController rePassword = TextEditingController();
+  TextEditingController birthDate = TextEditingController();
 
    bool hasPhone = true;
    bool isPop=false;

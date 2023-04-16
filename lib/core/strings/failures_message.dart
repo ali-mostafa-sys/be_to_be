@@ -6,6 +6,7 @@ const String offlineFailureMessage = 'Please check your internet connection';
 const String invalidEmailAndPasswordFailureMessage = 'Invalid Login Name Or Password';
 const String accountNotVerificationFailureMessage = 'The account is not activated yet';
 const String unAcceptedAccountFailureMessage = 'Un Accepted Account';
+const String goToProfileFailureMessage = 'Your account is under review. It may take from an hour to a full day';
 
 /// register failure Message
 
@@ -30,11 +31,12 @@ const String notificationIsEmptyMessage = 'There is no Notification';
 const String tenderHistoryIsEmptyMessage = 'You do not have tender with us';
 const String orderHistoryIsEmptyMessage = 'You do not have order with us';
 /// here for b2b page
-const String b2bHistoryIsEmptyMessage = 'We do not have EXECUTED Tender';
+const String b2bHistoryIsEmptyMessage = 'You don\'t have a successful B2B';
 /// here for verification conflict
 const String verificationConflictMessage = 'Invalid User Code';
 
-
+/// here for my interests is empty
+const String myInterestsIsEmptyMessage = 'You have no interests yet';
 
 
 

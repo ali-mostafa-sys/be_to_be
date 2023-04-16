@@ -31,52 +31,61 @@ class MainPageBloc extends Bloc<MainPageEvent, MainPageState> {
   final GetPackageUsedUseCase getPackageUsedUseCase;
   final SharedPreferences sharedPreferences;
   final GetSettingUseCase getSettingUseCase;
+
   /// here for chooase tender
 
-   bool? chooseTender;
-
-
+  bool? chooseTender;
 
   /// here for user package used
-String packageName='';
-int remainingTender=0;
-int dayTender=0;
-String packageValidate='';
-int isActive=0;
-
-
+  String packageName = '';
+  int remainingTender = 0;
+  int dayTender = 0;
+  String packageValidate = '';
+  int isActive = 0;
 
   String? roleId;
   IsLoggedEntity? isLoggedEntity;
   bool isShowSort = false;
   bool isAddTender = false;
   bool isPop = false;
-/// here for normal user
-  bool isPremium =false;
+
+  /// here for normal user
+  bool isPremium = false;
   int currentIndex = 3;
+
   /// here for premium
-  int currentIndexPremium=4;
-  List<BottomNavigationBarItem>bottomNavPremiumItems=[
+  int currentIndexPremium = 2;
+  List<BottomNavigationBarItem> bottomNavPremiumItems = [
     BottomNavigationBarItem(
-        icon: Image.asset('assets/images/profile_img.png', width: 30,)
-        , label: 'Profile'
-    ),
+        icon: Image.asset(
+          'assets/images/profile_img.png',
+          width: 30,
+        ),
+        label: 'Profile'),
     BottomNavigationBarItem(
-        icon: Image.asset('assets/images/offer.png', width: 30,)
-        , label: 'Offer'
-    ),
+        icon: Image.asset(
+          'assets/images/offer.png',
+          width: 30,
+        ),
+        label: 'My Orders'),
     BottomNavigationBarItem(
-        icon: Image.asset('assets/images/b2b.png', width: 30,)
-        , label: 'B2B'
-    ),
+        icon: Image.asset(
+          'assets/images/b2b.png',
+          width: 30,
+        ),
+        label: 'B2B'),
     BottomNavigationBarItem(
-        icon: Image.asset('assets/images/order.png', width: 30,)
-        , label: 'Order'
-    ),
-  const  BottomNavigationBarItem(
-        icon: Icon(Icons.add,size: 30,)
-        , label: 'Tender'
-    ),
+        icon: Image.asset(
+          'assets/images/order.png',
+          width: 30,
+        ),
+        label: 'Tenders'),
+    const BottomNavigationBarItem(
+        icon: Icon(
+          Icons.add,
+          size: 30,
+        ),
+        label: 'Create'),
   ];
 
   List<Widget> screenOfPremiumBNB = [
@@ -86,34 +95,40 @@ int isActive=0;
     OrderPage(),
     AddTenderPage()
   ];
-  List<String>premiumAppBarTitle = [
+  List<String> premiumAppBarTitle = [
     'Profile',
-    'Offers',
+    'My Orders',
     'B2B',
-    'Order',
+    'Tenders',
     'Create Tender',
   ];
-
-
 
   /// here for normal user
   List<BottomNavigationBarItem> bottomNavItems = [
     BottomNavigationBarItem(
-        icon: Image.asset('assets/images/premium.png', width: 30,)
-        , label: 'Premium'
-    ),
+        icon: Image.asset(
+          'assets/images/premium.png',
+          width: 30,
+        ),
+        label: 'Premium'),
     BottomNavigationBarItem(
-        icon: Image.asset('assets/images/b2b.png', width: 30,)
-        , label: 'B2B'
-    ),
+        icon: Image.asset(
+          'assets/images/b2b.png',
+          width: 30,
+        ),
+        label: 'B2B'),
     BottomNavigationBarItem(
-        icon: Image.asset('assets/images/profile_img.png', width: 30,)
-        , label: 'Profile'
-    ),
+        icon: Image.asset(
+          'assets/images/profile_img.png',
+          width: 30,
+        ),
+        label: 'Profile'),
     BottomNavigationBarItem(
-        icon: Image.asset('assets/images/order_1.png', width: 30,)
-        , label: 'Order'
-    ),
+        icon: Image.asset(
+          'assets/images/order_1.png',
+          width: 30,
+        ),
+        label: 'Order'),
   ];
   List<Widget> screenOfBNB = [
     PremiumPage(),
@@ -121,19 +136,20 @@ int isActive=0;
     ProfilePage(),
     OrderPage()
   ];
-  List<String>appBarTitle = [
+  List<String> appBarTitle = [
     'Premium',
     'B2B',
     'Profile',
     'Order',
   ];
+
   /// here for package data
-   PackageUsedEntity? packageUsedEntity;
+  PackageUsedEntity? packageUsedEntity;
 
-   int tenderDurationInSeconds =0;
-   int maxTimeForAcceptOfferInSeconds =0;
-
-
+  int tenderDurationInSeconds = 0;
+  int maxTimeForAcceptOfferInSeconds = 0;
+/// here for change bottom nave bar when page is create
+  bool createPage=false;
   MainPageBloc({
     required this.isLoggedUseCase,
     required this.getPackageUsedUseCase,
@@ -143,47 +159,46 @@ int isActive=0;
     on<MainPageEvent>((event, emit) async {
 
       ///
+      /// here for leave create page event
+      ///
+      if(event is AcceptLeaveCreatePageEvent){
+        createPage=false;
+        emit(CreatePageState(createPage: createPage));
+
+      }
+
+
+      ///
       /// here for get setting
       ///
-if(event is GetSettingEvent){
+      if (event is GetSettingEvent) {
+        emit(LoadingGetSettingState());
 
-  emit(LoadingGetSettingState());
+        final failureOrGetSetting = await getSettingUseCase();
+        failureOrGetSetting.fold((failure) {
+          emit(ErrorGetSettingState(error: _mapFailureToMessage(failure)));
+        }, (setting) {
+          setting.map((e) {
+            if (e.nameEn == 'Max Time For Accept Offer In Seconds') {
+              maxTimeForAcceptOfferInSeconds = int.parse(e.value);
+            }
+            if (e.nameEn == 'Max Tender Duration In Seconds') {
+              tenderDurationInSeconds = int.parse(e.value);
+            }
+          }).toList();
 
-  final failureOrGetSetting=await getSettingUseCase();
-  failureOrGetSetting.fold(
-          (failure) {
-            emit(ErrorGetSettingState(error: _mapFailureToMessage(failure)));
-          },
-          (setting) {
-
-            setting.map((e) {
-              if(e.nameEn=='Max Time For Accept Offer In Seconds'){
-                maxTimeForAcceptOfferInSeconds=int.parse(e.value);
-              }
-              if(e.nameEn=='Max Tender Duration In Seconds'){
-                tenderDurationInSeconds=int.parse(e.value);
-              }
-            }).toList();
-
-
-            emit(LoadedGetSettingState());
-
-
-
-
-      });
-}
-
+          emit(LoadedGetSettingState());
+        });
+      }
 
       ///
       /// here for change user type event
       ///
-      if(event is NormalUserEvent){
-       // if(isPremium==)
-        isPremium= !isPremium;
+      if (event is NormalUserEvent) {
+        // if(isPremium==)
+        isPremium = !isPremium;
         emit(NormalUserState(isPremium: isPremium));
       }
-
 
       ///
       /// here for BNB
@@ -192,51 +207,64 @@ if(event is GetSettingEvent){
         currentIndex = event.currentIndexPage;
         if (currentIndex == 0) {
           bottomNavItems[0] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/premium_1.png', width: 30,)
-              , label: 'Premium'
-          );
+              icon: Image.asset(
+                'assets/images/premium_1.png',
+                width: 30,
+              ),
+              label: 'Premium');
         } else {
           bottomNavItems[0] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/premium.png', width: 30,)
-              , label: 'Premium'
-          );
+              icon: Image.asset(
+                'assets/images/premium.png',
+                width: 30,
+              ),
+              label: 'Premium');
         }
         if (currentIndex == 1) {
           bottomNavItems[1] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/b2b_1.png', width: 30,)
-              , label: 'B2B'
-          );
+              icon: Image.asset(
+                'assets/images/b2b_1.png',
+                width: 30,
+              ),
+              label: 'B2B');
         } else {
           bottomNavItems[1] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/b2b.png', width: 30,)
-              , label: 'B2B'
-          );
+              icon: Image.asset(
+                'assets/images/b2b.png',
+                width: 30,
+              ),
+              label: 'B2B');
         }
         if (currentIndex == 2) {
           bottomNavItems[2] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/profile_img_1.png', width: 30,)
-              , label: 'Profile'
-          );
+              icon: Image.asset(
+                'assets/images/profile_img_1.png',
+                width: 30,
+              ),
+              label: 'Profile');
         } else {
           bottomNavItems[2] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/profile_img.png', width: 30,)
-              , label: 'Profile'
-          );
+              icon: Image.asset(
+                'assets/images/profile_img.png',
+                width: 30,
+              ),
+              label: 'Profile');
         }
         if (currentIndex == 3) {
           bottomNavItems[3] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/order_1.png', width: 30,)
-              , label: 'Order'
-          );
+              icon: Image.asset(
+                'assets/images/order_1.png',
+                width: 30,
+              ),
+              label: 'Order');
         } else {
           bottomNavItems[3] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/order.png', width: 30,)
-              , label: 'Order'
-          );
+              icon: Image.asset(
+                'assets/images/order.png',
+                width: 30,
+              ),
+              label: 'Order');
         }
-
-
-        print(currentIndex.toString());
         emit(ChangeBottomNavigationBarState(currentIndexPage: currentIndex));
       }
 
@@ -244,167 +272,209 @@ if(event is GetSettingEvent){
       /// here for premium BNB
       ///
       if (event is ChangePremiumBottomNavigationBarEvent) {
-        currentIndexPremium = event.currentPremiumIndexPage;
-        // if (currentIndexPremium == 0) {
-        //   bottomNavPremiumItems[0] = BottomNavigationBarItem(
-        //       icon: Image.asset('assets/images/star_1.png', width: 30,)
-        //       , label: 'Upgrade'
-        //   );
-        // } else {
-        //   bottomNavPremiumItems[0] = BottomNavigationBarItem(
-        //       icon: Image.asset('assets/images/star.png', width: 30,)
-        //       , label: 'Upgrade'
-        //   );
-        // }
-        if (currentIndexPremium == 2) {
-          bottomNavPremiumItems[2] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/b2b_1.png', width: 30,)
-              , label: 'B2B'
-          );
+
+
+
+
+        if(event.currentPremiumIndexPage==4){
+          createPage==true;
+
+        }
+        emit(CreatePageState(createPage: createPage));
+        if(createPage==false){
+          currentIndexPremium = event.currentPremiumIndexPage;
+        }
+
+
+        if (currentIndexPremium == 0) {
+          bottomNavPremiumItems[0] = BottomNavigationBarItem(
+              icon: Image.asset(
+                'assets/images/profile_img_1.png',
+                width: 30,
+              ),
+              label: 'Profile');
         } else {
-          bottomNavPremiumItems[2] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/b2b.png', width: 30,)
-              , label: 'B2B'
-          );
+          bottomNavPremiumItems[0] = BottomNavigationBarItem(
+              icon: Image.asset(
+                'assets/images/profile_img.png',
+                width: 30,
+              ),
+              label: 'Profile');
         }
         if (currentIndexPremium == 1) {
           bottomNavPremiumItems[1] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/offer_1.png', width: 30,)
-              , label: 'Offers'
-          );
+              icon: Image.asset(
+                'assets/images/offer_1.png',
+                width: 30,
+              ),
+              label: 'My Orders');
         } else {
           bottomNavPremiumItems[1] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/offer.png', width: 30,)
-              , label: 'Offers'
-          );
+              icon: Image.asset(
+                'assets/images/offer.png',
+                width: 30,
+              ),
+              label: 'My Orders');
         }
-        if (currentIndexPremium == 0) {
-          bottomNavPremiumItems[0] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/profile_img_1.png', width: 30,)
-              , label: 'Profile'
-          );
+        if (currentIndexPremium == 2) {
+          bottomNavPremiumItems[2] = BottomNavigationBarItem(
+              icon: Image.asset(
+                'assets/images/b2b_1.png',
+                width: 30,
+              ),
+              label: 'B2B');
         } else {
-          bottomNavPremiumItems[0] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/profile_img.png', width: 30,)
-              , label: 'Profile'
-          );
+          bottomNavPremiumItems[2] = BottomNavigationBarItem(
+              icon: Image.asset(
+                'assets/images/b2b.png',
+                width: 30,
+              ),
+              label: 'B2B');
         }
         if (currentIndexPremium == 3) {
           bottomNavPremiumItems[3] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/order_1.png', width: 30,)
-              , label: 'Order'
-          );
+              icon: Image.asset(
+                'assets/images/order_1.png',
+                width: 30,
+              ),
+              label: 'Tenders');
         } else {
           bottomNavPremiumItems[3] = BottomNavigationBarItem(
-              icon: Image.asset('assets/images/order.png', width: 30,)
-              , label: 'Order'
-          );
+              icon: Image.asset(
+                'assets/images/order.png',
+                width: 30,
+              ),
+              label: 'Tenders');
+        }
+        if (currentIndexPremium == 4) {
+
+          bottomNavPremiumItems[4] = const BottomNavigationBarItem(
+              icon: Icon(
+                Icons.add,
+                size: 30,
+              ),
+              label: 'Create');
+        } else {
+          bottomNavPremiumItems[4] = const BottomNavigationBarItem(
+              icon: Icon(
+                Icons.add,
+                size: 30,
+              ),
+              label: 'Create');
         }
 
+        print(createPage);
 
-        print(currentIndexPremium.toString());
-        emit(ChangePremiumBottomNavigationBarState(currentPremiumIndexPage:  currentIndexPremium));
+
+
+
+        emit(ChangePremiumBottomNavigationBarState(
+            currentPremiumIndexPage: currentIndexPremium));
       }
-
 
       ///
       /// here for is logged event
       ///
       if (event is IsLoggedEvent) {
-
         emit(LoadingIsLoggedState());
-
 
         final failureOrIsLogged = await isLoggedUseCase();
 
-        failureOrIsLogged.fold(
-                (failure) {
-              emit(ErrorIsLoggedState(error: _mapFailureToMessage(failure)));
-            },
-                (isLogged) {
-                  chooseTender=sharedPreferences.getBool('chooseTender');
-                  print('========================here choose tender=======================');
-                  print(chooseTender.toString());
-                  print('========================here choose tender=======================');
-              roleId = isLogged.roleId;
-              isLoggedEntity=IsLoggedEntity(idUser: isLogged.idUser,
-                  roleId:isLogged. roleId, firstName:isLogged. firstName, lastName:isLogged. lastName, email:isLogged. email);
-              print(roleId);
+        failureOrIsLogged.fold((failure) {
+          emit(ErrorIsLoggedState(error: _mapFailureToMessage(failure)));
+        }, (isLogged) {
+          chooseTender = sharedPreferences.getBool('chooseTender');
+          roleId = isLogged.roleId;
+          isLoggedEntity = IsLoggedEntity(
+              idUser: isLogged.idUser,
+              roleId: isLogged.roleId,
+              firstName: isLogged.firstName,
+              lastName: isLogged.lastName,
+              email: isLogged.email);
 
-              emit(LoadedIsLoggedState(chooseTender: chooseTender));
-            });
+          emit(LoadedIsLoggedState(chooseTender: chooseTender));
+        });
       }
+
       ///
       /// here for package popup event
       ///
-        if(event is PackagePopupEvent){
-          isPop= !isPop;
-          emit(PackagePopupState(isPop: isPop));
-        }
-        ///
+      if (event is PackagePopupEvent) {
+        isPop = !isPop;
+        emit(PackagePopupState(isPop: isPop));
+      }
+
+      ///
       /// here for get user package used
       ///
-      if(event is GetUserPackageUsedEvent){
+      if (event is GetUserPackageUsedEvent) {
         emit(LoadingGetUserPackageUsedState());
-        final failureOrGetPackageUsed=await getPackageUsedUseCase();
+        final failureOrGetPackageUsed = await getPackageUsedUseCase();
 
-        failureOrGetPackageUsed.fold(
-                (failure) {
-                  emit(ErrorGetUserPackageUsedState(error: _mapFailureToMessage(failure)));
-                },
-                (packageUsed) {
-                  packageName=packageUsed. subscriptionPackageName;
-                  print(packageUsed);
-                  remainingTender=packageUsed. monthAllowTenderCnt - packageUsed. monthCreatTenderCnt;
-                  dayTender= packageUsed. dayAllowTenderCnt - packageUsed. dayCreatTenderCnt;
-                  isActive=packageUsed. isActive;
+        failureOrGetPackageUsed.fold((failure) {
+          emit(ErrorGetUserPackageUsedState(
+              error: _mapFailureToMessage(failure)));
+        }, (packageUsed) {
+          packageName = packageUsed.subscriptionPackageName;
 
+          remainingTender =
+              packageUsed.monthAllowTenderCnt - packageUsed.monthCreatTenderCnt;
+          dayTender =
+              packageUsed.dayAllowTenderCnt - packageUsed.dayCreatTenderCnt;
+          isActive = packageUsed.isActive;
 
-                  final date=DateTime.parse(packageUsed. expireAt).difference(DateTime.now()).inDays.toString();
-                  print(date);
-                  final day= int.parse(date);
-                  final  month=day / 30;
-                  final  k=month.toInt();
+          final date = DateTime.parse(packageUsed.expireAt)
+              .difference(DateTime.now())
+              .inDays
+              .toString();
+          final day = int.parse(date);
+          final month = day / 30;
+          final k = month.toInt();
 
-                  packageValidate=k.toString();
+          packageValidate = k.toString();
 
-                  packageUsedEntity=PackageUsedEntity(
-                      subscriptionPackageName:packageUsed. subscriptionPackageName,
-                      monthAllowTenderCnt:packageUsed. monthAllowTenderCnt,
-                      monthCreatTenderCnt:packageUsed. monthCreatTenderCnt,
-                      dayAllowTenderCnt:packageUsed. dayAllowTenderCnt,
-                      dayCreatTenderCnt:packageUsed. dayCreatTenderCnt,
-                      expireAt:packageUsed. expireAt,
-                      isActive:packageUsed. isActive);
-            });
-
+          packageUsedEntity = PackageUsedEntity(
+              subscriptionPackageName: packageUsed.subscriptionPackageName,
+              monthAllowTenderCnt: packageUsed.monthAllowTenderCnt,
+              monthCreatTenderCnt: packageUsed.monthCreatTenderCnt,
+              dayAllowTenderCnt: packageUsed.dayAllowTenderCnt,
+              dayCreatTenderCnt: packageUsed.dayCreatTenderCnt,
+              expireAt: packageUsed.expireAt,
+              isActive: packageUsed.isActive);
+        });
       }
 
-        ///
+      ///
       /// here for sort
       ///
-      if(event is ShowBottomSheetSortEvent){
-        isShowSort= !isShowSort;
-        print(isShowSort);
-        emit (ShowBottomSheetSortState(isShow:isShowSort));
+      if (event is ShowBottomSheetSortEvent) {
+        isShowSort = !isShowSort;
+        emit(ShowBottomSheetSortState(isShow: isShowSort));
       }
+
       ///
       /// here for bottom sheet add tender
       ///
-      if(event is ShowBottomSheetAddTenderEvent){
-        isAddTender= !isAddTender;
+      if (event is ShowBottomSheetAddTenderEvent) {
+        isAddTender = !isAddTender;
         emit(ShowBottomSheetAddTenderState(isShowAddTender: isAddTender));
       }
+
       ///
       /// here for sort button event
       ///
-      if(event is SortButtonEvent){
+      if (event is SortButtonEvent) {
         emit(SortButtonState(sortValue: event.sortValue));
-
       }
 
-
-
+      ///
+      /// here for logout event
+      ///
+      if (event is LogeOutHomeEvent) {
+        await sharedPreferences.remove('cookies');
+        await sharedPreferences.remove('userId');
+        emit(LogOutHomeState());
+      }
     });
   }
 
@@ -414,7 +484,6 @@ if(event is GetSettingEvent){
         return serverFailureMessage;
       case OfflineFailure:
         return offlineFailureMessage;
-
 
       default:
         return " Unexpected error,Please try again later.";

@@ -7,12 +7,14 @@ class LoginResponseModel extends LoginResponseEntity {
     required String lastName,
     required String email,
     required String roleId,
+    required String? notes,
+     required int isAccepted,
   }) : super(
             idUser: idUser,
             firstName: firstName,
             lastName: lastName,
             email: email,
-            roleId: roleId,
+            roleId: roleId,isAccepted: isAccepted,notes: notes,
    );
 
   factory LoginResponseModel.fromJson(Map<String,dynamic>json){
@@ -21,8 +23,10 @@ class LoginResponseModel extends LoginResponseEntity {
     final lastName=json['lastName'];
     final email=json['email'];
     final roleId=json['roleId'];
+    final notes=json['notes'];
+    final isAccepted=json['isAccepted'];
     return LoginResponseModel(idUser: idUser,
         firstName: firstName,
-        lastName: lastName, email: email, roleId: roleId);
+        lastName: lastName, email: email, roleId: roleId,notes: notes,isAccepted: isAccepted);
   }
 }

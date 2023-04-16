@@ -10,7 +10,7 @@ class PostSubscribeUseCase {
   const PostSubscribeUseCase({
     required this.upgradeRepositories
 });
-  Future<Either<Failure,Unit>>call(SubscribeEntity subscribeEntity)async{
+  Future<Either<Failure,int>>call(SubscribeEntity subscribeEntity)async{
     return upgradeRepositories.postSubscribe(subscribeEntity);
     
   }

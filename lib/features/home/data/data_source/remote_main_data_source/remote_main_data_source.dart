@@ -27,7 +27,7 @@ class MainRemoteDataSourceImpl extends MainRemoteDataSource {
   ///
   @override
   Future<IsLoggedModel> getIsLogged() async {
-    final url = 'http://91.208.95.203/api/auth/is_loggedin';
+    final url = 'http://$baseUrl/api/auth/is_loggedin';
     final cookies = sharedPreferences.getString('cookies');
 
     final response = await client.get(Uri.parse(url), headers: {
@@ -36,14 +36,9 @@ class MainRemoteDataSourceImpl extends MainRemoteDataSource {
       "Cookie": "$cookies"
     });
 
-    print(url);
-    print(response.statusCode);
-
     if (response.statusCode == 200) {
       final allData = jsonDecode(response.body);
-      print(allData);
       final data = allData["user"];
-      print(data);
       if (data == null) {
         throw ServerException();
       } else {
@@ -59,13 +54,21 @@ class MainRemoteDataSourceImpl extends MainRemoteDataSource {
   /// here for get user package used
   @override
   Future<PackageUsedModel> getPackageUsed() async {
-    final url = 'http://91.208.95.203/api/user/subscription/user-subscriptions';
+    final url = 'http://$baseUrl/api/user/subscription/user-subscriptions';
     final cookies = sharedPreferences.getString('cookies');
     final response = await client.get(Uri.parse(url), headers: {
       "Accept": "application/json",
       "Content-Type": "application/json",
       "Cookie": "$cookies"
     });
+    print('+++++++++++++++++++++++++++++++++++++++++++++++++');
+    print('+++++++++++++++++++++++++++++++++++++++++++++++++');
+    print('+++++++++++++++++++++++++++++++++++++++++++++++++');
+    print('here body of package');
+    print(response.body);
+    print('+++++++++++++++++++++++++++++++++++++++++++++++++');
+    print('+++++++++++++++++++++++++++++++++++++++++++++++++');
+    print('+++++++++++++++++++++++++++++++++++++++++++++++++');
     if(response.statusCode==200){
       final allData=jsonDecode(response.body);
       final data=allData['data'];
@@ -89,8 +92,6 @@ class MainRemoteDataSourceImpl extends MainRemoteDataSource {
       "Content-Type": "application/json",
       "Cookie": "$cookies"
     });
-    print(response.body);
-    print(response.statusCode);
     if(response.statusCode==200){
       final allData=jsonDecode(response.body);
       final data=allData as List;

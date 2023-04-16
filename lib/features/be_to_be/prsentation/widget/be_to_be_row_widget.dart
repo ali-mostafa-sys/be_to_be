@@ -4,11 +4,12 @@ import 'package:hexcolor/hexcolor.dart';
 
 
 class BeToBeRowWidget extends StatelessWidget {
-  BeToBeRowWidget({Key? key,required this.title,required this.data,required this.hasText,required this.hasBuilding}) : super(key: key);
+  BeToBeRowWidget({Key? key,required this.title,required this.data,required this.hasText,required this.hasBuilding,this.address=false}) : super(key: key);
   String title;
   String data;
   bool hasText;
   bool hasBuilding;
+  bool address=false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,10 @@ class BeToBeRowWidget extends StatelessWidget {
             child: Row(
               children: [
                 Text(data,style: TextStyle(
-                    fontSize: w*0.039,
+                    fontSize:address==true?
+                    w*0.027:
+                    w*0.039
+                    ,
                     color: HexColor('#6A6A6A')
                 ),
                 ),

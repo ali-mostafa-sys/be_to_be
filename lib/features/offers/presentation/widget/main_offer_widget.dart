@@ -9,6 +9,7 @@ import 'package:be_to_be/features/offers/presentation/widget/offer_were_sent_wid
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 
 class MainOfferWidget extends StatelessWidget {
   MainOfferWidget(
@@ -83,6 +84,22 @@ class MainOfferWidget extends StatelessWidget {
                       ),
                       Text(
                         tenderEntity.productName.toString(),
+                        style: TextStyle(
+                          color: HexColor('#7B7B7B'),
+                          fontSize: w * 0.035,
+                        ),
+                      ),
+                      Text(
+                        tenderEntity.name.toString(),
+                        style: TextStyle(
+                          color: HexColor('#7B7B7B'),
+                          fontSize: w * 0.035,
+                        ),
+                      ),
+                      Text(
+                        DateFormat.yMd().format(
+                          DateTime.parse(tenderEntity.from),
+                        ),
                         style: TextStyle(
                           color: HexColor('#7B7B7B'),
                           fontSize: w * 0.035,

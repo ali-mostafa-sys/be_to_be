@@ -1,5 +1,8 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:be_to_be/core/app_theme.dart';
+import 'package:be_to_be/core/routs/routes.gr.dart';
 import 'package:be_to_be/core/widgets/button_text_widget.dart';
+import 'package:be_to_be/core/widgets/loading_widget.dart';
 import 'package:be_to_be/features/be_to_be/domain/entity/be_to_be_entity/be_to_be_entity.dart';
 import 'package:be_to_be/features/be_to_be/prsentation/bloc/be_to_be_bloc.dart';
 import 'package:be_to_be/features/be_to_be/prsentation/widget/be_to_be_row_widget.dart';
@@ -17,6 +20,9 @@ class MainBeToBeWidget extends StatelessWidget {
     required this.closeExpand,
     required this.onExpanded,
     required this.data,
+    required this.loading,
+    required this.isPending,
+   // required this.city,
 
 
     required this.onAccepted}) : super(key: key);
@@ -24,9 +30,13 @@ class MainBeToBeWidget extends StatelessWidget {
   void Function()? toExpand;
   void Function()? closeExpand;
   void Function()? onAccepted;
+
   BeToBeEntity data;
 
   bool onExpanded=false;
+  bool loading=false;
+  bool isPending;
+  //String city;
 
 
 
@@ -92,6 +102,7 @@ class MainBeToBeWidget extends StatelessWidget {
                     Spacer(),
 
                     /// here for expanded the widget just implemented
+                   loading==true?const LoadingWidget():
                     Padding(
                       padding: EdgeInsetsDirectional.only(end: w * 0.02),
                       child: InkWell(
@@ -101,7 +112,7 @@ class MainBeToBeWidget extends StatelessWidget {
                           width: w * 0.1,
                         ),
                       ),
-                    )
+                    ),
                   ],
                 ),
               ),
@@ -113,246 +124,234 @@ class MainBeToBeWidget extends StatelessWidget {
                 child: Column(
 
                   children: [
-                    SizedBox(
-                      height: h*0.01,
-                    ),
-                    /// here for image of progress//////////////////////////
-                    Image.asset('assets/images/be_to_be.png'),
-                    Padding(
-                      padding:  EdgeInsets.symmetric(horizontal: w*0.1),
-                      child: Row(
-                        children: [
-                          Text('In Progress',style: TextStyle(
-                            color: primaryColor
-                          ),),
-                          const Spacer(),
-                          Text('Delivered',style: TextStyle(
-                              color: primaryColor
-                          ),)
-                        ],
-                      ),
-                    ),
+
                     SizedBox(
                       height: h*0.02,
                     ),
                     /// here for general info
-                    ContainerWidget(
-                        widget: Padding(
-                          padding:  EdgeInsetsDirectional.only(start: w*0.05,top: h*0.01),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('General Info',style: TextStyle(
-                                fontSize: w*0.04,
-                                fontWeight: FontWeight.bold
-                              ),
-                              ),
-                              SizedBox(
-                                height: h * 0.01,
-                              ),
-                              BeToBeRowWidget(
-                                  title: 'Include Delivery',
-                                //${orderEntity.area}-${orderEntity.street}
-                                  data: ' Yes',
-                                  hasText: false,
-                                  hasBuilding: false),
-                              SizedBox(
-                                height: h * 0.01,
-                              ),
-                              BeToBeRowWidget(
-                                  title: 'Delivery Address',
-                                  //${orderEntity.area}-${orderEntity.street}
-                                  data: '  UAE - Dubai',
-                                  hasText: false,
-                                  hasBuilding: false),
-                              SizedBox(
-                                height: h * 0.01,
-                              ),
-                              BeToBeRowWidget(
-                                  title: 'Delivery Time Period',
-                                  //${orderEntity.area}-${orderEntity.street}
-                                  data: '  10 ',
-                                  hasText: true,
-                                  hasBuilding: false),
-                              SizedBox(
-                                height: h * 0.01,
-                              ),
-                              BeToBeRowWidget(
-                                  title: 'Maximum Tender Period',
-                                  //${orderEntity.area}-${orderEntity.street}
-                                  data: '  7',
-                                  hasText: true,
-                                  hasBuilding: false),
-                              SizedBox(
-                                height: h * 0.01,
-                              ),
-                              BeToBeRowWidget(
-                                  title: 'Quantity',
-                                  //${orderEntity.area}-${orderEntity.street}
-                                  data: '  2',
-                                  hasText: false,
-                                  hasBuilding: true),
-
-
-                    ],
-                          ),
-                        ),
-                    ),
-                    SizedBox(
-                      height: h*0.02,
-                    ),
-                    /// here for payment info
-                    ContainerWidget(
-                      widget: Padding(
-                        padding:  EdgeInsetsDirectional.only(start: w*0.05,top: h*0.01),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Payment Info',style: TextStyle(
-                                fontSize: w*0.04,
-                                fontWeight: FontWeight.bold
-                            ),
-                            ),
-                            SizedBox(
-                              height: h * 0.01,
-                            ),
-                            BeToBeRowWidget(
-                                title: 'Delivery Cost',
-                                //${orderEntity.area}-${orderEntity.street}
-                                data: ' \$ 150',
-                                hasText: false,
-                                hasBuilding: false),
-                            SizedBox(
-                              height: h * 0.01,
-                            ),
-                            BeToBeRowWidget(
-                                title: 'Include VAT/TAX',
-                                //${orderEntity.area}-${orderEntity.street}
-                                data: '  Yes',
-                                hasText: false,
-                                hasBuilding: false),
-                            SizedBox(
-                              height: h * 0.01,
-                            ),
-                            BeToBeRowWidget(
-                                title: 'VAT In Percent ',
-                                //${orderEntity.area}-${orderEntity.street}
-                                data: '  5 \% ',
-                                hasText: true,
-                                hasBuilding: false),
-                            SizedBox(
-                              height: h * 0.01,
-                            ),
-                            BeToBeRowWidget(
-                                title: 'Item Price',
-                                //${orderEntity.area}-${orderEntity.street}
-                                data: ' \$ 250',
-                                hasText: false,
-                                hasBuilding: false),
-                            SizedBox(
-                              height: h * 0.01,
-                            ),
-                            BeToBeRowWidget(
-                                title: 'Total Price ',
-                                //${orderEntity.area}-${orderEntity.street}
-                                data: '  \$ 525',
-                                hasText: false,
-                                hasBuilding: false),
-
-
-                          ],
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: h*0.02,
-                    ),
-                    /// here for company info
-                    ContainerWidget(
-                      widget: Padding(
-                        padding:  EdgeInsetsDirectional.only(start: w*0.05,top: h*0.01),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('Companies Info',style: TextStyle(
-                                fontSize: w*0.04,
-                                fontWeight: FontWeight.bold
-                            ),
-                            ),
-                            SizedBox(
-                              height: h * 0.02,
-                            ),
-                            Row(
-                              children: [
-                                Expanded(
-                                    child: Column(
-
+                    Container(
+                      width: w,
+                      height: h*0.35,
+                      child: ListView.separated(
+                          itemBuilder: (context,index){
+                            return ContainerWidget(
+                              widget: Padding(
+                                padding:  EdgeInsetsDirectional.only(start: w*0.05,top: h*0.01),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    CompanyInfoWidget(path: 'assets/images/building.png', text: 'AAAAAA'),
-                                    SizedBox(
-                                      height: h*0.02,
+                                    Text('Offer Info',style: TextStyle(
+                                        fontSize: w*0.04,
+                                        fontWeight: FontWeight.bold
                                     ),
-                                    CompanyInfoWidget(path: 'assets/images/company_info_phone.png', text: '21241231231'),
-                                    SizedBox(
-                                      height: h*0.02,
                                     ),
-                                    CompanyInfoWidget(path: 'assets/images/location_1.png', text: 'UAE - Dubai'),
+                                    SizedBox(
+                                      height: h * 0.01,
+                                    ),
+                                    /// done
+                                    BeToBeRowWidget(
+                                        title: 'Include Delivery',
+                                        //${orderEntity.area}-${orderEntity.street}
+                                        data: beToBeBloc.offersList[index].bIncludeDelivery==0?"No": ' Yes',
+                                        hasText: false,
+                                        hasBuilding: false),
+                                    SizedBox(
+                                      height: h * 0.01,
+                                    ),
+                                    /// done
+                                    BeToBeRowWidget(
+                                        title: 'Quantity',
+                                        //${orderEntity.area}-${orderEntity.street}
+                                        data: '  ${beToBeBloc.offersList[index].quantity}',
+                                        hasText: false,
+                                        hasBuilding: true),
+                                    SizedBox(
+                                      height: h * 0.01,
+                                    ),
+                                    Padding(
+                                      padding:  EdgeInsets.symmetric(horizontal: w*0.25),
+                                      child: ButtonTextWidget(
+                                          padding: 0,
+                                          backgroundColor: primaryColor,
+                                          text: 'More details >>>',
+                                          textColor: Colors.white,
+                                          textSize: w*0.04,
+                                          onPressed:(){
+                                         //   context.router.push(MoreInfoB2BPage());
+                                            AutoRouter
+                                                .of(context)
+                                                .push(MoreInfoB2BPage(offersOnTendersB2BEntity:beToBeBloc.offersList[index],isPending: isPending,userTenderId:data.tenderCreatorUserId));
+
+
+                                          }
+                                         // closeExpand
+                                      ),
+                                    ),
+
 
                                   ],
-                                ),),
-                                SizedBox(
-                                  width: w*0.01,
                                 ),
-                                Container(
-                                  width: 1,
-                                  height: h*0.2,
-                                  color: Colors.grey,
-                                ),
-                                SizedBox(
-                                  width: w*0.01,
-                                ),
-                                Expanded(
-                                  child: Column(
-                                    children: [
-                                      CompanyInfoReWidget(path: 'assets/images/building.png', text: 'AAAAAA'),
-                                      SizedBox(
-                                        height: h*0.02,
-                                      ),
-                                      CompanyInfoReWidget(path: 'assets/images/company_info_phone.png', text: '21241231231'),
-                                      SizedBox(
-                                        height: h*0.02,
-                                      ),
-                                      CompanyInfoReWidget(path: 'assets/images/location_1.png', text: 'UAE - Dubai'),
-
-                                    ],
-                                  ),),
-                              ],
-                            ),
-
-
-
-
-                          ],
-                        ),
-                      ),
+                              ),
+                            );
+                          },
+                          separatorBuilder: (context,index)=>SizedBox(height: h*0.01,),
+                          itemCount: beToBeBloc.offersList.length),
                     ),
                     SizedBox(
-                      height: h * 0.02,
+                      height: h*0.02,
                     ),
-                    /// here for delivered button
-                    Padding(
-                      padding:  EdgeInsets.symmetric(horizontal: w*0.3),
-                      child: ButtonTextWidget(
-                          padding: 0,
-                          backgroundColor: primaryColor,
-                          text: 'Delivered',
-                          textColor: Colors.white,
-                          textSize: w*0.04,
-                          onPressed: closeExpand),
-                    ),
-                    SizedBox(
-                      height: h * 0.02,
-                    ),
+                   // /// here for payment info
+                    // ContainerWidget(
+                    //   widget: Padding(
+                    //     padding:  EdgeInsetsDirectional.only(start: w*0.05,top: h*0.01),
+                    //     child: Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Text('Payment Info',style: TextStyle(
+                    //             fontSize: w*0.04,
+                    //             fontWeight: FontWeight.bold
+                    //         ),
+                    //         ),
+                    //         SizedBox(
+                    //           height: h * 0.01,
+                    //         ),
+                    //         BeToBeRowWidget(
+                    //             title: 'Delivery Cost',
+                    //             //${orderEntity.area}-${orderEntity.street}
+                    //             data: ' \$ 150',
+                    //             hasText: false,
+                    //             hasBuilding: false),
+                    //         SizedBox(
+                    //           height: h * 0.01,
+                    //         ),
+                    //         BeToBeRowWidget(
+                    //             title: 'Include VAT/TAX',
+                    //             //${orderEntity.area}-${orderEntity.street}
+                    //             data: '  Yes',
+                    //             hasText: false,
+                    //             hasBuilding: false),
+                    //         SizedBox(
+                    //           height: h * 0.01,
+                    //         ),
+                    //         BeToBeRowWidget(
+                    //             title: 'VAT In Percent ',
+                    //             //${orderEntity.area}-${orderEntity.street}
+                    //             data: '  5 \% ',
+                    //             hasText: true,
+                    //             hasBuilding: false),
+                    //         SizedBox(
+                    //           height: h * 0.01,
+                    //         ),
+                    //         BeToBeRowWidget(
+                    //             title: 'Item Price',
+                    //             //${orderEntity.area}-${orderEntity.street}
+                    //             data: ' \$ 250',
+                    //             hasText: false,
+                    //             hasBuilding: false),
+                    //         SizedBox(
+                    //           height: h * 0.01,
+                    //         ),
+                    //         BeToBeRowWidget(
+                    //             title: 'Total Price ',
+                    //             //${orderEntity.area}-${orderEntity.street}
+                    //             data: '  \$ 525',
+                    //             hasText: false,
+                    //             hasBuilding: false),
+                    //
+                    //
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   height: h*0.02,
+                    // ),
+                    // /// here for company info
+                    // ContainerWidget(
+                    //   widget: Padding(
+                    //     padding:  EdgeInsetsDirectional.only(start: w*0.05,top: h*0.01),
+                    //     child: Column(
+                    //       crossAxisAlignment: CrossAxisAlignment.start,
+                    //       children: [
+                    //         Text('Companies Info',style: TextStyle(
+                    //             fontSize: w*0.04,
+                    //             fontWeight: FontWeight.bold
+                    //         ),
+                    //         ),
+                    //         SizedBox(
+                    //           height: h * 0.02,
+                    //         ),
+                    //         Row(
+                    //           children: [
+                    //             Expanded(
+                    //                 child: Column(
+                    //
+                    //               children: [
+                    //                 CompanyInfoWidget(path: 'assets/images/building.png', text: 'AAAAAA'),
+                    //                 SizedBox(
+                    //                   height: h*0.02,
+                    //                 ),
+                    //                 CompanyInfoWidget(path: 'assets/images/company_info_phone.png', text: '21241231231'),
+                    //                 SizedBox(
+                    //                   height: h*0.02,
+                    //                 ),
+                    //                 CompanyInfoWidget(path: 'assets/images/location_1.png', text: 'UAE - Dubai'),
+                    //
+                    //               ],
+                    //             ),),
+                    //             SizedBox(
+                    //               width: w*0.01,
+                    //             ),
+                    //             Container(
+                    //               width: 1,
+                    //               height: h*0.2,
+                    //               color: Colors.grey,
+                    //             ),
+                    //             SizedBox(
+                    //               width: w*0.01,
+                    //             ),
+                    //             Expanded(
+                    //               child: Column(
+                    //                 children: [
+                    //                   CompanyInfoReWidget(path: 'assets/images/building.png', text: 'AAAAAA'),
+                    //                   SizedBox(
+                    //                     height: h*0.02,
+                    //                   ),
+                    //                   CompanyInfoReWidget(path: 'assets/images/company_info_phone.png', text: '21241231231'),
+                    //                   SizedBox(
+                    //                     height: h*0.02,
+                    //                   ),
+                    //                   CompanyInfoReWidget(path: 'assets/images/location_1.png', text: 'UAE - Dubai'),
+                    //
+                    //                 ],
+                    //               ),),
+                    //           ],
+                    //         ),
+                    //
+                    //
+                    //
+                    //
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   height: h * 0.02,
+                    // ),
+                    // /// here for delivered button
+                    // Padding(
+                    //   padding:  EdgeInsets.symmetric(horizontal: w*0.3),
+                    //   child: ButtonTextWidget(
+                    //       padding: 0,
+                    //       backgroundColor: primaryColor,
+                    //       text: 'Delivered',
+                    //       textColor: Colors.white,
+                    //       textSize: w*0.04,
+                    //       onPressed: closeExpand),
+                    // ),
+                    // SizedBox(
+                    //   height: h * 0.02,
+                    // ),
 
                   ],
                 ),

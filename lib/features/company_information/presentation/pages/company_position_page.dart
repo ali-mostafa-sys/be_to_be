@@ -12,6 +12,7 @@ import 'package:be_to_be/features/company_information/presentation/bloc/company_
 import 'package:be_to_be/features/company_information/presentation/widgets/show_tender_dialog_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_webservice/places.dart';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -29,6 +30,7 @@ class CompanyPositionPage extends StatelessWidget {
     final h = MediaQuery.of(context).size.height;
 
         return Scaffold(
+
           body: _buildBody(h: h,w: w),
         );
   }
@@ -110,6 +112,7 @@ class CompanyPositionPage extends StatelessWidget {
                                  textColor: Colors.white,
                                  textSize: w*0.06,
                                  onPressed: (){
+                                   // AutoRouter.of(context).pushNamed('/morInfo');
                                    if(CompanyInformationBloc.get(context).markerLocation!=null){
                                      AutoRouter.of(context).pushNamed('/morInfo');
                                    }else{
